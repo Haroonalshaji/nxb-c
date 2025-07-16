@@ -1,7 +1,10 @@
+"use client"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Building2 } from "lucide-react"
 import Image from "next/image"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { User, ChevronDown } from "lucide-react";
 
 
 export default function Header() {
@@ -29,17 +32,37 @@ export default function Header() {
 
                     {/* Auth Buttons */}
                     <div className="flex items-center space-x-3">
-                        <Link href="/signin">
-                            <Button
-                                variant="outline"
-                                className="border-white text-white hover:bg-white hover:text-[#B80D2D] bg-transparent"
-                            >
-                                Sign In
-                            </Button>
-                        </Link>
-                        <Link href="/signup">
+                        {/* User Role Dropdown with custom UI */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className="flex items-center gap-2 px-4 py-2 rounded bg-white/10 text-white hover:bg-white hover:text-[#B80D2D] transition border border-white/30 shadow-sm"
+                                    style={{ outline: "none", boxShadow: "none" }}
+                                    tabIndex={0}
+                                >
+                                    <User className="w-4 h-4" />
+                                    <span>Select Role</span>
+                                    <ChevronDown className="w-4 h-4" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                    onSelect={() => { window.location.href = "/signin"; }}
+                                    className="cursor-pointer"
+                                >
+                                    <User className="w-4 h-4 mr-2 text-[#B80D2D]" /> Client
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() => { /* window.location.href = "/vendor"; */ }}
+                                    className="cursor-pointer"
+                                >
+                                    <User className="w-4 h-4 mr-2 text-gray-500" /> Vendor
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        {/* <Link href="/signup">
                             <Button className="bg-white text-[#B80D2D] hover:bg-gray-100">Sign Up</Button>
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>

@@ -46,7 +46,7 @@ export default function SignUpPage() {
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">Create account</CardTitle>
             <CardDescription className="text-center">
-              Join BuildPro to connect with construction professionals
+              Join Nexus Built to connect with construction professionals
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
