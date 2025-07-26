@@ -1,7 +1,5 @@
 "use client"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Building2 } from "lucide-react"
 import Image from "next/image"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { User, ChevronDown } from "lucide-react";
@@ -53,7 +51,7 @@ export default function Header() {
                                     <User className="w-4 h-4 mr-2 text-[#B80D2D]" /> Client
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                    onSelect={() => { /* window.location.href = "/vendor"; */ }}
+                                    onSelect={() => { window.location.href = "/vendor"; }}
                                     className="cursor-pointer"
                                 >
                                     <User className="w-4 h-4 mr-2 text-gray-500" /> Vendor

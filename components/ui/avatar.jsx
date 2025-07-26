@@ -38,4 +38,11 @@ const AvatarFallback = React.forwardRef(({ className, ...props }, ref) => (
 ))
 AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
 
-export { Avatar, AvatarImage, AvatarFallback } 
+const AvatarContent = ({ children, className }) => (
+  <div className={cn("text-sm font-medium text-white", className)}>
+    {children}
+  </div>
+)
+
+
+export { Avatar, AvatarImage, AvatarFallback, AvatarContent } 
