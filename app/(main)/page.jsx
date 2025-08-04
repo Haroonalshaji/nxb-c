@@ -4,10 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Building2, Users, Award, Clock, Hammer, Wrench, HardHat, Truck } from "lucide-react"
 import AnimatedCounter from "@/components/animatedCoounter"
+import HomePageNew from "./home/page"
 
 export default function HomePage() {
+
   return (
-    <div className="min-h-screen bg-white">
+    <><div className="min-h-screen bg-white hidden">
       {/* Header */}
       {/* <Header /> */}
 
@@ -43,8 +45,7 @@ export default function HomePage() {
                 alt="Construction site with workers"
                 width={600}
                 height={700}
-                className="rounded-lg shadow-2xl object-cover lg:h-[470px]"
-              />
+                className="rounded-lg shadow-2xl object-cover lg:h-[470px]" />
             </div>
           </div>
         </div>
@@ -101,7 +102,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-[#B80D2D]" data-aos="fade-up"  data-aos-offset="100" data-aos-duration="1300">
+            <Card className="hover:shadow-lg transition-shadow border-l-4 border-l-[#B80D2D]" data-aos="fade-up" data-aos-offset="100" data-aos-duration="1300">
               <CardHeader>
                 <div className="w-12 h-12 bg-[#B80D2D] rounded-lg flex items-center justify-center mb-4">
                   <Wrench className="h-6 w-6 text-white" />
@@ -141,7 +142,7 @@ export default function HomePage() {
               <p className="text-sm text-gray-600">Licensed and insured general contractors for all project sizes</p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow"  data-aos="fade-up" data-aos-offset="100" data-aos-duration="600">
+            <div className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-offset="100" data-aos-duration="600">
               <div className="w-16 h-16 bg-[#B80D2D] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Wrench className="h-8 w-8 text-white" />
               </div>
@@ -149,7 +150,7 @@ export default function HomePage() {
               <p className="text-sm text-gray-600">Electricians, plumbers, HVAC specialists, and more</p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow"  data-aos="fade-up" data-aos-offset="100" data-aos-duration="700">
+            <div className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-offset="100" data-aos-duration="700">
               <div className="w-16 h-16 bg-[#B80D2D] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Truck className="h-8 w-8 text-white" />
               </div>
@@ -157,7 +158,7 @@ export default function HomePage() {
               <p className="text-sm text-gray-600">Quality building materials and construction supplies</p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow"  data-aos="fade-up" data-aos-offset="100" data-aos-duration="800">
+            <div className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow" data-aos="fade-up" data-aos-offset="100" data-aos-duration="800">
               <div className="w-16 h-16 bg-[#B80D2D] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-8 w-8 text-white" />
               </div>
@@ -178,8 +179,7 @@ export default function HomePage() {
                 alt="Construction team at work"
                 width={500}
                 height={400}
-                className="rounded-lg shadow-lg"
-              />
+                className="rounded-lg shadow-lg" />
             </div>
             <div className="space-y-6">
               <h2 className="text-4xl font-bold text-gray-900">Why Choose Nexus Built?</h2>
@@ -227,6 +227,6 @@ export default function HomePage() {
       {/* Footer */}
       {/* <Footer /> */}
 
-    </div>
+    </div><HomePageNew /></>
   )
 }

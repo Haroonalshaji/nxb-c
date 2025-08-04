@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { redirect, usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,6 +15,22 @@ export default function VendorLoginPage() {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const [active, setActive] = useState("client")
+  const currentPath = usePathname();
+
+  const checkTheCurrentPath = () => {
+    if (currentPath === '/vendor') {
+      setActive('vendor')
+    } else if (currentPath === '/signin') {
+      setActive('client')
+    } else {
+      redirect('/')
+    }
+  }
+
+  useEffect(()=>{
+    checkTheCurrentPath()
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,13 +48,42 @@ export default function VendorLoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-     
+
 
       <div className="container mx-auto px-4 max-w-6xl py-12">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Login Form */}
+
           <div className="space-y-8">
             <div className="text-center lg:text-left">
+              {/* Logo */}
+              <div className="flex justify-center mb-8">
+                <div className="flex w-[300px] h-[60px] rounded-lg bg-white shadow-inner relative ">
+                  {/* Client Button */}
+                  <button
+                    onClick={() => setActive("client")}
+                    className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
+                ${active === "client"
+                        ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                        : "bg-white text-[#B93239]"
+                      }`}
+                  >
+                    <Link href='/signin'>Login as Client</Link>
+                  </button>
+
+                  {/* Vendor Button */}
+                  <button
+                    onClick={() => setActive("vendor")}
+                    className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
+              ${active === "vendor"
+                        ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                        : "bg-white text-[#B93239]"
+                      }`}
+                  >
+                    <Link href='/vendor'>Login as Vendor</Link>
+                  </button>
+                </div>
+              </div>
               <h1 className="text-4xl font-bold text-gray-900 mb-4">Vendor Portal</h1>
               <p className="text-xl text-gray-600 mb-6">
                 Access your dashboard to manage enquiries and grow your construction business
