@@ -28,7 +28,7 @@ export default function VendorLoginPage() {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     checkTheCurrentPath()
   }, [])
 
@@ -63,11 +63,11 @@ export default function VendorLoginPage() {
                   <button
                     onClick={() => setActive("client")}
                     className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
-                ${active === "client"
-                        ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
-                        : "bg-white text-[#B93239]"
-                      }`}
-                  >
+                    ${active === "client"
+                            ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                            : "bg-white text-[#B93239]"
+                          }`}
+                      >
                     <Link href='/signin'>Login as Client</Link>
                   </button>
 

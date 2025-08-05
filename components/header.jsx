@@ -134,8 +134,8 @@ export default function Header() {
                     <a href="#" className="hover:text-[#B93239] transition-colors">Contact Us</a>
 
                     <div className="pt-2 flex flex-col space-y-2">
-                        <Button variant="ghost" className="w-full">Sign In</Button>
-                        <Button className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all w-full">
+                        <Button variant="ghost" className="w-full" onClick={()=>(window.location.href="/signin")}>Sign In</Button>
+                        <Button  onClick={()=>(window.location.href="/vendor")} className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all w-full">
                             Join as Vendor
                         </Button>
                     </div>

@@ -19,21 +19,25 @@ import {
     Zap,
     CheckCircle,
     Award,
+    List,
+    LayoutDashboard,
 } from "lucide-react";
 import nexusLogo from "../../../public/assets/header images/nexus_white_no_bg.png";
+import WhyChooseSection from '../../../components/whyChooseSection'
+import VendorSection from '../../../components/vendorSection'
 
 export default function HomePageNew() {
     const categories = [
-        {
-            name: "Construction",
-            count: "1,200+ vendors",
-            icon: "🏗️",
-        },
-        { name: "Electrical", count: "850+ vendors", icon: "⚡" },
-        { name: "Plumbing", count: "620+ vendors", icon: "🔧" },
-        { name: "HVAC", count: "490+ vendors", icon: "❄️" },
-        { name: "Landscaping", count: "380+ vendors", icon: "🌿" },
-        { name: "Roofing", count: "340+ vendors", icon: "🏠" },
+        { name: "Electrical", icon: "⚡" },
+        { name: "HVAC", icon: "🌬️" },
+        { name: "Plumbing", icon: "🚰" },
+        { name: "Gypsum", icon: "🧱" },
+        { name: "Joinery", icon: "🪚" },
+        { name: "Stone Supply & Installation", icon: "🪨" },
+        { name: "Internal Glass Partitions", icon: "🪟" },
+        { name: "Swimming Pool Works", icon: "🏊" },
+        { name: "Custom Furniture Supply", icon: "🪑" },
+        { name: "Home Automation", icon: "📱" },
     ];
 
     const featuredVendors = [
@@ -78,19 +82,19 @@ export default function HomePageNew() {
     const howItWorks = [
         {
             step: "1",
-            title: "Create Your Profile",
+            title: "CreateCreate your account to access the vendor directory",
             description:
                 "Set up your vendor profile with services, credentials, and portfolio",
         },
         {
             step: "2",
-            title: "Connect with Vendors",
+            title: "Search by trade or service category",
             description:
                 "Browse verified vendors or post your project needs",
         },
         {
             step: "3",
-            title: "Collaborate & Grow",
+            title: "Submit enquiries and track everything from your dashboard",
             description:
                 "Build partnerships, share resources, and grow your business",
         },
@@ -184,9 +188,7 @@ export default function HomePageNew() {
                             </span>
                         </h1>
                         <p className="text-xl mb-12 max-w-3xl mx-auto opacity-90 leading-relaxed">
-                            Connect with verified trade professionals, share
-                            resources, and build partnerships that drive your
-                            business forward in the modern marketplace.
+                            Nexus Built helps you find trusted vendors across the UAE’s construction and fit-out industry. Explore services by category, view verified business profiles, and send enquiries from one secure platform.
                         </p>
 
                         <div className="max-w-2xl mx-auto mb-12">
@@ -206,16 +208,16 @@ export default function HomePageNew() {
 
                         <div className="flex flex-wrap justify-center items-center gap-8 text-sm opacity-90">
                             <div className="flex items-center space-x-3 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                                <Users className="h-5 w-5" />
-                                <span>3,500+ Active Vendors</span>
-                            </div>
-                            <div className="flex items-center space-x-3 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
-                                <TrendingUp className="h-5 w-5" />
-                                <span>50K+ Projects Completed</span>
+                                <List className="h-5 w-5" />
+                                <span>90+ Service Categories</span>
                             </div>
                             <div className="flex items-center space-x-3 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
                                 <Shield className="h-5 w-5" />
-                                <span>100% Verified Professionals</span>
+                                <span>100% Verified Vendors</span>
+                            </div>
+                            <div className="flex items-center space-x-3 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm">
+                                <LayoutDashboard className="h-5 w-5" />
+                                <span>Enquiry Dashboard Access</span>
                             </div>
                         </div>
                     </div>
@@ -231,16 +233,14 @@ export default function HomePageNew() {
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="text-center mb-16" data-aos="fade-up">
                         <h2 className="text-4xl mb-6 text-white">
-                            Explore Trade Categories
+                            Explore Service Categories
                         </h2>
                         <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed">
-                            Find specialized vendors across all major trade
-                            categories. Each vendor is verified and rated by
-                            the community.
+                            Browse active vendors across the most requested trades in construction and fit-out.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 justify-center  gap-8">
                         {categories.map((category, index) => (
                             <div
                                 key={index}
@@ -248,9 +248,9 @@ export default function HomePageNew() {
                                 data-aos-delay={index * 150}
                                 data-aos-duration="800"
 
-                                className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
+                                className="group cursor-pointer h-full transform hover:scale-105 transition-all duration-300"
                             >
-                                <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 text-center hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50 hover:shadow-2xl hover:shadow-[#B93239]/25">
+                                <div className="relative bg-white/10 h-full backdrop-blur-lg border border-white/20 rounded-2xl p-8 text-center hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50 hover:shadow-2xl hover:shadow-[#B93239]/25">
                                     {/* Glow effect on hover */}
                                     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#B93239]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -285,12 +285,11 @@ export default function HomePageNew() {
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="text-center mb-16" data-aos="fade-up">
                         <h2 className="text-4xl mb-6 text-gray-900">
-                            Featured Premium Vendors
+                            Trusted Vendors, Ready to Work
                         </h2>
                         <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-                            Top-rated professionals ready to collaborate on
-                            your next project with verified expertise and
-                            premium service quality.
+                            These businesses are approved and ready to take on your next project.
+
                         </p>
                     </div>
 
@@ -341,20 +340,8 @@ export default function HomePageNew() {
 
                                         <div className="flex items-center justify-between mb-4">
                                             <div className="flex items-center space-x-2">
-                                                <div className="flex items-center space-x-1">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star
-                                                            key={i}
-                                                            className={`h-4 w-4 ${i < Math.floor(vendor.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <span className="text-gray-900">
-                                                    {vendor.rating}
-                                                </span>
-                                                <span className="text-gray-500">
-                                                    ({vendor.reviews})
-                                                </span>
+
+
                                             </div>
                                         </div>
 
@@ -382,17 +369,15 @@ export default function HomePageNew() {
                             How Nexus Built Works
                         </h2>
                         <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-                            Simple steps to connect with the right trade
-                            professionals for your business growth and
-                            success.
+                            Getting Started Is Simple
                         </p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-12">
                         {howItWorks.map((item, index) => (
                             <div key={index} className="text-center group" data-aos="fade-up"
-                            data-aos-delay={index * 150}
-                            data-aos-duration="800">
+                                data-aos-delay={index * 150}
+                                data-aos-duration="800">
                                 <div className="relative mb-8">
                                     <div className="w-20 h-20 bg-gradient-to-br from-[#B93239] to-[#A02A31] text-white rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-lg group-hover:shadow-xl transition-all transform group-hover:scale-110">
                                         {item.step}
@@ -404,14 +389,17 @@ export default function HomePageNew() {
                                 <h3 className="text-2xl mb-4 text-gray-900">
                                     {item.title}
                                 </h3>
-                                <p className="text-gray-600 text-lg leading-relaxed">
+                                {/* <p className="text-gray-600 text-lg leading-relaxed">
                                     {item.description}
-                                </p>
+                                </p> */}
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
+            
+            <VendorSection />
+            <WhyChooseSection />
 
             {/* CTA Section */}
             <section className="py-20 bg-gradient-to-br from-[#B93239] via-[#A02A31] to-[#8B1E25] text-white relative overflow-hidden">
