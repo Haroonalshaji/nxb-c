@@ -25,6 +25,7 @@ import {
 import nexusLogo from "../../../public/assets/header images/nexus_white_no_bg.png";
 import WhyChooseSection from '../../../components/whyChooseSection'
 import VendorSection from '../../../components/vendorSection'
+import Link from "next/link"
 
 export default function HomePageNew() {
     const categories = [
@@ -397,7 +398,7 @@ export default function HomePageNew() {
                     </div>
                 </div>
             </section>
-            
+
             <VendorSection />
             <WhyChooseSection />
 
@@ -419,19 +420,23 @@ export default function HomePageNew() {
                         on Nexus Built.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                        <Button
-                            size="lg"
-                            className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-14 text-lg shadow-xl hover:shadow-2xl transition-all"
-                        >
-                            Register as Vendor
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-2 border-white text-[#B93239] hover:bg-white hover:text-[#B93239] px-10 h-14 text-lg backdrop-blur-sm"
-                        >
-                            Browse Vendors
-                        </Button>
+                        <Link href="/vendor">
+                            <Button
+                                size="lg"
+                                className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-14 text-lg shadow-xl hover:shadow-2xl transition-all"
+                            >
+                                Register as Vendor
+                            </Button>
+                        </Link>
+                        <Link href='/signin'>
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="border-2 border-white text-[#B93239] hover:bg-white hover:text-[#B93239] px-10 h-14 text-lg backdrop-blur-sm"
+                            >
+                                Browse Vendors
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </section>

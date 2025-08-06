@@ -104,7 +104,7 @@ export default function Header() {
                 <div className="hidden md:flex items-center space-x-4">
                     <Button variant="ghost"><Link href="/signin">Sign In</Link></Button>
                     <Button className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all">
-                        <Link href="/signup">Sign Up</Link>
+                        <Link href="/vendor">Join as Vendor</Link>
                     </Button>
                 </div>
 

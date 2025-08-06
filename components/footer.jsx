@@ -17,22 +17,24 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="font-semibold mb-4">Services</h3>
+                        <h3 className="font-semibold mb-4">Support</h3>
                         <ul className="space-y-2 text-gray-400">
-                            <li>Residential Construction</li>
-                            <li>Commercial Projects</li>
-                            <li>Renovations</li>
-                            <li>Specialized Services</li>
+                            <li><a href="/pricing-plans">Pricing Plans</a></li>
+                            <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
+                            <li><a href="/privacy-policy">Privacy Policy</a></li>
+                            <li><a href="/refund-policy-page">Refung Policy</a></li>
+                            <li><a href="/shipping-policy">Shipping Policy</a></li>
+                            <li><a href="/support-policy">Support Policy</a></li>
                         </ul>
                     </div>
 
                     <div>
                         <h3 className="font-semibold mb-4">Company</h3>
                         <ul className="space-y-2 text-gray-400">
-                            <li>About Us</li>
-                            <li>Our Vendors</li>
-                            <li>Careers</li>
-                            <li>Contact</li>
+                            <li><a href="/about"></a>About Us</li>
+                            <li><a href="/services"></a>Our Services</li>
+                            {/* <li><a href="/"></a>Careers</li> */}
+                            <li><a href="/contactUs"></a>Contact</li>
                         </ul>
                     </div>
 
