@@ -23,6 +23,7 @@ import {
   AlertCircle,
 } from "lucide-react"
 import { NewEnquiryDialog } from "@/components/new-enquiry-dialog"
+import { Label } from "@/components/ui/label"
 
 // Mock data for services and vendors
 const servicesData = [
@@ -309,6 +310,11 @@ const subcategories = {
   Utilities: ["All", "Electrical", "Plumbing", "HVAC"],
 }
 
+const StatusOptions = [
+  "Completed",
+  "Pending Approval"
+]
+
 export default function DashboardPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -317,6 +323,7 @@ export default function DashboardPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState("All")
   const [selectedService, setSelectedService] = useState(null)
   const [selectedVendor, setSelectedVendor] = useState(null)
+  const [statusOfEnquiry, setStatusOfEnquiry] = useState("")
 
   // Calculate statistics
   const totalEnquiries = enquiriesData.length
@@ -387,6 +394,15 @@ export default function DashboardPage() {
     setSelectedVendor(null)
   }
 
+  const setClearForm = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
+  }
+
+  const handleStatusOfEnquiry = (value) => {
+    setStatusOfEnquiry(value)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
 
@@ -405,7 +421,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
           <Card className="border-l-4 border-l-[#B80D2D]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Enquiries</CardTitle>
@@ -419,7 +435,7 @@ export default function DashboardPage() {
 
           <Card className="border-l-4 border-l-green-500">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Completed</CardTitle>
+              <CardTitle className="text-sm font-medium">Closed Enquiries</CardTitle>
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -428,7 +444,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-yellow-500">
+          <Card className="border-l-4 border-l-yellow-500 hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Pending</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -441,7 +457,7 @@ export default function DashboardPage() {
 
           <Card className="border-l-4 border-l-blue-500">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">In Progress</CardTitle>
+              <CardTitle className="text-sm font-medium">Open Enquiries</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -479,9 +495,10 @@ export default function DashboardPage() {
             <Button
               variant="outline"
               className="border-[#B80D2D] text-[#B80D2D] hover:bg-[#B80D2D] hover:text-white bg-transparent"
+              onClick={setClearForm}
             >
               <Filter className="h-4 w-4 mr-2" />
-              Advanced Filter
+              Clear Filter
             </Button>
           </div>
         </div>
@@ -547,30 +564,47 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    {enquiry.assignedVendor && (
-                      <div className="text-sm">
-                        <span className="font-medium text-gray-700">Assigned Vendor: </span>
-                        <span className="text-[#B80D2D]">{enquiry.assignedVendor}</span>
-                      </div>
-                    )}
-
-                    {enquiry.completedAt && (
-                      <div className="text-sm text-green-600">
-                        <span className="font-medium">Completed: </span>
-                        <span>{formatDate(enquiry.completedAt)}</span>
-                      </div>
-                    )}
-
-                    <div className="flex space-x-2 mt-3 hidden">
-                      <Button size="sm" variant="outline" className="bg-transparent">
-                        View Details
-                      </Button>
-                      {enquiry.status === "pending" && (
-                        <Button size="sm" className="bg-[#B80D2D] hover:bg-[#9A0B26] text-white">
-                          Assign Vendor
-                        </Button>
+                  <div className="grid md:grid-cols-2 grid-cols-1">
+                    <div className="space-y-2">
+                      {enquiry.assignedVendor && (
+                        <div className="text-sm">
+                          <span className="font-medium text-gray-700">Assigned Vendor: </span>
+                          <span className="text-[#B80D2D]">{enquiry.assignedVendor}</span>
+                        </div>
                       )}
+
+                      {enquiry.completedAt && (
+                        <div className="text-sm text-green-600">
+                          <span className="font-medium">Completed: </span>
+                          <span>{formatDate(enquiry.completedAt)}</span>
+                        </div>
+                      )}
+
+                      <div className="flex space-x-2 mt-3 hidden">
+                        <Button size="sm" variant="outline" className="bg-transparent">
+                          View Details
+                        </Button>
+                        {enquiry.status === "pending" && (
+                          <Button size="sm" className="bg-[#B80D2D] hover:bg-[#9A0B26] text-white">
+                            Assign Vendor
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2 w-64">
+                      <Label htmlFor="service">Service Status:</Label>
+                      <Select value={statusOfEnquiry} onValueChange={(value) => handleStatusOfEnquiry(value)} >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Status of Enquiry" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {StatusOptions.map((service) => (
+                            <SelectItem key={service} value={service}>
+                              {service}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
@@ -578,8 +612,6 @@ export default function DashboardPage() {
             </Card>
           ))}
         </div>
-
-
       </div>
 
       {/* New Enquiry Dialog */}
