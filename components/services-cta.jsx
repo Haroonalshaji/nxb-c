@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, UserPlus, Search, MessageSquare } from "lucide-react"
+import Link from "next/link"
 
 export default function ServicesCTA() {
   return (
@@ -60,13 +61,15 @@ export default function ServicesCTA() {
             <p className="text-white/80 mb-6 text-lg">
               Join thousands of project owners who trust Nexus Built for their vendor needs
             </p>
-            <Button
-              size="lg"
-              className="bg-white text-[#B93239] hover:bg-gray-100 px-12 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
-            >
-              Sign Up and Start Searching
-              <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link href='/signin'>
+              <Button
+                size="lg"
+                className="bg-white text-[#B93239] hover:bg-gray-100 px-12 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
+              >
+                Sign Up and Start Searching
+                <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
 
           {/* Secondary info */}

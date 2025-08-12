@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Grid, Shield, Users } from "lucide-react"
+import Link from "next/link"
 
 export default function ServicesHero() {
     return (
@@ -58,9 +59,11 @@ export default function ServicesHero() {
                                         className="pl-16 border-0 focus:ring-0 text-gray-900 bg-transparent h-14 text-lg rounded-2xl"
                                     />
                                 </div>
-                                <Button className="bg-[#B93239] hover:bg-[#A02A31] px-10 h-14 text-lg shadow-lg hover:shadow-xl transition-all rounded-2xl">
-                                    Search Services
-                                </Button>
+                                <Link href="/service-list">
+                                    <Button className="bg-[#B93239] hover:bg-[#A02A31] px-10 h-14 text-lg shadow-lg hover:shadow-xl transition-all rounded-2xl">
+                                        Search Services
+                                    </Button>
+                                </Link>
                             </div>
                             {/* Search suggestions */}
                             <div className="absolute top-full left-0 right-0 mt-2 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 opacity-0 group-hover:opacity-100 transition-opacity">

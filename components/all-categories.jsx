@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronDown, ChevronUp, Palette, Zap, Hammer, Smartphone } from "lucide-react"
+import Link from "next/link"
 
 export default function AllCategories() {
   const [expandedSections, setExpandedSections] = useState('')
@@ -135,9 +136,11 @@ export default function AllCategories() {
             <p className="text-gray-300 mb-6 leading-relaxed">
               Can't find what you're looking for? Browse our complete directory of verified vendors.
             </p>
-            <Button className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all px-8 h-12 text-lg">
-              View Full Category List
-            </Button>
+            <Link href="/service-list">
+              <Button className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all px-8 h-12 text-lg">
+                View Full Category List
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

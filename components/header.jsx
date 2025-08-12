@@ -87,11 +87,13 @@ export default function Header() {
         <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                 <div className="flex items-center space-x-4 md:space-x-8">
-                    <img
-                        src="/assets/header images/nexus_logo_no_bg.png"
-                        alt="Nexus Built"
-                        className="h-12 w-auto"
-                    />
+                    <a href="/">
+                        <img
+                            src="/assets/header images/nexus_logo_no_bg.png"
+                            alt="Nexus Built"
+                            className="h-12 w-auto"
+                        />
+                    </a>
                     <nav className="hidden md:flex items-center space-x-6">
                         <a href="/home" className="hover:text-[#B93239] transition-colors">Home</a>
                         <a href="/about" className="hover:text-[#B93239] transition-colors">About Us</a>
@@ -134,8 +136,8 @@ export default function Header() {
                     <a href="#" className="hover:text-[#B93239] transition-colors">Contact Us</a>
 
                     <div className="pt-2 flex flex-col space-y-2">
-                        <Button variant="ghost" className="w-full" onClick={()=>(window.location.href="/signin")}>Sign In</Button>
-                        <Button  onClick={()=>(window.location.href="/vendor")} className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all w-full">
+                        <Button variant="ghost" className="w-full" onClick={() => (window.location.href = "/signin")}>Sign In</Button>
+                        <Button onClick={() => (window.location.href = "/vendor")} className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all w-full">
                             Join as Vendor
                         </Button>
                     </div>

@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Zap, Wind, Droplets, Hammer, Wrench, Eye, Sofa, Mountain, Waves, Smartphone } from "lucide-react"
+import Link from "next/link"
 
 export default function FeaturedCategories() {
   const featuredCategories = [
@@ -120,51 +121,53 @@ export default function FeaturedCategories() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {featuredCategories.map((category, index) => (
-            <div
-              key={index}
-              data-aos="fade-up"
-              data-aos-delay={index * 100}
-              className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
-            >
-              <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-white relative h-full">
-                {category.popular && (
-                  <div className="absolute top-4 right-4 z-20">
-                    <Badge className="bg-gradient-to-r from-[#B93239] to-[#A02A31] text-white border-0 shadow-lg">
-                      Popular
-                    </Badge>
-                  </div>
-                )}
-
-                <CardContent className="p-8 h-full flex flex-col">
-                  {/* Icon with gradient background */}
-                  <div className="relative mb-6">
-                    <div
-                      className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}
-                    >
-                      <category.icon className="h-8 w-8 text-white" />
+            <Link href="/service-list">
+              <div
+                key={index}
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+                className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
+              >
+                <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-white relative h-full">
+                  {category.popular && (
+                    <div className="absolute top-4 right-4 z-20">
+                      <Badge className="bg-gradient-to-r from-[#B93239] to-[#A02A31] text-white border-0 shadow-lg">
+                        Popular
+                      </Badge>
                     </div>
-                    {/* Glow effect */}
-                    <div
-                      className={`absolute inset-0 w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl opacity-20 blur-lg group-hover:opacity-40 transition-opacity duration-300`}
-                    ></div>
-                  </div>
+                  )}
 
-                  <h3 className="text-xl mb-3 text-gray-900 group-hover:text-[#B93239] transition-colors duration-300 font-semibold">
-                    {category.name}
-                  </h3>
+                  <CardContent className="p-8 h-full flex flex-col">
+                    {/* Icon with gradient background */}
+                    <div className="relative mb-6">
+                      <div
+                        className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}
+                      >
+                        <category.icon className="h-8 w-8 text-white" />
+                      </div>
+                      {/* Glow effect */}
+                      <div
+                        className={`absolute inset-0 w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl opacity-20 blur-lg group-hover:opacity-40 transition-opacity duration-300`}
+                      ></div>
+                    </div>
 
-                  <p className="text-gray-600 mb-4 leading-relaxed flex-grow">{category.description}</p>
+                    <h3 className="text-xl mb-3 text-gray-900 group-hover:text-[#B93239] transition-colors duration-300 font-semibold">
+                      {category.name}
+                    </h3>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500 font-medium">{category.vendorCount}</span>
-                    <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-[#B93239] group-hover:translate-x-1 transition-all duration-300" />
-                  </div>
-                </CardContent>
+                    <p className="text-gray-600 mb-4 leading-relaxed flex-grow">{category.description}</p>
 
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#B93239]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-              </Card>
-            </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500 font-medium">{category.vendorCount}</span>
+                      <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-[#B93239] group-hover:translate-x-1 transition-all duration-300" />
+                    </div>
+                  </CardContent>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#B93239]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                </Card>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -22,7 +22,7 @@ export default function Footer() {
                             <li><a href="/pricing-plans">Pricing Plans</a></li>
                             <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
                             <li><a href="/privacy-policy">Privacy Policy</a></li>
-                            <li><a href="/refund-policy-page">Refung Policy</a></li>
+                            <li><a href="/refund-policy-page">Refund Policy</a></li>
                             <li><a href="/shipping-policy">Shipping Policy</a></li>
                             <li><a href="/support-policy">Support Policy</a></li>
                         </ul>

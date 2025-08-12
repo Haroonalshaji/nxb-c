@@ -165,6 +165,12 @@ export default function VendorDashboardPage() {
     })
   }
 
+  const handleClearFilter = () => {
+    setSearchTerm("");
+    setServiceFilter("all");
+    setPriorityFilter("all");
+  }
+
   const getTimeAgo = (dateString) => {
     const now = new Date()
     const date = new Date(dateString)
@@ -181,8 +187,6 @@ export default function VendorDashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      
-
       <div className="container mx-auto px-4 max-w-7xl py-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -215,7 +219,7 @@ export default function VendorDashboardPage() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
           <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-gray-50 hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">Available Enquiries</CardTitle>
@@ -232,7 +236,7 @@ export default function VendorDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-gradient-to-br from-amber-50 to-amber-100 hover:shadow-xl transition-all duration-300">
+          <Card className="border-0 hidden shadow-lg bg-gradient-to-br from-amber-50 to-amber-100 hover:shadow-xl transition-all duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-amber-700">New Opportunities</CardTitle>
               <div className="p-2 bg-amber-200 rounded-lg">
@@ -324,9 +328,10 @@ export default function VendorDashboardPage() {
                 <Button
                   variant="outline"
                   className="border-[#B80D2D] text-[#B80D2D] hover:bg-[#B80D2D] hover:text-white bg-transparent"
+                  onClick={handleClearFilter}
                 >
                   <Filter className="h-4 w-4 mr-2" />
-                  Advanced Filter
+                  Clear Filter
                 </Button>
               </div>
             </CardContent>
