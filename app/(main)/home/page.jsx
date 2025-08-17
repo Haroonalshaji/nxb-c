@@ -26,19 +26,20 @@ import nexusLogo from "../../../public/assets/header images/nexus_white_no_bg.pn
 import WhyChooseSection from '../../../components/whyChooseSection'
 import VendorSection from '../../../components/vendorSection'
 import Link from "next/link"
+import Image from "next/image";
 
 export default function HomePageNew() {
     const categories = [
-        { name: "Electrical", icon: "⚡" },
-        { name: "HVAC", icon: "🌬️" },
-        { name: "Plumbing", icon: "🚰" },
-        { name: "Gypsum", icon: "🧱" },
-        { name: "Joinery", icon: "🪚" },
-        { name: "Stone Supply & Installation", icon: "🪨" },
-        { name: "Internal Glass Partitions", icon: "🪟" },
-        { name: "Swimming Pool Works", icon: "🏊" },
-        { name: "Custom Furniture Supply", icon: "🪑" },
-        { name: "Home Automation", icon: "📱" },
+        { name: "Electrical", icon: "/assets/clientHome/electrical.png" },
+        { name: "HVAC", icon: "/assets/clientHome/HVAC.png" },
+        { name: "Plumbing", icon: "/assets/clientHome/Plumbing.png" },
+        { name: "Gypsum", icon: "/assets/clientHome/Gypsum.png" },
+        { name: "Joinery", icon: "/assets/clientHome/Joinery.png" },
+        { name: "Stone Supply & Installation", icon: "/assets/clientHome/Stone.png" },
+        { name: "Internal Glass Partitions", icon: "/assets/clientHome/GlassPartition.png" },
+        { name: "Swimming Pool Works", icon: "/assets/clientHome/SwimmingPool.png" },
+        { name: "Custom Furniture Supply", icon: "/assets/clientHome/CustomFurn.png" },
+        { name: "Home Automation", icon: "/assets/clientHome/HomeAutomation.png" },
     ];
 
     const featuredVendors = [
@@ -83,7 +84,7 @@ export default function HomePageNew() {
     const howItWorks = [
         {
             step: "1",
-            title: "CreateCreate your account to access the vendor directory",
+            title: "Create your account to access the vendor directory",
             description:
                 "Set up your vendor profile with services, credentials, and portfolio",
         },
@@ -201,9 +202,11 @@ export default function HomePageNew() {
                                         className="pl-12 border-0 focus:ring-0 text-gray-900 bg-transparent h-12 text-lg"
                                     />
                                 </div>
-                                <Button className="bg-[#B93239] hover:bg-[#A02A31] px-8 h-12 text-lg shadow-lg hover:shadow-xl transition-all">
-                                    Search
-                                </Button>
+                                <Link href='/service-list'>
+                                    <Button className="bg-[#B93239] hover:bg-[#A02A31] px-8 h-12 text-lg shadow-lg hover:shadow-xl transition-all">
+                                        Search
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
 
@@ -241,30 +244,29 @@ export default function HomePageNew() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 justify-center  gap-8">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 justify-center gap-8">
                         {categories.map((category, index) => (
                             <div
                                 key={index}
                                 data-aos="fade-up"
                                 data-aos-delay={index * 150}
                                 data-aos-duration="800"
+                                className="group cursor-pointer min-h-[230px] h-full transform hover:scale-105 transition-all duration-300"
 
-                                className="group cursor-pointer h-full transform hover:scale-105 transition-all duration-300"
                             >
-                                <div className="relative bg-white/10 h-full backdrop-blur-lg border border-white/20 rounded-2xl p-8 text-center hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50 hover:shadow-2xl hover:shadow-[#B93239]/25">
-                                    {/* Glow effect on hover */}
-                                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#B93239]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div
+                                    className="relative h-full flex items-center justify-center backdrop-blur-lg border border-white/20 rounded-2xl p-8 text-center hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50 hover:shadow-2xl hover:shadow-[#B93239]/25 bg-cover bg-center"
+                                    style={{ backgroundImage: `url(${category.icon})` }}
+                                >
+                                    <div className="absolute -inset-[1px] bg-black/35 rounded-2xl"></div>
+                                    {/* Overlay for glow effect */}
+                                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#B93239]/20 to-black/40 opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
 
                                     <div className="relative z-10">
-                                        <div className="text-5xl mb-6 transform group-hover:scale-110 transition-transform duration-300">
-                                            {category.icon}
-                                        </div>
                                         <h3 className="text-2xl mb-3 text-white group-hover:text-[#B93239] transition-colors duration-300">
                                             {category.name}
                                         </h3>
-                                        <p className="text-gray-300 text-lg">
-                                            {category.count}
-                                        </p>
+                                        <p className="text-gray-300 text-lg">{category.count}</p>
                                     </div>
 
                                     {/* Corner accents */}
@@ -274,6 +276,7 @@ export default function HomePageNew() {
                             </div>
                         ))}
                     </div>
+
                 </div>
             </section>
 

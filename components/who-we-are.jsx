@@ -36,14 +36,11 @@ export default function WhoWeAre() {
             {/* Left side - Content */}
             <div data-aos="fade-right">
               <h2 className="text-4xl mb-6 text-gray-900 font-semibold">Who We Are</h2>
-              <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                Nexus Built is a UAE-based digital platform designed to bring real value to the construction and fit-out
-                industry. We help project owners, contractors, and service providers connect with verified professionals
-                across 90-plus categories.
-              </p>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Whether you're looking for a specialist or ready to offer your services, Nexus Built is where
-                opportunity meets expertise.
+              <p className="text-lg text-gray-600 leading-relaxed mb-4">
+                In this fast-driven UAE construction sector, and the ever growing demands of quality contractors and professionals it has become difficult to make the right choice.</p>
+              <p className="text-lg text-gray-600 leading-relaxed mb-4">At NXB we help project owners, contractors and service providers connect with verified professionals across 90-plus categories.</p>
+              <p className="text-lg text-gray-600 leading-relaxed mb-4">NXB is a UAE-based digital platform designed to bring real value to the construction and fit-out industry.</p>
+              <p className="text-lg text-gray-600 leading-relaxed">Whether you're looking for a specialist or ready to offer your services, NXB is where opportunity meets expertise.
               </p>
             </div>
 
