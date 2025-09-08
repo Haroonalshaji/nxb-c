@@ -8,16 +8,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Building2 } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
+import { signInUser } from '../../../lib/api/auth'
+import { toast, useToast } from "@/hooks/use-toast"
 
 
 export default function SignInPage() {
+  const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const [active, setActive] = useState("vendor");
   const currentPath = usePathname();
+  const { toast } = useToast();
 
   const checkTheCurrentPath = () => {
     if (currentPath === '/vendor') {
@@ -32,16 +36,62 @@ export default function SignInPage() {
   useEffect(() => {
     checkTheCurrentPath()
   }, [])
+
+  const UserId = email;
+  const Password = password;
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      const response = await signInUser({ UserId, Password })
+      var RetData = response.data;
+      const userRoles = {
+        accessToken: RetData.result.accessToken,
+        refreshToken: RetData.result.refreshToken,
+        role: RetData.result.role,
+        userName: RetData.result.userName,
+        userStatus: RetData.result.status
+      }
+      console.log(userRoles)
+      if (response) {
+        setTimeout(() => {
+          setIsLoading(false)
+          document.cookie = `accessToken=${userRoles.accessToken}; path=/; max-age=${60 * 60 * 24}; secure; samesite=strict`
+          document.cookie = `refreshToken=${userRoles.refreshToken}; path=/; max-age=${60 * 60 * 24 * 7}; secure; samesite=strict`
+          document.cookie = `userName=${userRoles.userName}; path=/; max-age=${60 * 60 * 24}`
+          document.cookie = `userStatus=${userRoles.userStatus}; path=/; max-age=${60 * 60 * 24}`
+          document.cookie = `role=${userRoles.role}; path=/; max-age=${60 * 60 * 24}`
+
+          // Redirect to dashboard after successful login
+          router.push("/dashboard")
+          if (RetData.isSuccess === true) {
+            toast({
+              title: `✅  ${RetData.message}`,
+              variant: "success",
+            })
+          } else {
+            setIsLoading(false)
+            toast({
+              title: ` ${RetData.message}`,
+              variant: "destructive",
+            })
+          }
+        }, 1000)
+      }
+    } catch (error) {
       setIsLoading(false)
-      // Redirect to dashboard after successful login
-      router.push("/dashboard")
-    }, 1000)
+      console.error(error)
+      toast({
+        title: ` ${error.response.data.message}`,
+        variant: "destructive",
+      })
+    }
+
+    // Simulate login process
+
+
   }
 
   return (
@@ -94,16 +144,25 @@ export default function SignInPage() {
                   required
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+              <div className="space-y-2 relative">
+                <Label htmlFor="password" className='relative'>Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">

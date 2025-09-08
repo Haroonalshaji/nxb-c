@@ -26,6 +26,7 @@ import {
   Send,
   Users,
 } from "lucide-react"
+import QuoteModal from '@/components/vendorFormDialog'
 
 // Mock enquiry data (in real app, this would come from API based on ID)
 const enquiryData = {
@@ -88,6 +89,7 @@ export default function EnquiryDetailPage({ params }) {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
+  const [modalOpen, setModalOpen] = useState(false);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -173,7 +175,7 @@ export default function EnquiryDetailPage({ params }) {
       </header>
 
       <div className="container mx-auto px-4 max-w-7xl py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 grid-cols-1 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Enquiry Overview */}
@@ -189,7 +191,7 @@ export default function EnquiryDetailPage({ params }) {
                       <Badge className={`${priorityConfig[enquiryData.priority].color} border px-3 py-1 font-medium`}>
                         {priorityConfig[enquiryData.priority].label}
                       </Badge>
-                      <Badge className="bg-blue-50 text-blue-700 border-blue-200 border px-2 py-1 text-xs">
+                      <Badge className="bg-blue-50 hidden text-blue-700 border-blue-200 border px-2 py-1 text-xs">
                         {enquiryData.propertyType}
                       </Badge>
                     </div>
@@ -256,8 +258,41 @@ export default function EnquiryDetailPage({ params }) {
               </Card>
             )}
 
-            {/* Quote Form */}
             <Card className="border-0 shadow-lg bg-white">
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-3 gap-3 flex justify-center flex-wrap lg:flex-nowrap items-center">
+                <Button
+                  className="w-full bg-green-500 hover:bg-green-600 text-white"
+                  onClick={() => window.open(`tel:${enquiryData.phone}`)}
+                >
+                  <Phone className="h-4 w-4 mr-2" />
+                  Call Customer
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="w-full border-[#B80D2D] text-[#B80D2D] hover:bg-[#f8e7ea] hover:text-[#B80D2D] bg-transparent"
+                  onClick={() => window.open(`mailto:${enquiryData.email}`)}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Email
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="w-full border-[#B80D2D] bg-[#B80D2D] text-white hover:text-white hover:bg-[#930a24]"
+                  onClick={() => setModalOpen(true)}
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Quotation
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Quote Form */}
+            <Card className="border-0 shadow-lg bg-white hidden">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <DollarSign className="h-5 w-5 mr-2 text-[#B80D2D]" />
@@ -405,7 +440,7 @@ export default function EnquiryDetailPage({ params }) {
             </Card>
 
             {/* Project Details */}
-            <Card className="border-0 shadow-lg bg-white">
+            <Card className="border-0 shadow-lg bg-white hidden">
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <FileText className="h-5 w-5 mr-2 text-[#B80D2D]" />
@@ -460,7 +495,7 @@ export default function EnquiryDetailPage({ params }) {
             </Card>
 
             {/* Quick Actions */}
-            <Card className="border-0 shadow-lg bg-white">
+            <Card className="border-0 shadow-lg bg-white hidden">
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
@@ -484,6 +519,10 @@ export default function EnquiryDetailPage({ params }) {
               </CardContent>
             </Card>
           </div>
+
+          {/* Quote form as Modal */}
+          <QuoteModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+
         </div>
       </div>
     </div>

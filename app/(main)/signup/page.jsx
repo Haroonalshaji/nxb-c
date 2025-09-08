@@ -8,8 +8,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Building2 } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { title } from "process"
+import { signUpUser, verifyUserEmailwithOTP } from "@/lib/api/auth"
+import UserOTPModal from "@/components/userOTPDialog"
 
 export default function SignUpPage() {
+  const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -17,6 +27,51 @@ export default function SignUpPage() {
     password: "",
     confirmPassword: "",
   })
+  const [customerId, setCustomerId] = useState("")
+
+  const validatePassword = () => {
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
+
+    // Check password length
+    if (password.length < 6) {
+      toast({
+        title: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Check at least one number
+    if (!/\d/.test(password)) {
+      toast({
+        title: "Password must contain at least one number.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Check at least one special character
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      toast({
+        title: "Password must contain at least one special character.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Check confirm password
+    if (password !== confirmPassword) {
+      toast({
+        title: "Your password and confirm password should match.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
 
   const handleChange = (e) => {
     setFormData({
@@ -25,11 +80,43 @@ export default function SignUpPage() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    const isValid = validatePassword();
+    if (!isValid) {
+      return; // stop execution if password is invalid
+    }
+    try {
+      const response = await signUpUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        emailAddress: formData.email,
+        pwd: formData.password,
+      });
+      const custId = response.data.result.cust_id;
+      setCustomerId(custId);
+      toast({
+        title: "Account created successfully!",
+        description: "Please enter the OTP sent to your email.",
+      })
+
+      // open OTP modal
+      setIsOtpModalOpen(true)
+
+
+    } catch (error) {
+      console.error(error)
+      toast({
+        title: ` ${error.response.data?.message}`,
+        variant: "destructive",
+      })
+    }
+
     // Handle signup logic here
     console.log("Signup data:", formData)
   }
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
@@ -57,7 +144,7 @@ export default function SignUpPage() {
                   <Input
                     id="firstName"
                     name="firstName"
-                    placeholder="John"
+                    placeholder="First Name"
                     value={formData.firstName}
                     onChange={handleChange}
                     required
@@ -68,7 +155,7 @@ export default function SignUpPage() {
                   <Input
                     id="lastName"
                     name="lastName"
-                    placeholder="Doe"
+                    placeholder="Last Name"
                     value={formData.lastName}
                     onChange={handleChange}
                     required
@@ -87,29 +174,50 @@ export default function SignUpPage() {
                   required
                 />
               </div>
-              <div className="space-y-2">
+              {/* Password */}
+              <div className="space-y-2 relative">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Create a password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
-              <div className="space-y-2">
+
+              {/* Confirm Password */}
+              <div className="space-y-2 relative">
                 <Label htmlFor="confirmPassword">Confirm password</Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <input type="checkbox" id="terms" className="rounded border-gray-300" required />
@@ -145,6 +253,7 @@ export default function SignUpPage() {
             ← Back to home
           </Link>
         </div>
+        <UserOTPModal modalOpen={isOtpModalOpen} customerId={customerId} />
       </div>
     </div>
   )

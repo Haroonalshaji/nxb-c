@@ -4,8 +4,8 @@ import AOSInit from '@/components/AOSInit'
 
 
 export const metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'NXB | Nexus Built',
+  description: 'Nexus Built',
   generator: 'v0.dev',
 }
 

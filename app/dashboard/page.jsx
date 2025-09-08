@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,6 +24,8 @@ import {
 } from "lucide-react"
 import { NewEnquiryDialog } from "@/components/new-enquiry-dialog"
 import { Label } from "@/components/ui/label"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 // Mock data for services and vendors
 const servicesData = [
@@ -324,6 +326,7 @@ export default function DashboardPage() {
   const [selectedService, setSelectedService] = useState(null)
   const [selectedVendor, setSelectedVendor] = useState(null)
   const [statusOfEnquiry, setStatusOfEnquiry] = useState("")
+  const router = useRouter()
 
   // Calculate statistics
   const totalEnquiries = enquiriesData.length
@@ -341,6 +344,13 @@ export default function DashboardPage() {
 
     return matchesSearch && matchesCategory && matchesSubcategory
   })
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(";").shift()
+  }
+
 
   // Filter enquiries
   const filteredEnquiries = enquiriesData.filter((enquiry) => {
@@ -402,6 +412,23 @@ export default function DashboardPage() {
   const handleStatusOfEnquiry = (value) => {
     setStatusOfEnquiry(value)
   }
+
+  const {toast} = useToast();
+
+  useEffect(() => {
+    const token = getCookie("accessToken")
+    const userName = getCookie("userName")
+
+    if (!token || !userName) {
+      // Not logged in → redirect to signin
+      router.push("/signin")
+      toast({
+        title: `PLEASE LOGIN !`,
+        description: 'Please login with your Email & Password',
+        variant: "default",
+      })
+    }
+  }, [router])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -566,12 +593,12 @@ export default function DashboardPage() {
 
                   <div className="grid md:grid-cols-2 grid-cols-1">
                     <div className="space-y-2">
-                      {enquiry.assignedVendor && (
+                      {/* {enquiry.assignedVendor && (
                         <div className="text-sm">
                           <span className="font-medium text-gray-700">Assigned Vendor: </span>
                           <span className="text-[#B80D2D]">{enquiry.assignedVendor}</span>
                         </div>
-                      )}
+                      )} */}
 
                       {enquiry.completedAt && (
                         <div className="text-sm text-green-600">

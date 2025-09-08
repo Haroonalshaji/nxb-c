@@ -74,6 +74,12 @@ export default function VendorRegisterPage() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filter the services based on the search term
+  const filteredServices = serviceOptions.filter((service) =>
+    service.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -116,16 +122,15 @@ export default function VendorRegisterPage() {
 
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center mb-8">
-      {[1, 2, 3, 4].map((step) => (
+      {[1, 2, 3,].map((step) => (
         <div key={step} className="flex items-center">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${
-              step <= currentStep ? "bg-[#B80D2D] text-white" : "bg-gray-200 text-gray-500"
-            }`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${step <= currentStep ? "bg-[#B80D2D] text-white" : "bg-gray-200 text-gray-500"
+              }`}
           >
             {step < currentStep ? <CheckCircle className="h-5 w-5" /> : step}
           </div>
-          {step < 4 && <div className={`w-16 h-1 mx-2 ${step < currentStep ? "bg-[#B80D2D]" : "bg-gray-200"}`} />}
+          {step < 3 && <div className={`w-16 h-1 mx-2 ${step < currentStep ? "bg-[#B80D2D]" : "bg-gray-200"}`} />}
         </div>
       ))}
     </div>
@@ -344,20 +349,39 @@ export default function VendorRegisterPage() {
         <h2 className="text-2xl font-bold text-gray-900">Services Offered</h2>
         <p className="text-gray-600">Select the services you provide</p>
       </div>
+      {/* Search Input */}
+      <div>
+        <input
+          type="text"
+          placeholder="Search services..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+        />
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
-        {serviceOptions.map((service) => (
-          <div key={service} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50">
-            <Checkbox
-              id={service}
-              checked={formData.services.includes(service)}
-              onCheckedChange={() => handleServiceToggle(service)}
-            />
-            <Label htmlFor={service} className="flex-1 cursor-pointer">
-              {service}
-            </Label>
+      <div className="grid md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+        {filteredServices.length > 0 ? (
+          filteredServices.map((service) => (
+            <div
+              key={service}
+              className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50"
+            >
+              <Checkbox
+                id={service}
+                checked={formData.services.includes(service)}
+                onCheckedChange={() => handleServiceToggle(service)}
+              />
+              <Label htmlFor={service} className="flex-1 cursor-pointer">
+                {service}
+              </Label>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500 py-4 col-span-2">
+            No services found.
           </div>
-        ))}
+        )}
       </div>
 
       {formData.services.length > 0 && (
@@ -365,13 +389,47 @@ export default function VendorRegisterPage() {
           <h3 className="font-medium text-green-900 mb-2">Selected Services:</h3>
           <div className="flex flex-wrap gap-2">
             {formData.services.map((service) => (
-              <span key={service} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+              <span
+                key={service}
+                className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
+              >
                 {service}
               </span>
             ))}
           </div>
         </div>
       )}
+      {/* Terms and Conditions */}
+      <div className="space-y-4 pt-4 border-t">
+        <div className="flex items-start space-x-3">
+          <Checkbox
+            id="agreeToTerms"
+            checked={formData.agreeToTerms}
+            onCheckedChange={(checked) => handleInputChange("agreeToTerms", checked)}
+          />
+          <Label htmlFor="agreeToTerms" className="text-sm leading-relaxed">
+            I agree to the{" "}
+            <Link href="/terms" className="text-[#B80D2D] hover:underline">
+              Terms of Service
+            </Link>{" "}
+            and understand that my subscription will auto-renew monthly at $49/month.
+          </Label>
+        </div>
+        <div className="flex items-start space-x-3">
+          <Checkbox
+            id="agreeToPrivacy"
+            checked={formData.agreeToPrivacy}
+            onCheckedChange={(checked) => handleInputChange("agreeToPrivacy", checked)}
+          />
+          <Label htmlFor="agreeToPrivacy" className="text-sm leading-relaxed">
+            I agree to the{" "}
+            <Link href="/privacy" className="text-[#B80D2D] hover:underline">
+              Privacy Policy
+            </Link>{" "}
+            and consent to the processing of my personal data.
+          </Label>
+        </div>
+      </div>
     </div>
   )
 
@@ -396,7 +454,7 @@ export default function VendorRegisterPage() {
           <li>✓ Customer reviews & ratings</li>
           <li>✓ Priority support</li>
         </ul>
-        <p className="text-sm text-white/80">First 7 days free trial</p>
+        <p className="text-sm text-white/80 hidden">First 7 days free trial</p>
       </div>
 
       {/* Payment Form */}
@@ -491,7 +549,7 @@ export default function VendorRegisterPage() {
             <Link href="/terms" className="text-[#B80D2D] hover:underline">
               Terms of Service
             </Link>{" "}
-            and understand that my subscription will auto-renew monthly at $49/month after the 7-day free trial.
+            and understand that my subscription will auto-renew monthly at $49/month.
           </Label>
         </div>
         <div className="flex items-start space-x-3">
@@ -515,12 +573,12 @@ export default function VendorRegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      
+
 
       <div className="container mx-auto px-4 max-w-4xl py-12">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Join Nexus Built</h1>
-          <p className="text-xl text-gray-600">Start your 7-day free trial and grow your construction business</p>
+          <p className="text-xl text-gray-600">Start and grow your construction business</p>
         </div>
 
         {renderStepIndicator()}
@@ -531,7 +589,7 @@ export default function VendorRegisterPage() {
               {currentStep === 1 && renderStep1()}
               {currentStep === 2 && renderStep2()}
               {currentStep === 3 && renderStep3()}
-              {currentStep === 4 && renderStep4()}
+              {/* {currentStep === 4 && renderStep4()} */}
 
               <div className="flex justify-between mt-8 pt-6 border-t">
                 <Button

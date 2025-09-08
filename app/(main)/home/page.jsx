@@ -25,6 +25,7 @@ import {
 import nexusLogo from "../../../public/assets/header images/nexus_white_no_bg.png";
 import WhyChooseSection from '../../../components/whyChooseSection'
 import VendorSection from '../../../components/vendorSection'
+import VendorRequirementsSection from '../../../components/vendor-req'
 import Link from "next/link"
 import Image from "next/image";
 
@@ -279,6 +280,8 @@ export default function HomePageNew() {
 
                 </div>
             </section>
+
+            <VendorRequirementsSection/>
 
             {/* Featured Vendors - Premium */}
             <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative">

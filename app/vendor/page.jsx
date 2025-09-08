@@ -218,7 +218,7 @@ export default function VendorLoginPage() {
               </p>
               <Link href="/vendor/register">
                 <Button className="bg-white text-[#B80D2D] hover:bg-gray-100 font-medium">
-                  Start Your Free Trial
+                  Start Your Journey
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>

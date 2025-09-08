@@ -9,8 +9,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 export default function DashboardHeader() {
+  const router = useRouter()
+
+  function deleteCookie(name) {
+    document.cookie = `${name}=; path=/; max-age=0;`
+  }
+
+  const handleLogout = () => {
+    deleteCookie("accessToken")
+    deleteCookie("refreshToken")
+    deleteCookie("userName")
+    deleteCookie("status")
+    router.push("/signin")
+
+  }
+
   return (
     // Header
     <header className="bg-[#B80D2D] text-white shadow-lg">
@@ -44,7 +60,7 @@ export default function DashboardHeader() {
                   <User className="w-4 h-4 mr-2 text-[#B80D2D]" /> Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onSelect={() => { window.location.href = "/"; }}
+                  onSelect={handleLogout}
                   className="cursor-pointer text-red-600"
                 >
                   <LogOut className="h-4 w-4 mr-2" /> Logout
