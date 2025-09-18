@@ -6,11 +6,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { customerPasswordReset } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 
-export default function ResetPassword() {
-    const {toast} = useToast();
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default function ResetPassword({ searchParams }) {
+    const { toast } = useToast();
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const resetId = searchParams.get("resetId")
+    const resetId = searchParams?.resetId; // ✅ direct from props
+    console.log(resetId)
+    // const searchParams = useSearchParams();
+    // const resetId = searchParams.get("resetId")
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
