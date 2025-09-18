@@ -9,14 +9,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Building2, Mail, Lock, ArrowRight, CheckCircle, Users, Star, TrendingUp } from "lucide-react"
+import { vendorSignin } from "@/lib/api/auth"
+import { useToast } from "@/hooks/use-toast"
+import { Eye, EyeOff } from "lucide-react"
+import { setCookie, getCookie, listAllCookies } from '@/lib/utils/cookies'
 
 export default function VendorLoginPage() {
+  const { toast } = useToast();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const [active, setActive] = useState("client")
   const currentPath = usePathname();
+  const [showPassword, setShowPassword] = useState(false)
+
 
   const checkTheCurrentPath = () => {
     if (currentPath === '/vendor') {
@@ -37,11 +44,82 @@ export default function VendorLoginPage() {
     setIsLoading(true)
 
     // Simulate login process
+    try {
+      const response = await vendorSignin({ userId: email, password: password });
+      const RetData = response.data;
+      // console.log(RetData)
+      const userRoles = {
+        accessToken: RetData.result.accessToken,
+        refreshToken: RetData.result.refreshToken,
+        role: RetData.result.role,
+        userName: RetData.result.userName,
+        userStatus: RetData.result.status
+      }
+      console.log(userRoles)
+      if (response) {
+        setIsLoading(false)
+
+        // Set cookies immediately and verify they were set
+        const cookiesSet = [
+          setCookie('accessToken', userRoles.accessToken, 1),
+          setCookie('refreshToken', userRoles.refreshToken, 7),
+          setCookie('userName', userRoles.userName, 1),
+          setCookie('userStatus', userRoles.userStatus, 1),
+          setCookie('role', userRoles.role, 1)
+        ];
+
+        // Verify cookies were actually set by reading them back
+        const accessTokenFromCookie = getCookie('accessToken');
+        const refreshTokenFromCookie = getCookie('refreshToken');
+
+        // console.log('Access Token from cookie:', accessTokenFromCookie);
+        // console.log('Refresh Token from cookie:', refreshTokenFromCookie);
+        // console.log('All cookies:', document.cookie);
+        
+        // List all cookies in a structured format
+        listAllCookies();
+
+        // Check if all cookies were set successfully
+        const allCookiesSet = cookiesSet.every(result => result === true) &&
+          accessTokenFromCookie === userRoles.accessToken &&
+          refreshTokenFromCookie === userRoles.refreshToken;
+
+        if (RetData.isSuccess === true) {
+          if (allCookiesSet) {
+            toast({
+              title: `✅  ${RetData.message}`,
+              variant: "success",
+            })
+            
+            // Navigate after a short delay to ensure cookies are set
+            setTimeout(() => {
+              router.push("/vendor/dashboard")
+            }, 100)
+          } else {
+            toast({
+              title: "⚠️ Login successful but session not saved properly. Please try again.",
+              variant: "destructive",
+            })
+          }
+        } else {
+          toast({
+            title: ` ${RetData.message}`,
+            variant: "destructive",
+          })
+        }
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error)
+      toast({
+        title: ` ${error.response.data.message}`,
+        variant: "destructive",
+      })
+    }
+
+
     setTimeout(() => {
-      setIsLoading(false)
-      // Check vendor status and redirect accordingly
-      // For demo, redirect to dashboard
-      router.push("/vendor/dashboard")
+
     }, 1000)
   }
 
@@ -60,28 +138,28 @@ export default function VendorLoginPage() {
               <div className="flex justify-center mb-8">
                 <div className="flex w-[300px] h-[60px] rounded-lg bg-white shadow-inner relative ">
                   {/* Client Button */}
-                  <button
-                    onClick={() => setActive("client")}
-                    className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
+                  <Link href='/signin' className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
                     ${active === "client"
-                            ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
-                            : "bg-white text-[#B93239]"
-                          }`}
-                      >
-                    <Link href='/signin'>Login as Client</Link>
-                  </button>
-
+                      ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                      : "bg-white text-[#B93239]"
+                    }`}>
+                    <button
+                      onClick={() => setActive("client")}
+                    >
+                      Login as Client
+                    </button>
+                  </Link>
                   {/* Vendor Button */}
-                  <button
-                    onClick={() => setActive("vendor")}
-                    className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
-              ${active === "vendor"
-                        ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
-                        : "bg-white text-[#B93239]"
-                      }`}
-                  >
-                    <Link href='/vendor'>Login as Vendor</Link>
-                  </button>
+                  <Link href='/vendor' className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300 ${active === "vendor"
+                    ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                    : "bg-white text-[#B93239]"
+                    }`}>
+                    <button
+                      onClick={() => setActive("vendor")}
+                    >
+                      Login as Vendor
+                    </button>
+                  </Link>
                 </div>
               </div>
               <h1 className="text-4xl font-bold text-gray-900 mb-4">Vendor Portal</h1>
@@ -118,13 +196,20 @@ export default function VendorLoginPage() {
                       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input
                         id="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
                         required
+                        className="pl-10"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
@@ -226,6 +311,6 @@ export default function VendorLoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }

@@ -57,7 +57,10 @@ const SidebarProvider = React.forwardRef(({
       } else {
         _setOpen(openState)
       }
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      try {
+        const { setCookie } = require('nookies');
+        setCookie(null, SIDEBAR_COOKIE_NAME, String(openState), { path: '/', maxAge: SIDEBAR_COOKIE_MAX_AGE, sameSite: 'lax' })
+      } catch {}
     },
     [setOpenProp, open]
   )

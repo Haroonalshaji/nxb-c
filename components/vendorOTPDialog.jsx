@@ -1,12 +1,12 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { resendUserVerificatinOTP, verifyUserEmailwithOTP } from "@/lib/api/auth"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { resendUserVerificatinOTP, verifyUserEmailwithOTP, verifyVendorEmailwithOtp } from "@/lib/api/auth"
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 
-export default function UserOTPModal({ modalOpen, customerId }) {
+export default function VendorOTPBox({ modalOpen, vendGuid, onVerificationSuccess }) {
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false)
     const [timer, setTimer] = useState(60) // 1 min countdown
     const [canResend, setCanResend] = useState(false)
@@ -29,22 +29,25 @@ export default function UserOTPModal({ modalOpen, customerId }) {
     }, [timer, modalOpen])
 
     const handleVerifyOtp = async () => {
+        console.log(vendGuid)
         try {
-            const response = await verifyUserEmailwithOTP({
-                custGuid: customerId,
+            const response = await verifyVendorEmailwithOtp({
+                vendGuid: vendGuid,
                 otp: otp,
             })
             console.log("OTP Verification response:", response.data)
 
             toast({
                 title: "OTP Verified!",
-                description: "You can now login.",
+                description: "Email verification successful!",
             })
 
-            setIsOtpModalOpen(false)
-            // redirect user to signin page
-            router.push("/signin")
-            // router.push("/signin")
+            // Call the success callback if provided, otherwise redirect to dashboard
+            if (onVerificationSuccess) {
+                onVerificationSuccess()
+            } else {
+                router.push("/vendor/dashboard")
+            }
         } catch (error) {
             console.error(error)
             toast({
@@ -57,7 +60,7 @@ export default function UserOTPModal({ modalOpen, customerId }) {
     const handleResendOtp = async () => {
         // 👉 Call API to resend OTP
         try {
-            const response = await resendUserVerificatinOTP({ custGuid: customerId })
+            const response = await resendUserVerificatinOTP({ vendGuid: vendGuid })
             console.log(response);
             toast({
                 title: "New OTP sent!",
@@ -76,18 +79,18 @@ export default function UserOTPModal({ modalOpen, customerId }) {
 
 
     return (
-        <Dialog open={modalOpen} onOpenChange={setIsOtpModalOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Enter OTP</DialogTitle>
-                    <DialogDescription>
+        <div className=" flex items-center justify-center p-4">
+            <Card className="w-full max-w-md shadow-md">
+                <CardHeader>
+                    <CardTitle>Enter OTP</CardTitle>
+                    <CardDescription>
                         We’ve sent a one-time password to your email. Enter it below to verify your account.
                         <br />
                         <span className="text-sm text-gray-500">⚡ OTP is valid for 10 minutes.</span>
-                    </DialogDescription>
-                </DialogHeader>
+                    </CardDescription>
+                </CardHeader>
 
-                <div className="space-y-4">
+                <CardContent className="space-y-4">
                     <Input
                         type="text"
                         placeholder="Enter OTP"
@@ -115,8 +118,8 @@ export default function UserOTPModal({ modalOpen, customerId }) {
                             </p>
                         )}
                     </div>
-                </div>
-            </DialogContent>
-        </Dialog>
+                </CardContent>
+            </Card>
+        </div>
     );
 }

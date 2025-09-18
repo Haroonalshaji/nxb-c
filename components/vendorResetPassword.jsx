@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { CardDescription } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
-import { customerPasswordReset } from "@/lib/api/auth";
+import { customerPasswordReset, vendorResetPassword } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 
-export default function ResetPassword() {
-    const {toast} = useToast();
+export default function PasswordResetVendorMain() {
+    const { toast } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
     const resetId = searchParams.get("resetId")
@@ -51,12 +51,12 @@ export default function ResetPassword() {
         const newPassword = confirmPassword.trim();
 
         try {
-            const response = await customerPasswordReset({ resetId, newPassword });
+            const response = await vendorResetPassword({ resetId, newPassword });
             toast({
                 title: response.data?.message,
                 description: "Please Login Again",
             })
-            router.push('/signin')
+            router.push('/vendor')
         } catch (error) {
             console.error(error)
             toast({

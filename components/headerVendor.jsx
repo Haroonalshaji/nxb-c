@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Building2, User, Bell, Settings, LogOut } from 'lucide-react'
 
 import {
@@ -11,13 +11,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useToast } from "@/hooks/use-toast";
 
 export default function HeaderVendor() {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith('/vendor/dashboard');
   const isRegister = pathname === '/vendor/register';
   const isSignIn = pathname === '/vendor';
-  const isApproval = pathname === '/vendor/pending-approval' 
+  const isApproval = pathname === '/vendor/pending-approval'
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    // Clear specific cookies
+    try {
+      const { destroyCookie } = require('nookies');
+      ['accessToken','refreshToken','userName','role','userStatus'].forEach((name) => {
+        destroyCookie(null, name, { path: '/' });
+      });
+    } catch {}
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully.",
+    });
+    router.push('/vendor');
+  };
+
 
   if (!isSignIn && !isRegister && !isApproval) {
     // Dashboard (logged-in) header
@@ -55,7 +74,7 @@ export default function HeaderVendor() {
                     </DropdownMenuItem>
                   </Link>
                   <Link href="/vendor">
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Logout</span>
                     </DropdownMenuItem>
@@ -102,7 +121,7 @@ export default function HeaderVendor() {
                 </Button>
               </Link>
             </div>
-          ) : isApproval ?(
+          ) : isApproval ? (
             <div className="flex items-center space-x-4">
               <span className="text-sm text-white/80">Need help?</span>
               <Link href="/contact">
@@ -115,7 +134,7 @@ export default function HeaderVendor() {
                 </Button>
               </Link>
             </div>
-          ):null}
+          ) : null}
         </div>
       </div>
     </header>

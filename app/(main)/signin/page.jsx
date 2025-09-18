@@ -54,15 +54,18 @@ export default function SignInPage() {
         userName: RetData.result.userName,
         userStatus: RetData.result.status
       }
-      console.log(userRoles)
+      // console.log(userRoles)
       if (response) {
         setTimeout(() => {
           setIsLoading(false)
-          document.cookie = `accessToken=${userRoles.accessToken}; path=/; max-age=${60 * 60 * 24}; secure; samesite=strict`
-          document.cookie = `refreshToken=${userRoles.refreshToken}; path=/; max-age=${60 * 60 * 24 * 7}; secure; samesite=strict`
-          document.cookie = `userName=${userRoles.userName}; path=/; max-age=${60 * 60 * 24}`
-          document.cookie = `userStatus=${userRoles.userStatus}; path=/; max-age=${60 * 60 * 24}`
-          document.cookie = `role=${userRoles.role}; path=/; max-age=${60 * 60 * 24}`
+          try {
+            const { setCookie } = require('nookies');
+            setCookie(null, 'accessToken', userRoles.accessToken, { path: '/', maxAge: 60 * 60 * 24, sameSite: 'strict' })
+            setCookie(null, 'refreshToken', userRoles.refreshToken, { path: '/', maxAge: 60 * 60 * 24 * 7, sameSite: 'strict' })
+            setCookie(null, 'userName', userRoles.userName, { path: '/', maxAge: 60 * 60 * 24 })
+            setCookie(null, 'userStatus', userRoles.userStatus, { path: '/', maxAge: 60 * 60 * 24 })
+            setCookie(null, 'role', userRoles.role, { path: '/', maxAge: 60 * 60 * 24 })
+          } catch {}
 
           // Redirect to dashboard after successful login
           router.push("/dashboard")
@@ -82,7 +85,7 @@ export default function SignInPage() {
       }
     } catch (error) {
       setIsLoading(false)
-      console.error(error)
+      // console.error(error)
       toast({
         title: ` ${error.response.data.message}`,
         variant: "destructive",
@@ -101,28 +104,30 @@ export default function SignInPage() {
         <div className="flex justify-center mb-8">
           <div className="flex w-[300px] h-[60px] rounded-lg bg-white shadow-inner relative ">
             {/* Client Button */}
-            <button
-              onClick={() => setActive("client")}
-              className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
+            <Link href='/signin' className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
                 ${active === "client"
-                  ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
-                  : "bg-white text-[#B93239]"
-                }`}
-            >
-              <Link href='/signin'>Login as Client</Link>
-            </button>
-
+                ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                : "bg-white text-[#B93239]"
+              }`}>
+              <button
+                onClick={() => setActive("client")}
+              >
+                Login as Client
+              </button>
+            </Link>
             {/* Vendor Button */}
-            <button
-              onClick={() => setActive("vendor")}
-              className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
+            <Link href='/vendor' className={`w-1/2 flex items-center shadow-inner justify-center rounded-md font-medium transition-all duration-300
               ${active === "vendor"
-                  ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
-                  : "bg-white text-[#B93239]"
-                }`}
-            >
-              <Link href='/vendor'>Login as Vendor</Link>
-            </button>
+                ? "bg-[#B93239] text-white scale-[1.05] translate-y-[-3px] rounded-md shadow-md z-10"
+                : "bg-white text-[#B93239]"
+              }`}>
+              <button
+                onClick={() => setActive("vendor")}
+
+              >
+                Login as Vendor
+              </button>
+            </Link>
           </div>
         </div>
 
@@ -171,8 +176,8 @@ export default function SignInPage() {
                     Remember me
                   </Label>
                 </div>
-                <Link href="/forgot-password" className="text-sm text-[#B80D2D] hover:underline">
-                  Forgot password?
+                <Link href="/reset-password" className="text-sm text-[#B80D2D] hover:underline">
+                  Reset password?
                 </Link>
               </div>
               <Button type="submit" className="w-full bg-[#B80D2D] hover:bg-[#9A0B26]" disabled={isLoading}>

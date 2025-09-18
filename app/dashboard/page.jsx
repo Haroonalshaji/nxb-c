@@ -346,7 +346,14 @@ export default function DashboardPage() {
   })
 
   function getCookie(name) {
-    const value = `; ${document.cookie}`
+    let value = ''
+    try {
+      const { parseCookies } = require('nookies')
+      const cookies = parseCookies()
+      value = `; ${Object.entries(cookies).map(([k,v])=>`${k}=${v}`).join('; ')}`
+    } catch {
+      value = ''
+    }
     const parts = value.split(`; ${name}=`)
     if (parts.length === 2) return parts.pop().split(";").shift()
   }

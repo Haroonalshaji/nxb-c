@@ -15,7 +15,10 @@ export default function DashboardHeader() {
   const router = useRouter()
 
   function deleteCookie(name) {
-    document.cookie = `${name}=; path=/; max-age=0;`
+    try {
+      const { destroyCookie } = require('nookies');
+      destroyCookie(null, name, { path: '/' });
+    } catch {}
   }
 
   const handleLogout = () => {
