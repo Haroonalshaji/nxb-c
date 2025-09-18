@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { resendUserVerificatinOTP, verifyUserEmailwithOTP, verifyVendorEmailwithOtp } from "@/lib/api/auth"
+import { resendUserVerificatinOTP, resendVendorEmailwithOtp, verifyUserEmailwithOTP, verifyVendorEmailwithOtp } from "@/lib/api/auth"
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -60,7 +60,7 @@ export default function VendorOTPBox({ modalOpen, vendGuid, onVerificationSucces
     const handleResendOtp = async () => {
         // 👉 Call API to resend OTP
         try {
-            const response = await resendUserVerificatinOTP({ vendGuid: vendGuid })
+            const response = await resendVendorEmailwithOtp({ vendGuid: vendGuid })
             console.log(response);
             toast({
                 title: "New OTP sent!",
