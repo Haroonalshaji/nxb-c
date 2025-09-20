@@ -7,11 +7,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, Calendar, Phone, Mail, User, LogOut, FileText, Clock, CheckCircle, Eye, MessageSquare, Star, TrendingUp, Users, Paperclip, DollarSign, Settings, Bell, } from "lucide-react";
-import { checkAuth } from '@/lib/utils/authUtil';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
-import { businessStatus } from '@/lib/api/commonApi'
+import {
+  Search,
+  Filter,
+  Calendar,
+  Phone,
+  Mail,
+  FileText,
+  Clock,
+  CheckCircle,
+  Eye,
+  MessageSquare,
+  Star,
+  TrendingUp,
+  Users,
+  Paperclip,
+  DollarSign,
+} from "lucide-react"
+import { checkAuth } from "@/lib/utils/authUtil"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
+import { businessStatus } from "@/lib/api/commonApi"
+import VendorStatusScreens from "@/components/vendor-status-screens"
 
 // Mock data for customer enquiries
 const customerEnquiries = [
@@ -117,11 +134,12 @@ const priorityConfig = {
 export default function VendorDashboardPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [serviceFilter, setServiceFilter] = useState("all")
-  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all")
   const [showDashbaord, setShowDashboard] = useState(false)
-  const router = useRouter();
-  const [accessToken, setAcessToken] = useState("");
-  const { toast } = useToast();
+  const [vendorAccessStatus, setVendorAccessStatus] = useState("")
+  const router = useRouter()
+  const [accessToken, setAcessToken] = useState("")
+  const { toast } = useToast()
   // Calculate statistics
   const totalEnquiries = customerEnquiries.length
   const newEnquiries = customerEnquiries.filter((e) => !e.hasResponded).length
@@ -154,58 +172,62 @@ export default function VendorDashboardPage() {
   useEffect(() => {
     // Temporarily disable checkAuth to prevent cookie deletion
     // TODO: Re-enable once token validation APIs are properly implemented
-    checkAuth('vendor', router, toast);
-    checkSessionInCookie();
-    checkBusinessStatus();
-
-  }, []);
+    checkAuth("vendor", router, toast)
+    checkSessionInCookie()
+    checkBusinessStatus()
+  }, [])
 
   const checkBusinessStatus = async () => {
     try {
-      const RetBusStatus = await businessStatus();
-      console.log(RetBusStatus.data)
-      var ResponseData = RetBusStatus.data;
-      if (ResponseData.result.vendorAccessStatus === "AllOk") {
-        setShowDashboard(true);
+      const RetBusStatus = await businessStatus()
+      // console.log(RetBusStatus.data)
+      var ResponseData = RetBusStatus.data
+      const status = ResponseData.result.vendorAccessStatus
+      setVendorAccessStatus(status)
+
+      if (status === "AllOk") {
+        setShowDashboard(true)
+      } else {
+        setShowDashboard(false)
       }
     } catch (error) {
       console.error(error)
+      setVendorAccessStatus("Unknown")
+      setShowDashboard(false)
     }
   }
 
   const getCookie = (name) => {
     try {
-      const { parseCookies } = require('nookies');
-      const cookies = parseCookies();
-      return cookies[name] || null;
+      const { parseCookies } = require("nookies")
+      const cookies = parseCookies()
+      return cookies[name] || null
     } catch {
-      return null;
+      return null
     }
-  };
+  }
 
   const checkSessionInCookie = () => {
-    const accessToken = getCookie('accessToken');
-    const refreshToken = getCookie('refreshToken');
-    setAcessToken(accessToken);
+    const accessToken = getCookie("accessToken")
+    const refreshToken = getCookie("refreshToken")
+    setAcessToken(accessToken)
 
     if (!accessToken || !refreshToken) {
       toast({
         title: "Session not found. Please login again.",
         variant: "destructive",
-      });
-      router.push('/vendor');
+      })
+      router.push("/vendor")
     } else {
       // console.log("Access Token:", accessToken);
       // console.log("Refresh Token:", refreshToken);
     }
-  };
-
-
+  }
 
   const handleClearFilter = () => {
-    setSearchTerm("");
-    setServiceFilter("all");
-    setPriorityFilter("all");
+    setSearchTerm("")
+    setServiceFilter("all")
+    setPriorityFilter("all")
   }
 
   const getTimeAgo = (dateString) => {
@@ -499,10 +521,18 @@ export default function VendorDashboardPage() {
         </div>
       )}
 
-      {!showDashbaord && (
-        <h1 className="text-center font-[600] text-[40px] min-h-screen flex items-center justify-center">Business Not Found or Payment Pending !!</h1>
+      {!showDashbaord && vendorAccessStatus && (
+        <VendorStatusScreens status={vendorAccessStatus} onRetry={() => checkBusinessStatus} businessData={null} />
       )}
 
+      {!showDashbaord && !vendorAccessStatus && (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B93239] mx-auto mb-4"></div>
+            <p className="text-gray-600">Checking your account status...</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

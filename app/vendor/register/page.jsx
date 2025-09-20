@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,8 @@ import {
 import VendorOTPBox from "@/components/vendorOTPDialog"
 import { vendorRegister } from "@/lib/api/auth"
 import { useToast } from "@/hooks/use-toast"
+import { getServiceTypes } from "@/lib/api/commonApi"
+import { title } from "process"
 
 const serviceOptions = [
   { id: 1, label: "Roofing Services" },
@@ -101,11 +103,12 @@ export default function VendorRegisterPage() {
     uppercase: false,
     lowercase: false,
     specialChar: false
-  })
+  });
+  const [serviceList, setServiceList] = useState([])
 
   // Filter the services based on the search term
-  const filteredServices = serviceOptions.filter((service) =>
-    service.label.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredServices = serviceList.filter((service) =>
+    service.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   // console.log(filteredServices)
@@ -296,6 +299,7 @@ export default function VendorRegisterPage() {
     };
     try {
       const response = await vendorRegister(payload);
+      // console.log(payload)
       // console.log(RetData.data)
       const RetData = response.data;
       if (response) {
@@ -314,6 +318,11 @@ export default function VendorRegisterPage() {
             });
             setCurrentStep(4);
             setVendGuid(RetData.result.ven_id)
+            clearTheForm();
+            toast({
+              title:"Please Login with your Email & Password",
+              variant:"warning"
+            })
           } else {
             console.log("hitted here !! in if else condition")
             setIsLoading(false)
@@ -349,8 +358,6 @@ export default function VendorRegisterPage() {
         variant: "destructive",
       });
     }
-
-
   }
 
   const nextStep = () => {
@@ -744,7 +751,7 @@ export default function VendorRegisterPage() {
                 onCheckedChange={() => handleServiceToggle(service.id)}
               />
               <Label htmlFor={service} className="flex-1 cursor-pointer">
-                {service.label}
+                {service.categoryName}
               </Label>
             </div>
           ))
@@ -764,10 +771,10 @@ export default function VendorRegisterPage() {
           <h3 className="font-medium text-green-900 mb-2">Selected Services:</h3>
           <div className="flex flex-wrap gap-2">
             {formData.services.map((serviceId) => {
-              const service = serviceOptions.find((s) => s.id === serviceId);
+              const service = serviceList.find((s) => s.id === serviceId);
               return (
                 <span key={serviceId} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-                  {service ? service.label : "Unknown"}
+                  {service ? service.categoryName : "Unknown"}
                 </span>
               );
             })}
@@ -847,6 +854,20 @@ export default function VendorRegisterPage() {
       </div>
     </div>
   )
+
+  const getServiceType = async () => {
+    try {
+      const ListAllServices = await getServiceTypes();
+      console.log(ListAllServices.data.result);
+      setServiceList(ListAllServices.data.result);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    getServiceType();
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
