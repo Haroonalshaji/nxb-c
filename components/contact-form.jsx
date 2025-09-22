@@ -7,14 +7,18 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Send, CheckCircle, Clock, Shield } from "lucide-react"
+import { websiteContactForm } from "@/lib/api/commonApi"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ContactForm() {
     const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
-        subject: "",
-        message: "",
+        cName: "",
+        cEmail: "",
+        cContact: "",
+        cSubject: "",
+        cMessage: "",
     })
+    const { toast } = useToast();
 
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
@@ -30,23 +34,29 @@ export default function ContactForm() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsSubmitting(true)
-
-        // Simulate form submission
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-
-        setIsSubmitting(false)
-        setIsSubmitted(true)
-
-        // Reset form after 3 seconds
-        setTimeout(() => {
-            setIsSubmitted(false)
-            setFormData({
-                fullName: "",
-                email: "",
-                subject: "",
-                message: "",
+        try {
+            const dataReturned = await websiteContactForm(formData);
+            if (dataReturned.data.isSuccess) {
+                console.log("inside the isSuccess")
+                setIsSubmitted(true)
+            }
+            toast({
+                title: dataReturned.data.message,
+                variant: "success"
             })
-        }, 3000)
+            console.log(formData)
+            setIsSubmitting(false)
+            setFormData({
+                cName: "",
+                cEmail: "",
+                cContact: "",
+                cSubject: "",
+                cMessage: "",
+            })
+        } catch (error) {
+            setIsSubmitting(false);
+            console.error(error)
+        }
     }
 
     const features = [
@@ -115,30 +125,30 @@ export default function ContactForm() {
                                         <form onSubmit={handleSubmit} className="space-y-6">
                                             <div className="grid md:grid-cols-2 gap-6">
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="fullName" className="text-white text-sm font-medium">
+                                                    <Label htmlFor="cName" className="text-white text-sm font-medium">
                                                         Full Name *
                                                     </Label>
                                                     <Input
-                                                        id="fullName"
-                                                        name="fullName"
+                                                        id="cName"
+                                                        name="cName"
                                                         type="text"
                                                         required
-                                                        value={formData.fullName}
+                                                        value={formData.cName}
                                                         onChange={handleInputChange}
                                                         className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#B93239] focus:ring-[#B93239] h-12"
                                                         placeholder="Enter your full name"
                                                     />
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="email" className="text-white text-sm font-medium">
+                                                    <Label htmlFor="cEmail" className="text-white text-sm font-medium">
                                                         Email Address *
                                                     </Label>
                                                     <Input
-                                                        id="email"
-                                                        name="email"
-                                                        type="email"
+                                                        id="cEmail"
+                                                        name="cEmail"
+                                                        type="cEmail"
                                                         required
-                                                        value={formData.email}
+                                                        value={formData.cEmail}
                                                         onChange={handleInputChange}
                                                         className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#B93239] focus:ring-[#B93239] h-12"
                                                         placeholder="Enter your email address"
@@ -147,15 +157,15 @@ export default function ContactForm() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <Label htmlFor="subject" className="text-white text-sm font-medium">
-                                                    Subject *
+                                                <Label htmlFor="cContact" className="text-white text-sm font-medium">
+                                                    Contact *
                                                 </Label>
                                                 <Input
-                                                    id="subject"
-                                                    name="subject"
+                                                    id="cContact"
+                                                    name="cContact"
                                                     type="text"
                                                     required
-                                                    value={formData.subject}
+                                                    value={formData.cContact}
                                                     onChange={handleInputChange}
                                                     className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#B93239] focus:ring-[#B93239] h-12"
                                                     placeholder="What's this about?"
@@ -163,14 +173,30 @@ export default function ContactForm() {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <Label htmlFor="message" className="text-white text-sm font-medium">
+                                                <Label htmlFor="cSubject" className="text-white text-sm font-medium">
+                                                    Subject *
+                                                </Label>
+                                                <Input
+                                                    id="cSubject"
+                                                    name="cSubject"
+                                                    type="text"
+                                                    required
+                                                    value={formData.cSubject}
+                                                    onChange={handleInputChange}
+                                                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#B93239] focus:ring-[#B93239] h-12"
+                                                    placeholder="What's this about?"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="cMessage" className="text-white text-sm font-medium">
                                                     Message *
                                                 </Label>
                                                 <Textarea
-                                                    id="message"
-                                                    name="message"
+                                                    id="cMessage"
+                                                    name="cMessage"
                                                     required
-                                                    value={formData.message}
+                                                    value={formData.cMessage}
                                                     onChange={handleInputChange}
                                                     rows={6}
                                                     className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#B93239] focus:ring-[#B93239] resize-none"
