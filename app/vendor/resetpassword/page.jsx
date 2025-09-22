@@ -1,9 +1,12 @@
+import { Suspense } from "react"
 import PasswordResetVendorMain from '@/components/vendorResetPassword'
 
 export default function VendorResetPassword() {
     return (
         <div>
-            <PasswordResetVendorMain />
+            <Suspense fallback={<div>Loading...</div>}>
+                <PasswordResetVendorMain />
+            </Suspense>
         </div>
     );
 }
