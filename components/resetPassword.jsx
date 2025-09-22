@@ -9,11 +9,12 @@ import { useToast } from "@/hooks/use-toast";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default function ResetPassword({ searchParams }) {
+export default function ResetPassword() {
     const { toast } = useToast();
     const router = useRouter();
-    const resetId = searchParams?.resetId; // ✅ direct from props
-    console.log(resetId)
+    const searchParams = useSearchParams();
+    const resetId = searchParams.get("resetId");
+    console.log("resetId from hook:", resetId);
     // const searchParams = useSearchParams();
     // const resetId = searchParams.get("resetId")
     const [password, setPassword] = useState("");

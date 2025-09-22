@@ -6,12 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { customerPasswordReset, vendorResetPassword } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
 
-export default function PasswordResetVendorMain({searchParams}) {
+export default function PasswordResetVendorMain() {
     const { toast } = useToast();
     const router = useRouter();
-    // const searchParams = useSearchParams();
-    // const resetId = searchParams.get("resetId")
-    const resetId = searchParams?.resetId; 
+    const searchParams = useSearchParams();
+    const resetId = searchParams.get("resetId");
+    console.log("resetId from hook:", resetId);
+    // const resetId = searchParams?.resetId; 
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");

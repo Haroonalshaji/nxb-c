@@ -48,19 +48,19 @@ export default function DashboardHeader() {
                   tabIndex={0}
                 >
                   <User className="h-5 w-5" />
-                  <span>John</span>
+                  <span></span>
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <div className="px-3 py-2 text-sm text-gray-700">
+                <div className="px-3 py-2 hidden text-sm text-gray-700">
                   <div className="font-semibold">John</div>
                   <div className="text-xs text-gray-500">ID: 123456</div>
                 </div>
                 <DropdownMenuItem
                   onSelect={() => { window.location.href = "/profile"; }}
-                  className="cursor-pointer"
+                  className="cursor-pointer hidden"
                 >
-                  <User className="w-4 h-4 mr-2 text-[#B80D2D]" /> Profile
+                  <User className="w-4 h-4 mr-2 text-[#B80D2D]" /> 
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={handleLogout}
