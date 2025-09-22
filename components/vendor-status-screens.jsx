@@ -20,8 +20,9 @@ import {
 } from "lucide-react"
 import { createSubscriptionOrder, getSubscriptionPlans, updateSubscriptionOrder } from "@/lib/api/commonApi"
 import { useEffect, useState } from "react"
-import { stringify } from "querystring"
 import PaymentModal from "@/components/paymentModa"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 
 
@@ -34,10 +35,13 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
         subscriptionGuid: null,
     });
 
+    const router = useRouter();
+
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [orderData, setOrderData] = useState(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [responseFromPayment, setResponseFromPayment] = useState({});
+    const {toast} = useToast();
 
     const getStatusConfig = (status) => {
         switch (status) {
@@ -156,6 +160,11 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
             }
         } catch (error) {
             console.error('Error creating order:', error);
+            toast({
+                title: `${error?.response?.data?.message}`,
+                description:"Please Refresh the page",
+                variant:"destructive"
+            })
         }
     };
 
@@ -168,6 +177,7 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
                 razorpay_payment_id: response.razorpay_payment_id
             })
             console.log(responseFromDataBase)
+            router.push('/vendor/dashboard')
         } catch (error) {
             console.error(error)
         }
@@ -191,6 +201,7 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
                     // setResponseFromPayment(response)
                     updateSubscriptionOrderinDB(response)
                     setShowPaymentModal(false);
+                    onRetry();
                     // console.log(responseFromPayment)
                 }}
             />

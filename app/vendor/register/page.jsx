@@ -319,10 +319,6 @@ export default function VendorRegisterPage() {
             setCurrentStep(4);
             setVendGuid(RetData.result.ven_id)
             clearTheForm();
-            toast({
-              title:"Please Login with your Email & Password",
-              variant:"warning"
-            })
           } else {
             console.log("hitted here !! in if else condition")
             setIsLoading(false)

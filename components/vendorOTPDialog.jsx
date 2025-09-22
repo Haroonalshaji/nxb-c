@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
+import { setCookie } from "@/lib/utils/cookies";
 
 export default function VendorOTPBox({ modalOpen, vendGuid, onVerificationSuccess }) {
     const [isOtpModalOpen, setIsOtpModalOpen] = useState(false)
@@ -39,8 +40,14 @@ export default function VendorOTPBox({ modalOpen, vendGuid, onVerificationSucces
 
             toast({
                 title: "OTP Verified!",
-                description: "Email verification successful!",
+                description: "Please Login if with your email & password, if you are redirected to the login page!",
             })
+
+            setCookie('accessToken', response.data.result.accessToken, 1)
+            setCookie('refreshToken', response.data.result.refreshToken, 7)
+            setCookie('userName', response.data.result.userName, 1)
+            setCookie('userStatus', response.data.result.userStatus, 1)
+            setCookie('role', response.data.result.role, 1)
 
             // Call the success callback if provided, otherwise redirect to dashboard
             if (onVerificationSuccess) {

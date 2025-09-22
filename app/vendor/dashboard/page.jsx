@@ -281,7 +281,7 @@ export default function VendorDashboardPage() {
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-gray-50 hover:shadow-xl transition-all duration-300">
+            <Card className="border-0 hidden shadow-lg bg-gradient-to-br from-white to-gray-50 hover:shadow-xl transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-gray-600">Available Enquiries</CardTitle>
                 <div className="p-2 bg-[#B80D2D]/10 rounded-lg">
@@ -313,7 +313,7 @@ export default function VendorDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 hover:shadow-xl transition-all duration-300">
+            <Card className="border-0 hidden shadow-lg bg-gradient-to-br from-green-50 to-green-100 hover:shadow-xl transition-all duration-300">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-green-700">Quotes Sent</CardTitle>
                 <div className="p-2 bg-green-200 rounded-lg">
@@ -522,7 +522,7 @@ export default function VendorDashboardPage() {
       )}
 
       {!showDashbaord && vendorAccessStatus && (
-        <VendorStatusScreens status={vendorAccessStatus} onRetry={() => checkBusinessStatus} businessData={null} />
+        <VendorStatusScreens status={vendorAccessStatus} onRetry={checkBusinessStatus} businessData={null} />
       )}
 
       {!showDashbaord && !vendorAccessStatus && (

@@ -75,7 +75,7 @@ export default function VendorLoginPage() {
         // console.log('Access Token from cookie:', accessTokenFromCookie);
         // console.log('Refresh Token from cookie:', refreshTokenFromCookie);
         // console.log('All cookies:', document.cookie);
-        
+
         // List all cookies in a structured format
         listAllCookies();
 
@@ -90,7 +90,7 @@ export default function VendorLoginPage() {
               title: `✅  ${RetData.message}`,
               variant: "success",
             })
-            
+
             // Navigate after a short delay to ensure cookies are set
             setTimeout(() => {
               router.push("/vendor/dashboard")

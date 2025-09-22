@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,6 +17,7 @@ import {
 import { Upload, X, FileText, ImageIcon } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { submitEnquiry } from "@/lib/api/auth"
+import { getServiceTypes } from "@/lib/api/commonApi"
 
 const serviceOptions = [
     "Roofing Services",
@@ -52,6 +53,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
     const { toast } = useToast();
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
+    const [listOfServiceData, setListOfServiceData] = useState([]);
 
     const validateField = (field, value) => {
         switch (field) {
@@ -185,7 +187,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
             // Submit to API using multipart/form-data
             const response = await submitEnquiry(enquiryData);
             // console.log(response.data)
-            
+
             // Success - create the enquiry object for local state
             const createdEnquiry = {
                 id: response.data?.id || Date.now(), // Use backend ID if available
@@ -215,7 +217,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
                 description: "Your enquiry has been submitted successfully.",
                 variant: "success",
             });
-            
+
             // Reset form
             setFormData({
                 name: "",
@@ -229,7 +231,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
             setErrors({});
             setTouched({});
             onClose();
-            
+
         } catch (error) {
             console.error('Enquiry submission error:', error);
             toast({
@@ -242,12 +244,26 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
         }
     }
 
+    const listAllServiceType = async () => {
+        try {
+            const allServices = await getServiceTypes();
+            const RetData = allServices?.data?.result;
+            setListOfServiceData(RetData);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const getFileIcon = (fileType) => {
         if (fileType.startsWith("image/")) {
             return <ImageIcon className="h-4 w-4" />
         }
         return <FileText className="h-4 w-4" />
     }
+
+    useEffect(() => {
+        listAllServiceType();
+    }, [])
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -335,9 +351,9 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
                                 <SelectValue placeholder="Select a service" />
                             </SelectTrigger>
                             <SelectContent>
-                                {serviceOptions.map((service) => (
-                                    <SelectItem key={service} value={service}>
-                                        {service}
+                                {(listOfServiceData || []).map((service) => (
+                                    <SelectItem key={service.id} value={String(service.id)}>
+                                        {service.categoryName}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
