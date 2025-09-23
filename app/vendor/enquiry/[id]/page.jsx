@@ -27,8 +27,9 @@ import {
   Users,
 } from "lucide-react"
 import QuoteModal from '@/components/vendorFormDialog'
-import { getIndividualVendorEnquiry, submitVendorQuoteForm } from "@/lib/api/commonApi"
+import { attachmentForVendor, getIndividualVendorEnquiry, submitVendorQuoteForm } from "@/lib/api/commonApi"
 import { useToast } from "@/hooks/use-toast"
+import Image from "next/image"
 
 // Mock enquiry data (in real app, this would come from API based on ID)
 
@@ -44,7 +45,9 @@ export default function EnquiryDetailPage() {
     warranty: "",
     additionalNotes: "",
   })
+  const [attachmentsLoading, setAttachmentsLoading] = useState(false);
   const [enquiryData, setEnquiryData] = useState({})
+  const [attachments, setAttachments] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const [modalOpen, setModalOpen] = useState(false);
@@ -121,12 +124,27 @@ export default function EnquiryDetailPage() {
     }
   }
 
+  const handleFetchAttachments = async (enqGuid) => {
+    setAttachmentsLoading(true);
+    try {
+      const getVendorAttachment = await attachmentForVendor(enqGuid);
+      console.log(getVendorAttachment.data.result)
+      setAttachments(getVendorAttachment.data.result)
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setAttachmentsLoading(false);
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       if (id) {
         await fetchIndividualVendorEnquiry()
       }
     }
+    handleFetchAttachments(id);
+
 
     fetchData()
 
@@ -147,6 +165,16 @@ export default function EnquiryDetailPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 max-w-7xl py-8">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2 text-gray-700 hover:bg-gray-200"
+            onClick={() => router.back()}
+          >
+            ← Back
+          </Button>
+        </div>
         <div className="grid lg:grid-cols-3 grid-cols-1 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
@@ -190,39 +218,41 @@ export default function EnquiryDetailPage() {
             </Card>
 
             {/* Attachments */}
-            {enquiryData?.attachmentCount > 0 && (
-              <Card className="border-0 hidden shadow-lg bg-white">
+            {enquiryData.attachmentCount > 0 && (
+              <Card className="border-0 shadow-lg bg-white">
                 <CardHeader>
                   <CardTitle className="flex items-center">
                     <Paperclip className="h-5 w-5 mr-2 text-[#B80D2D]" />
-                    Attachments ({enquiryData?.attachmentCount})
+                    Attachments ({enquiryData.attachmentCount})
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* <div className="grid md:grid-cols-2 gap-4">
-                    {enquiryData?.attachments.map((attachment) => (
-                      <div
-                        key={attachment.id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition-colors"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <span className="text-2xl">{getFileIcon(attachment.fileType)}</span>
-                          <div>
-                            <p className="font-medium text-gray-900">{attachment.filename}</p>
-                            <p className="text-sm text-gray-500">{attachment.fileSize}</p>
-                          </div>
+                  {attachmentsLoading ? (
+                    <p className="text-gray-500 text-center">Loading attachments...</p>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {(enquiryData.attachmentCount >= 1 ? attachments : "nothing to show")?.map((att, idx) => (
+                        <div key={idx} className="relative group h-32 border rounded-lg overflow-hidden cursor-pointer">
+                          <Image
+                            src={att.filePath}
+                            alt={att.fileName || `Attachment ${idx + 1}`}
+                            fill
+                            style={{ objectFit: "cover" }}
+                            className="hover:scale-105 transition-transform"
+                            onClick={() => window.open(att.filePath, "_blank")}
+                          />
+                          <a
+                            href={att.filePath}
+                            download={att.fileName || `attachment-${idx + 1}`}
+                            className="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow opacity-0 group-hover:opacity-100"
+                            title="Download"
+                          >
+                            <Download className="w-4 h-4 text-gray-700" />
+                          </a>
                         </div>
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline" className="bg-transparent">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button size="sm" variant="outline" className="bg-transparent">
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div> */}
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}

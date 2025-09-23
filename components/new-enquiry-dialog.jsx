@@ -17,7 +17,8 @@ import {
 import { Upload, X, FileText, ImageIcon } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { submitEnquiry } from "@/lib/api/auth"
-import { getServiceTypes } from "@/lib/api/commonApi"
+import { basicProfileDetails, getServiceTypes } from "@/lib/api/commonApi"
+import { setCookie } from "@/lib/utils/cookies"
 
 const serviceOptions = [
     "Roofing Services",
@@ -39,8 +40,17 @@ const priorityOptions = [
 ]
 
 export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
+    const [customerFirstName, setCustomerFirstName] = useState("")
+    const [customerLastName, setCustomerLastName] = useState("")
+    const [customerEmailAddress, setCustomerEmailAddress] = useState("")
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [dragActive, setDragActive] = useState(false)
+    const { toast } = useToast();
+    const [errors, setErrors] = useState({});
+    const [touched, setTouched] = useState({});
+    const [listOfServiceData, setListOfServiceData] = useState([]);
     const [formData, setFormData] = useState({
-        name: "",
+        name: customerFirstName + customerLastName,
         email: "",
         phone: "",
         service: "",
@@ -48,18 +58,14 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
         description: "",
         attachments: [],
     })
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [dragActive, setDragActive] = useState(false)
-    const { toast } = useToast();
-    const [errors, setErrors] = useState({});
-    const [touched, setTouched] = useState({});
-    const [listOfServiceData, setListOfServiceData] = useState([]);
 
     const validateField = (field, value) => {
         switch (field) {
             case "name":
                 if (!value.trim()) return "Full Name is required";
-                if (!/^[A-Za-z]{2,}$/.test(value.trim())) return "Full Name must be at least 2 characters and contain only alphabets (A-Z, a-z).";
+                if (!/^[A-Za-z ]{2,}$/.test(value.trim())) {
+                    return "Full Name must be at least 2 characters and contain only alphabets and spaces.";
+                }
                 break;
             case "email":
                 if (!value.trim()) return "Email is required";
@@ -158,6 +164,30 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
         }))
     }
 
+    const getBasicProfileData = async () => {
+        try {
+            const RetData = await basicProfileDetails();
+            const firstName = RetData?.data?.result?.firstName || "";
+            const lastName = RetData?.data?.result?.lastName || "";
+            const email = RetData?.data?.result?.emailAddress || "";
+            setCustomerFirstName(firstName);
+            setCustomerLastName(lastName);
+            setCustomerEmailAddress(email)
+            setFormData((prev) => ({
+                ...prev,
+                name: `${firstName} ${lastName}`.trim(),
+                email:`${email}`
+            }));
+
+            setCookie("CususerName",firstName+lastName);
+            setCookie("CususerEmail",email);
+
+            console.log(RetData)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const error = validateForm();
@@ -169,9 +199,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
             });
             return;
         }
-
         setIsSubmitting(true)
-
         try {
             // Create enquiry object for API submission
             const enquiryData = {
@@ -262,6 +290,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
     }
 
     useEffect(() => {
+        getBasicProfileData()
         listAllServiceType();
     }, [])
 
@@ -352,7 +381,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
                             </SelectTrigger>
                             <SelectContent>
                                 {(listOfServiceData || []).map((service) => (
-                                    <SelectItem key={service.id} value={String(service.id)}>
+                                    <SelectItem key={service.id} value={String(service.categoryName)}>
                                         {service.categoryName}
                                     </SelectItem>
                                 ))}

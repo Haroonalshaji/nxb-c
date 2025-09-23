@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
+import { getCookie } from "@/lib/utils/cookies"
 
 export default function DashboardHeader() {
   const router = useRouter()
@@ -18,7 +19,7 @@ export default function DashboardHeader() {
     try {
       const { destroyCookie } = require('nookies');
       destroyCookie(null, name, { path: '/' });
-    } catch {}
+    } catch { }
   }
 
   const handleLogout = () => {
@@ -26,9 +27,12 @@ export default function DashboardHeader() {
     deleteCookie("refreshToken")
     deleteCookie("userName")
     deleteCookie("status")
+    sessionStorage.clear();
     router.push("/signin")
-
   }
+
+  const userName = sessionStorage.getItem("CusUserName")
+  const email = sessionStorage.getItem("CusUserEmail");
 
   return (
     // Header
@@ -39,6 +43,11 @@ export default function DashboardHeader() {
             <Image src="/assets/header images/nexus_white_no_bg.png" width={100} height={100} alt="Nexus Built Logo" />
           </Link>
           <div className="flex items-center space-x-4">
+            <div className="flex flex-col text-right mr-2">
+              <span className="font-semibold">{userName}</span>
+              <span className="text-xs text-white/80">{email}</span>
+            </div>
+
             {/* User Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -53,14 +62,14 @@ export default function DashboardHeader() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <div className="px-3 py-2 hidden text-sm text-gray-700">
-                  <div className="font-semibold">John</div>
-                  <div className="text-xs text-gray-500">ID: 123456</div>
+                  <div className="font-semibold">{userName}</div>
+                  <div className="text-xs text-gray-500">{email}</div>
                 </div>
                 <DropdownMenuItem
                   onSelect={() => { window.location.href = "/profile"; }}
                   className="cursor-pointer hidden"
                 >
-                  <User className="w-4 h-4 mr-2 text-[#B80D2D]" /> 
+                  <User className="w-4 h-4 mr-2 text-[#B80D2D]" />
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={handleLogout}

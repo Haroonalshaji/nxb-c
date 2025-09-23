@@ -12,10 +12,11 @@ import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { checkAuth } from "@/lib/utils/authUtil"
-import { attachmentFromCustomer, changeCustomerEnquiryStatus, dashboardEnquiryStatus, fetchCustomerEnquiry, getAndSearchEnquiryFilters } from "@/lib/api/commonApi"
+import { attachmentFromCustomer, basicProfileDetails, changeCustomerEnquiryStatus, dashboardEnquiryStatus, fetchCustomerEnquiry, getAndSearchEnquiryFilters } from "@/lib/api/commonApi"
 import { StatusUpdateModal } from "@/components/customerStatusUpdateModal"
 import AttachmentsGrid from "@/components/imageAttachmentGrid"
 import Link from "next/link"
+import { setCookie } from "@/lib/utils/cookies"
 
 
 const statusColors = {
@@ -168,9 +169,29 @@ export default function DashboardPage() {
     }
   }
 
+  const getBasicProfileData = async () => {
+    try {
+      const RetData = await basicProfileDetails();
+      const firstName = RetData?.data?.result?.firstName || "";
+      const lastName = RetData?.data?.result?.lastName || "";
+      const email = RetData?.data?.result?.emailAddress || "";
+
+      // setCookie("CusUserName", `${firstName} ${lastName}`, 1);
+      // setCookie("CusUserEmail", email, 1);
+
+      sessionStorage.setItem("CusUserName", firstName + " " + lastName)
+      sessionStorage.setItem("CusUserEmail", email)
+
+      console.log(RetData)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
 
   useEffect(() => {
     checkAuth("client", router, toast);
+    getBasicProfileData();
     functionToListAllCustomerEnquiries();
     getDashboardEnquiryStatus();
   }, [router, searchTerm, priorityFilter, statusFilter]);
@@ -308,9 +329,9 @@ export default function DashboardPage() {
                         <Calendar className="h-3 w-3" />
                         <span>{formatDate(enquiry.addedOn)}</span>
                       </div>
-                      {enquiry.totalAmount && (
-                        <div className="font-semibold text-[#B80D2D]">AED {enquiry.totalAmount}</div>
-                      )}
+                      {
+                        <div className="font-semibold text-[26px] text-[#B80D2D]">AED {enquiry.totalAmount}</div>
+                      }
                     </div>
                   </div>
                 </CardHeader>

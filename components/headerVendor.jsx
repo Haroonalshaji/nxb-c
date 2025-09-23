@@ -24,18 +24,22 @@ export default function HeaderVendor() {
 
   const handleLogout = () => {
     // Clear specific cookies
+    sessionStorage.clear()
     try {
       const { destroyCookie } = require('nookies');
-      ['accessToken','refreshToken','userName','role','userStatus'].forEach((name) => {
+      ['accessToken', 'refreshToken', 'userName', 'role', 'userStatus'].forEach((name) => {
         destroyCookie(null, name, { path: '/' });
       });
-    } catch {}
+    } catch { }
     toast({
       title: "Logged out",
       description: "You have been logged out successfully.",
     });
     router.push('/vendor');
   };
+
+  const getVendorName = sessionStorage.getItem("vendorName");
+  const getVendorEmail = sessionStorage.getItem("vendorEmail");
 
 
   if (!isSignIn && !isRegister && !isApproval) {
@@ -54,6 +58,10 @@ export default function HeaderVendor() {
               </div>
             </div>
             <div className="flex items-center">
+              <div className="flex flex-col text-right mr-2">
+                <span className="font-semibold">{getVendorName}</span>
+                <span className="text-xs text-white/80">{getVendorEmail}</span>
+              </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="text-white hover:bg-white/10">
@@ -61,12 +69,6 @@ export default function HeaderVendor() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <div className="flex items-center p-2 border-b">
-                    <div className="ml-2">
-                      <p className="font-medium">Elite Roofing Co.</p>
-                      <p className="text-sm text-muted-foreground">Premium Vendor</p>
-                    </div>
-                  </div>
                   <Link href="/vendor/profile">
                     <DropdownMenuItem>
                       <Settings className="mr-2 h-4 w-4" />

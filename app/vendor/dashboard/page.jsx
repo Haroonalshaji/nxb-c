@@ -27,7 +27,7 @@ import {
 import { checkAuth } from "@/lib/utils/authUtil"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
-import { businessStatus } from "@/lib/api/commonApi"
+import { businessStatus, getVendorProfileData } from "@/lib/api/commonApi"
 import VendorStatusScreens from "@/components/vendor-status-screens"
 import { getAndSearchEnquiryFilters } from "@/lib/api/commonApi" // adjust to your file path
 
@@ -167,6 +167,21 @@ export default function VendorDashboardPage() {
     return matchesSearch && matchesService && matchesPriority && matchesStatus;
   });
 
+  const getVendorProfileNameAndData = async () => {
+    try {
+      const getNameAndMail = await getVendorProfileData();
+      console.log(getNameAndMail)
+      const firstName = getNameAndMail?.data?.result?.firstName;
+      const lastName = getNameAndMail?.data?.result?.lastName;
+      const email = getNameAndMail?.data?.result?.emailAddress;
+
+      sessionStorage.setItem("vendorName", firstName + " " + lastName);
+      sessionStorage.setItem("vendorEmail", email)
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
 
   const formatDate = (dateString) => {
@@ -290,6 +305,7 @@ export default function VendorDashboardPage() {
   }
 
   useEffect(() => {
+    getVendorProfileNameAndData();
     fetchEnquiries();
   }, [searchTerm, serviceFilter, priorityFilter])
 
@@ -408,7 +424,7 @@ export default function VendorDashboardPage() {
           <div className="mb-8">
             <Card className="border-0 shadow-lg bg-white">
               <CardContent className="p-6">
-                <div className="grid md:grid-cols-4 gap-4">
+                <div className="grid md:grid-cols-3 gap-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
@@ -419,7 +435,7 @@ export default function VendorDashboardPage() {
                     />
                   </div>
 
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  {/* <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="border-gray-200 focus:border-[#B80D2D] focus:ring-[#B80D2D]">
                       <SelectValue placeholder="Filter by service" />
                     </SelectTrigger>
@@ -429,7 +445,7 @@ export default function VendorDashboardPage() {
                       <SelectItem value="Closed">Closed</SelectItem>
                       <SelectItem value="Completed">Completed</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </Select> */}
 
                   <Select value={priorityFilter} onValueChange={setPriorityFilter}>
                     <SelectTrigger className="border-gray-200 focus:border-[#B80D2D] focus:ring-[#B80D2D]">

@@ -215,7 +215,7 @@ export default function IndCustEnq() {
 
 
             {/* Quick Actions */}
-            <Card className="border-0 shadow-lg bg-white">
+            <Card className="border-0 hidden shadow-lg bg-white">
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
@@ -241,42 +241,46 @@ export default function IndCustEnq() {
 
             {/* Quotes List */}
             {quotes.length >= 1 && (
-              <div className="space-y-6 mt-6">
-                {quotes.map((quote) => (
-                  <Card
-                    key={quote.quoteGuid}
-                    className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white overflow-hidden"
-                  >
-                    {/* Quote Header */}
-                    <CardHeader className="pb-4">
-                      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center">
-                        <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
-                          <div className="flex-1">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-2">
-                              <h3 className="lg:text-[30px] text-[24px] font-bold text-gray-900">
-                                {quote.businessName}
-                              </h3>
-                              {/* Verified / Premium Badges */}
-                              {quote.vendorVerified && (
-                                <Badge className="bg-green-100 text-green-700 border-green-200 border">
-                                  Verified
-                                </Badge>
-                              )}
-                              {quote.vendorPremium && (
-                                <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0">
-                                  Premium
-                                </Badge>
-                              )}
-                            </div>
+              <div className="border-0 shadow-lg p-3 hover:shadow-xl transition-all duration-300 bg-white overflow-hidden">
+                <div>
+                  <h2 className="lg:text-[26px] text-[20px] text-black font-medium">Vendor's Quoted :</h2>
+                </div>
+                <div className="space-y-6 mt-6">
+                  {quotes.map((quote) => (
+                    <Card
+                      key={quote.quoteGuid}
+                      className="border-0  border hover:shadow-xl transition-all duration-300 bg-white overflow-hidden"
+                    >
+                      {/* Quote Header */}
+                      <CardHeader className="pb-4">
+                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center">
+                          <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
+                            <div className="flex-1">
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-2">
+                                <h3 className="lg:text-[30px] text-[24px] font-bold text-gray-900">
+                                  {quote.businessName}
+                                </h3>
+                                {/* Verified / Premium Badges */}
+                                {quote.vendorVerified && (
+                                  <Badge className="bg-green-100 text-green-700 border-green-200 border">
+                                    Verified
+                                  </Badge>
+                                )}
+                                {quote.vendorPremium && (
+                                  <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0">
+                                    Premium
+                                  </Badge>
+                                )}
+                              </div>
 
-                            {/* Vendor Info */}
-                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                              {/* <div className="flex items-center space-x-1">
+                              {/* Vendor Info */}
+                              <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                                {/* <div className="flex items-center space-x-1">
                                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                                 <span className="font-medium">{quote.vendorRating || 4.9}</span>
                                 <span>({quote.vendorReviews || 156} reviews)</span>
                               </div> */}
-                              {/* <div className="flex items-center space-x-1">
+                                {/* <div className="flex items-center space-x-1">
                                 <MapPin className="h-4 w-4" />
                                 <span>{quote.vendorLocation || "Dubai"}</span>
                               </div>
@@ -284,101 +288,101 @@ export default function IndCustEnq() {
                                 <Building className="h-4 w-4" />
                                 <span>{quote.vendorExperience || 12} years exp.</span>
                               </div> */}
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Quote Price / Timeline */}
-                        <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-                          <div className="text-right">
-                            <div className="text-3xl font-bold text-[#B93239]">
-                              AED {quote.quotePrice.toLocaleString()}
+                          {/* Quote Price / Timeline */}
+                          <div className="flex items-center space-x-3 mt-4 lg:mt-0">
+                            <div className="text-right">
+                              <div className="text-3xl font-bold text-[#B93239]">
+                                AED {quote.quotePrice.toLocaleString()}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                Timeline: {quote.timeLine} business days
+                              </div>
                             </div>
-                            <div className="text-sm text-gray-500">
-                              Timeline: {quote.timeLine} business days
-                            </div>
+                            {/* Heart / Bookmark Button if needed */}
                           </div>
-                          {/* Heart / Bookmark Button if needed */}
                         </div>
-                      </div>
-                    </CardHeader>
+                      </CardHeader>
 
-                    {/* Quote Content */}
-                    <CardContent className="pt-0 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      {/* Main Details */}
-                      <div className="col-span-1 lg:col-span-2 space-y-6">
-                        {/* Work Description */}
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                            <FileText className="h-4 w-4 mr-2 text-[#B93239]" />
-                            Work Description
-                          </h4>
-                          <p className="text-gray-700 leading-relaxed">{quote.description}</p>
-                        </div>
-
-                        {/* Materials & Equipment */}
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                            <TrendingUp className="h-4 w-4 mr-2 text-[#B93239]" />
-                            Materials & Equipment
-                          </h4>
-                          <p className="text-gray-700 leading-relaxed">{quote.matAndEqup}</p>
-                        </div>
-
-                        {/* Warranty */}
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                            <Shield className="h-4 w-4 mr-2 text-[#B93239]" />
-                            Warranty Information
-                          </h4>
-                          <p className="text-gray-700 leading-relaxed">{quote.warrantyInfo}</p>
-                        </div>
-
-                        {/* Additional Notes */}
-                        {quote.notes && (
+                      {/* Quote Content */}
+                      <CardContent className="pt-0 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Main Details */}
+                        <div className="col-span-1 lg:col-span-2 space-y-6">
+                          {/* Work Description */}
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                              <AlertCircle className="h-4 w-4 mr-2 text-[#B93239]" />
-                              Additional Notes
+                              <FileText className="h-4 w-4 mr-2 text-[#B93239]" />
+                              Work Description
                             </h4>
-                            <p className="text-gray-700 leading-relaxed">{quote.notes}</p>
+                            <p className="text-gray-700 leading-relaxed">{quote.description}</p>
                           </div>
-                        )}
-                      </div>
 
-                      {/* Sidebar */}
-                      <div className="space-y-6">
-                        {/* Quote Details */}
-                        <div className="bg-gray-50 rounded-xl p-4">
-                          <h4 className="font-semibold text-gray-900 mb-3">Quote Details</h4>
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Submitted:</span>
-                              <span className="font-medium">{getTimeAgo(quote.addedOn)}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">Timeline:</span>
-                              <span className="font-medium">{quote.timeLine} business days</span>
-                            </div>
+                          {/* Materials & Equipment */}
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                              <TrendingUp className="h-4 w-4 mr-2 text-[#B93239]" />
+                              Materials & Equipment
+                            </h4>
+                            <p className="text-gray-700 leading-relaxed">{quote.matAndEqup}</p>
                           </div>
+
+                          {/* Warranty */}
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                              <Shield className="h-4 w-4 mr-2 text-[#B93239]" />
+                              Warranty Information
+                            </h4>
+                            <p className="text-gray-700 leading-relaxed">{quote.warrantyInfo}</p>
+                          </div>
+
+                          {/* Additional Notes */}
+                          {quote.notes && (
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                                <AlertCircle className="h-4 w-4 mr-2 text-[#B93239]" />
+                                Additional Notes
+                              </h4>
+                              <p className="text-gray-700 leading-relaxed">{quote.notes}</p>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Contact Vendor */}
-                        <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-                          <h4 className="font-semibold text-blue-900 mb-3">Contact Vendor</h4>
-                          <div className="space-y-3 text-sm text-blue-700">
-                            <div className="flex items-center space-x-2">
-                              <Phone className="h-4 w-4" />
-                              <span>{quote.phoneNo}</span>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <Mail className="h-4 w-4" />
-                              <span>{quote.emailAddress}</span>
+                        {/* Sidebar */}
+                        <div className="space-y-6">
+                          {/* Quote Details */}
+                          <div className="bg-gray-50 rounded-xl p-4">
+                            <h4 className="font-semibold text-gray-900 mb-3">Quote Details</h4>
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Submitted:</span>
+                                <span className="font-medium">{getTimeAgo(quote.addedOn)}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Timeline:</span>
+                                <span className="font-medium">{quote.timeLine} business days</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Actions
+                          {/* Contact Vendor */}
+                          <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                            <h4 className="font-semibold text-blue-900 mb-3">Contact Vendor</h4>
+                            <div className="space-y-3 text-sm text-blue-700">
+                              <div className="flex items-center space-x-2">
+                                <Phone className="h-4 w-4" />
+                                <span>{quote.phoneNo}</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Mail className="h-4 w-4" />
+                                <span>{quote.emailAddress}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions
                         <div className="space-y-3">
                           <Button className="w-full bg-gradient-to-r from-[#B93239] to-[#A02A31] hover:from-[#A02A31] hover:to-[#8B1E25] text-white">
                             <MessageSquare className="h-4 w-4 mr-2" />
@@ -396,10 +400,11 @@ export default function IndCustEnq() {
                             Send Message
                           </Button>
                         </div> */}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -422,6 +427,7 @@ export default function IndCustEnq() {
                 <p><strong>Phone:</strong> {enquiryData.phoneNumber}</p>
                 <p><strong>Service:</strong> {enquiryData.serviceRequired}</p>
                 <p><strong>Added On:</strong> {formatDate(enquiryData.addedOn)}</p>
+                <p><strong>Status</strong> {enquiryData.status}</p>
                 <p><strong>Status Updated On:</strong> {formatDate(enquiryData.statusOn)}</p>
                 <p><strong>Status Notes:</strong> {enquiryData.statusNotes}</p>
               </CardContent>
@@ -432,7 +438,7 @@ export default function IndCustEnq() {
               <CardHeader>
                 <CardTitle className="flex items-center text-blue-900">
                   <User className="h-5 w-5 mr-2" />
-                  Competition
+                  Total Vendor Intersted
                 </CardTitle>
               </CardHeader>
               <CardContent>
