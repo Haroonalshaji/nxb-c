@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,8 +9,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DollarSign, Clock, Send } from "lucide-react"
+import { getVendorQuote, submitVendorQuoteForm } from "@/lib/api/commonApi"
+import { useToast } from "@/hooks/use-toast"
 
-export default function QuoteModal({modalOpen,setModalOpen}) {
+export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasResponded }) {
     const [quoteData, setQuoteData] = useState({
         price: "",
         timeline: "",
@@ -21,6 +23,7 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter()
+    const { toast } = useToast();
 
     const handleInputChange = (field, value) => {
         setQuoteData((prev) => ({
@@ -29,16 +32,64 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
         }))
     }
 
+    const payload = {
+        enquiryGuid: enquiryGuid,
+        quotePrice: quoteData?.price,
+        timeLine: quoteData?.timeline,
+        description: quoteData?.description,
+        matAndEqup: quoteData?.materials,
+        warrantyInfo: quoteData?.warranty,
+        notes: quoteData?.additionalNotes
+    }
+
+    const handleQuoteMade = async () => {
+        try {
+            const getRespnseQuote = await getVendorQuote(enquiryGuid);
+            const getRetData = getRespnseQuote.data.result;
+            setQuoteData({
+                price: getRetData.quotePrice,
+                timeline: getRetData.timeLine,
+                description: getRetData.description,
+                materials: getRetData.matAndEqup,
+                warranty: getRetData.warrantyInfo,
+                additionalNotes: getRetData.notes,
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const handleSubmitQuote = async (e) => {
         e.preventDefault()
         setIsSubmitting(true)
-
-        // Simulate submission delay
-        setTimeout(() => {
-            setIsSubmitting(false)
-            router.push("/vendor/dashboard")
-        }, 2000)
+        try {
+            const submitQuoteForm = await submitVendorQuoteForm(payload);
+            const reponseFromQuoteSubmission = submitQuoteForm.data;
+            console.log(reponseFromQuoteSubmission)
+            setIsSubmitting(false);
+            toast({
+                title: reponseFromQuoteSubmission.message,
+                variant: "success"
+            })
+            setModalOpen(false)
+        } catch (error) {
+            setIsSubmitting(false);
+            console.error(error);
+            toast({
+                title: error.response.data.message || "Quote Submisstion Failed",
+                description: error.response.data.message ? "" : "Please try Again..!",
+                variant: "destructive"
+            })
+            setModalOpen(false)
+        }
     }
+
+    useEffect(() => {
+        if (enquiryGuid && modalOpen) {
+            handleQuoteMade();
+        }
+    }, [enquiryGuid, modalOpen]);
+
 
     return (
         <div>
@@ -63,6 +114,7 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
                                         placeholder="2,500"
                                         className="pl-10"
                                         required
+                                        readOnly={hasResponded} 
                                     />
                                 </div>
                             </div>
@@ -77,6 +129,7 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
                                         placeholder="5-7 business days"
                                         className="pl-10"
                                         required
+                                        readOnly={hasResponded} 
                                     />
                                 </div>
                             </div>
@@ -91,6 +144,7 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
                                 placeholder="Describe the work you'll perform..."
                                 rows={4}
                                 required
+                                readOnly={hasResponded} 
                             />
                         </div>
 
@@ -102,6 +156,7 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
                                 onChange={(e) => handleInputChange("materials", e.target.value)}
                                 placeholder="List materials and equipment..."
                                 rows={3}
+                                readOnly={hasResponded} 
                             />
                         </div>
 
@@ -112,6 +167,7 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
                                 value={quoteData.warranty}
                                 onChange={(e) => handleInputChange("warranty", e.target.value)}
                                 placeholder="e.g., 5-year warranty on materials..."
+                                readOnly={hasResponded} 
                             />
                         </div>
 
@@ -123,12 +179,13 @@ export default function QuoteModal({modalOpen,setModalOpen}) {
                                 onChange={(e) => handleInputChange("additionalNotes", e.target.value)}
                                 placeholder="Any additional info..."
                                 rows={3}
+                                readOnly={hasResponded} 
                             />
                         </div>
 
                         <Button
                             type="submit"
-                            disabled={isSubmitting}
+                            disabled={hasResponded ? true : isSubmitting}
                             className="w-full bg-gradient-to-r from-[#B80D2D] to-[#9A0B26] hover:from-[#9A0B26] hover:to-[#7A0920] text-white"
                         >
                             {isSubmitting ? "Sending..." : "Send Quote"}

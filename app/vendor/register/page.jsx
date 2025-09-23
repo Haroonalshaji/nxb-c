@@ -266,7 +266,6 @@ export default function VendorRegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsLoading(true)
     // Validate all steps before final submission
     const step1Valid = validateStep1()
     const step2Valid = validateStep2()
@@ -278,6 +277,8 @@ export default function VendorRegisterPage() {
       else if (!step3Valid) setCurrentStep(3)
       return
     }
+    setIsLoading(true)
+
     const payload = {
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -734,7 +735,7 @@ export default function VendorRegisterPage() {
         />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+      <div className="grid md:grid-cols-2 gap-4 max-h-[400px] overflow-y-scroll">
         {filteredServices.length > 0 ? (
           filteredServices.map((service) => (
             <div
@@ -757,6 +758,7 @@ export default function VendorRegisterPage() {
           </div>
         )}
       </div>
+
 
       {errors.services && (
         <p className="text-sm text-red-500">{errors.services}</p>

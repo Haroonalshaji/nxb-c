@@ -6,8 +6,9 @@ import AOSInit from '@/components/AOSInit'
 export const metadata = {
   title: 'NXB | Nexus Built',
   description: 'Nexus Built',
-  generator: 'v0.dev',
 }
+// app/layout.js
+export const runtime = "edge" // or "nodejs"
 
 export default function RootLayout({ children }) {
   return (

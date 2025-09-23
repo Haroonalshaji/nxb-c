@@ -29,6 +29,8 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 import { businessStatus } from "@/lib/api/commonApi"
 import VendorStatusScreens from "@/components/vendor-status-screens"
+import { getAndSearchEnquiryFilters } from "@/lib/api/commonApi" // adjust to your file path
+
 
 // Mock data for customer enquiries
 const customerEnquiries = [
@@ -140,24 +142,32 @@ export default function VendorDashboardPage() {
   const router = useRouter()
   const [accessToken, setAcessToken] = useState("")
   const { toast } = useToast()
+  const [enquiries, setEnquiries] = useState([])
+  const [statusFilter, setStatusFilter] = useState("all");
+
+
   // Calculate statistics
-  const totalEnquiries = customerEnquiries.length
-  const newEnquiries = customerEnquiries.filter((e) => !e.hasResponded).length
-  const respondedEnquiries = customerEnquiries.filter((e) => e.hasResponded).length
-  const totalResponses = customerEnquiries.reduce((sum, e) => sum + e.responses, 0)
+  const totalEnquiries = enquiries.length
+  const newEnquiries = enquiries.filter((e) => !e.hasVendorQuote).length
+  const respondedEnquiries = enquiries.filter((e) => e.hasVendorQuote).length
+  const totalResponses = enquiries.reduce((sum, e) => sum + (e.totalQuotes || 0), 0)
+
 
   // Filter enquiries
-  const filteredEnquiries = customerEnquiries.filter((enquiry) => {
+  const filteredEnquiries = enquiries.filter((enquiry) => {
     const matchesSearch =
-      enquiry.service.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      enquiry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      enquiry.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+      enquiry.serviceRequired?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      enquiry.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      enquiry.customerName?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesService = serviceFilter === "all" || enquiry.service === serviceFilter
-    const matchesPriority = priorityFilter === "all" || enquiry.priority === priorityFilter
+    const matchesService = serviceFilter === "all" || enquiry.serviceRequired === serviceFilter;
+    const matchesPriority = priorityFilter === "all" || enquiry.priorityLevel === priorityFilter;
+    const matchesStatus = statusFilter === "all" || enquiry.status === statusFilter;
 
-    return matchesSearch && matchesService && matchesPriority && enquiry.isOpen
-  })
+    return matchesSearch && matchesService && matchesPriority && matchesStatus;
+  });
+
+
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -169,13 +179,49 @@ export default function VendorDashboardPage() {
     })
   }
 
-  useEffect(() => {
-    // Temporarily disable checkAuth to prevent cookie deletion
-    // TODO: Re-enable once token validation APIs are properly implemented
-    checkAuth("vendor", router, toast)
-    checkSessionInCookie()
-    checkBusinessStatus()
-  }, [])
+  const fetchEnquiries = async () => {
+    const payload = {
+      pageSize: 100,
+      pageNo: 0,
+      fromDate: "",
+      toDate: "",
+      sParam: searchTerm || "",
+      status: "",
+      priority: priorityFilter !== "all" ? priorityFilter : "",
+    }
+
+    try {
+      const res = await getAndSearchEnquiryFilters(payload)
+      const RetData = res.data;
+
+      if (RetData.isSuccess) {
+        const mappedEnquiries = RetData.result.map((e) => ({
+          id: e.enquiryGuid,
+          customerName: e.customerName,
+          email: e.emailAddress,
+          phone: e.phoneNumber,
+          serviceRequired: e.serviceRequired,
+          description: e.description,
+          priorityLevel: e.priorityLevel?.toLowerCase(),
+          createdAt: e.addedOn,
+          budget: e.totalAmount ? `$${e.totalAmount}` : "N/A",
+          attachments: new Array(e.attachmentCount).fill({}), // just count, no file info
+          status: e.status,
+          totalQuotes: e.totalQuotes,
+          hasVendorQuote: e.hasVendorQuote,
+        }))
+        setEnquiries(mappedEnquiries)
+      } else {
+        setEnquiries([])
+      }
+    } catch (err) {
+      console.error("API error:", err)
+      setEnquiries([])
+    } finally {
+      console.log("consoling inside the finally");
+
+    }
+  }
 
   const checkBusinessStatus = async () => {
     try {
@@ -242,6 +288,18 @@ export default function VendorDashboardPage() {
       return `${diffInDays}d ago`
     }
   }
+
+  useEffect(() => {
+    fetchEnquiries();
+  }, [searchTerm, serviceFilter, priorityFilter])
+
+  useEffect(() => {
+    // Temporarily disable checkAuth to prevent cookie deletion
+    // TODO: Re-enable once token validation APIs are properly implemented
+    checkAuth("vendor", router, toast)
+    checkSessionInCookie()
+    checkBusinessStatus()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -361,16 +419,15 @@ export default function VendorDashboardPage() {
                     />
                   </div>
 
-                  <Select value={serviceFilter} onValueChange={setServiceFilter}>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="border-gray-200 focus:border-[#B80D2D] focus:ring-[#B80D2D]">
                       <SelectValue placeholder="Filter by service" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Services</SelectItem>
-                      <SelectItem value="Roofing Services">Roofing Services</SelectItem>
-                      <SelectItem value="Flooring Services">Flooring Services</SelectItem>
-                      <SelectItem value="Electrical Services">Electrical Services</SelectItem>
-                      <SelectItem value="Plumbing Services">Plumbing Services</SelectItem>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="Open">Open</SelectItem>
+                      <SelectItem value="Closed">Closed</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>
 
@@ -414,15 +471,16 @@ export default function VendorDashboardPage() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
-                        <h3 className="text-xl font-bold text-gray-900">{enquiry.service}</h3>
-                        <Badge className={`${priorityConfig[enquiry.priority].color} border px-2 py-1 text-xs`}>
-                          {priorityConfig[enquiry.priority].label}
+                        <h3 className="text-xl font-bold text-gray-900">{enquiry.serviceRequired}</h3>
+                        <Badge className={`${priorityConfig[enquiry.priorityLevel]?.color} border px-2 py-1 text-xs`}>
+                          {priorityConfig[enquiry.priorityLevel]?.label}
                         </Badge>
-                        {enquiry.hasResponded && (
+                        {enquiry.hasVendorQuote && (
                           <Badge className="bg-green-50 text-green-700 border-green-200 border px-2 py-1 text-xs">
                             Quote Sent
                           </Badge>
                         )}
+
                       </div>
                       <p className="text-sm text-gray-500 mb-2">
                         Customer: {enquiry.customerName} • {enquiry.location}
@@ -488,7 +546,16 @@ export default function VendorDashboardPage() {
                           </Button>
                         </Link>
 
-                        {!enquiry.hasResponded && (
+                        {enquiry.hasVendorQuote ? (
+                          <Button
+                            variant="outline"
+                            disabled
+                            className="w-full border-gray-400 text-gray-400 bg-transparent cursor-not-allowed"
+                          >
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Already Quoted
+                          </Button>
+                        ) : (
                           <Button
                             variant="outline"
                             className="w-full border-[#B80D2D] text-[#B80D2D] hover:bg-[#B80D2D] hover:text-white bg-transparent"
@@ -497,6 +564,7 @@ export default function VendorDashboardPage() {
                             Quick Quote
                           </Button>
                         )}
+
                       </div>
                     </div>
                   </div>
