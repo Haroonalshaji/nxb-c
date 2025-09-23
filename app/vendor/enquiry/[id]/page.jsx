@@ -83,22 +83,18 @@ export default function EnquiryDetailPage() {
   }
 
   const priorityConfig = {
-    High: {
-      label: "High Priority",
+    high: {
+      label: "High",
       color: "bg-red-100 text-red-700 border-red-300",
     },
-    Medium: {
-      label: "Medium Priority",
+    medium: {
+      label: "Medium",
       color: "bg-orange-100 text-orange-700 border-orange-300",
     },
-    Low: {
-      label: "Low Priority",
+    low: {
+      label: "Low",
       color: "bg-green-100 text-green-700 border-green-300",
-    },
-    default: {
-      label: "No Priority",
-      color: "bg-gray-100 text-gray-700 border-gray-300",
-    },
+    }
   }
 
   const getFileIcon = (fileType) => {
@@ -349,6 +345,7 @@ export default function EnquiryDetailPage() {
                     <p className="text-sm text-gray-500">Location</p>
                   </div>
                 </div>
+                
               </CardContent>
             </Card>
 
