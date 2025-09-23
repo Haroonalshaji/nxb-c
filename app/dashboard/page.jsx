@@ -15,6 +15,7 @@ import { checkAuth } from "@/lib/utils/authUtil"
 import { attachmentFromCustomer, changeCustomerEnquiryStatus, dashboardEnquiryStatus, fetchCustomerEnquiry, getAndSearchEnquiryFilters } from "@/lib/api/commonApi"
 import { StatusUpdateModal } from "@/components/customerStatusUpdateModal"
 import AttachmentsGrid from "@/components/imageAttachmentGrid"
+import Link from "next/link"
 
 
 const statusColors = {
@@ -293,10 +294,10 @@ export default function DashboardPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <CardTitle className="text-lg">{enquiry.serviceRequired}</CardTitle>
-                        <Badge className={`${statusColors[enquiry.status]} text-xs`}>
+                        <Badge className={`${statusColors[enquiry.status]} hover:bg-green hover:text-red text-xs`}>
                           {enquiry.status ? enquiry.status.replace("_", " ").toUpperCase() : "N/A"}
                         </Badge>
-                        <Badge className={`${priorityColors[enquiry.priorityLevel]} text-xs`}>
+                        <Badge className={`${priorityColors[enquiry.priorityLevel]} hover:bg-red hover:text-green text-xs`}>
                           {enquiry.priorityLevel ? enquiry.priorityLevel.toUpperCase() : "N/A"}
                         </Badge>
                       </div>
@@ -338,14 +339,15 @@ export default function DashboardPage() {
                     {/* Action Buttons */}
                     <div className="flex gap-4 mt-4">
                       {/* View Enquiry */}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="bg-blue-500 text-white"
-                      >
-                        View Enquiry
-                      </Button>
-
+                      <Link href={`/dashboard/enquiries/${enquiry.enquiryGuid}`}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-blue-500 text-white"
+                        >
+                          View Enquiry
+                        </Button>
+                      </Link>
                       {/* Attachments */}
                       <Button
                         variant="outline"
