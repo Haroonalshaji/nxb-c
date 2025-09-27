@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'
+import { useEffect, useState } from "react"
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Building2, User, Bell, Settings, LogOut } from 'lucide-react'
@@ -15,6 +16,8 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function HeaderVendor() {
   const pathname = usePathname();
+  const [vendorName, setVendorName] = useState("");
+  const [vendorEmail, setVendorEmail] = useState("");
   const isDashboard = pathname.startsWith('/vendor/dashboard');
   const isRegister = pathname === '/vendor/register';
   const isSignIn = pathname === '/vendor';
@@ -38,8 +41,10 @@ export default function HeaderVendor() {
     router.push('/vendor');
   };
 
-  const getVendorName = sessionStorage.getItem("vendorName");
-  const getVendorEmail = sessionStorage.getItem("vendorEmail");
+  useEffect(() => {
+    setVendorName(sessionStorage.getItem("vendorName") || "");
+    setVendorEmail(sessionStorage.getItem("vendorEmail") || "");
+  }, []);
 
 
   if (!isSignIn && !isRegister && !isApproval) {
@@ -59,8 +64,8 @@ export default function HeaderVendor() {
             </div>
             <div className="flex items-center">
               <div className="flex flex-col text-right mr-2">
-                <span className="font-semibold">{getVendorName}</span>
-                <span className="text-xs text-white/80">{getVendorEmail}</span>
+                <span className="font-semibold">{vendorName}</span>
+                <span className="text-xs text-white/80">{vendorEmail}</span>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

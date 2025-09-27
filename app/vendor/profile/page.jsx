@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,6 +19,7 @@ import {
     Edit3,
     Save,
     X,
+    Paperclip,
     Camera,
     Star,
     ArrowLeft,
@@ -26,30 +27,11 @@ import {
     Settings,
     Info,
     Shield,
+    Award,
 } from "lucide-react"
-
-const serviceOptions = [
-    "Roofing Services",
-    "Ceiling Installation",
-    "Flooring Services",
-    "Electrical Services",
-    "Plumbing Services",
-    "HVAC Services",
-    "Painting Services",
-    "Carpentry Services",
-    "Masonry Services",
-    "Landscaping Services",
-    "Kitchen Remodeling",
-    "Bathroom Renovation",
-    "Concrete Work",
-    "Insulation Services",
-    "Windows & Doors",
-    "Siding Installation",
-    "Drywall Services",
-    "Tile Installation",
-    "Demolition Services",
-    "General Contracting",
-]
+import { deleteBusinessServices, getBusinessAddress, getBusinessServices, getServiceTypes, getVendorBusiness, getVendorProfileData, setBusinessServices, updateBusinessAddress, updateVendorBusiness, updateVendorProfileData } from "@/lib/api/commonApi"
+import { useToast } from "@/hooks/use-toast"
+import { useRouter } from "next/navigation"
 
 const experienceOptions = ["1-2 years", "3-5 years", "6-10 years", "11-15 years", "16-20 years", "20+ years"]
 
@@ -60,50 +42,24 @@ const businessTypeOptions = [
     { value: "corporation", label: "Corporation" },
 ]
 
-// Mock vendor data
-const initialVendorData = {
-    firstName: "John",
-    lastName: "Smith",
-    email: "john.smith@eliteroofing.com",
-    phone: "+1 (555) 123-4567",
-    profileImage: null,
-    businessName: "Elite Roofing Co.",
-    businessType: "llc",
-    licenseNumber: "LIC-2024-001234",
-    insuranceNumber: "INS-789456123",
-    experience: "11-15 years",
-    description:
-        "Elite Roofing Co. has been serving the community for over 12 years with professional roofing services. We specialize in residential and commercial roofing, repairs, and maintenance. Our team is fully licensed, insured, and committed to delivering quality workmanship with excellent customer service.",
-    address: "123 Construction Ave",
-    city: "Downtown",
-    state: "CA",
-    zipCode: "90210",
-    services: ["Roofing Services", "Siding Installation", "Windows & Doors"],
-    foundedYear: "2012",
-    employeeCount: "5-10",
-    serviceRadius: "25 miles",
-    workingHours: "Monday - Friday: 8:00 AM - 6:00 PM, Saturday: 9:00 AM - 4:00 PM",
-    certifications: [
-        { name: "Licensed General Contractor", issuer: "State of California", year: "2012" },
-        { name: "OSHA Safety Certified", issuer: "OSHA", year: "2023" },
-        { name: "Roofing Contractor License", issuer: "State Board", year: "2012" },
-    ],
-    portfolioImages: [],
-    accountStatus: "active",
-    subscriptionPlan: "Professional",
-    memberSince: "2024-01-01",
-    rating: 4.8,
-    totalJobs: 127,
-    responseRate: 95,
-}
+
 
 export default function VendorProfilePage() {
-    const [vendorData, setVendorData] = useState(initialVendorData)
     const [isEditing, setIsEditing] = useState(false)
-    const [editedData, setEditedData] = useState(initialVendorData)
+    const [editedData, setEditedData] = useState({})
     const [activeTab, setActiveTab] = useState("personal")
     const [isSaving, setIsSaving] = useState(false)
     const [saveMessage, setSaveMessage] = useState("")
+    const { toast } = useToast();
+    const router = useRouter()
+
+    // rendering profile sections
+    const [personalData, setPersonalData] = useState({ firstName: "", lastName: "", email: "", phone: "", status: "" })
+    const [businessData, setBusinessData] = useState({ businessName: "", businessType: "", experience: "", description: "" })
+    const [addressData, setAddressData] = useState({ address: "", city: "", state: "", zipCode: "" })
+    const [servicesData, setServicesData] = useState({ services: [] });
+    const [vendorSelectedServices, setVendorSelectedServices] = useState([]);
+    const [businessGuid, setBusinessGuid] = useState("")
 
     const handleInputChange = (field, value) => {
         setEditedData((prev) => ({
@@ -112,37 +68,252 @@ export default function VendorProfilePage() {
         }))
     }
 
-    const handleServiceToggle = (service) => {
-        setEditedData((prev) => ({
-            ...prev,
-            services: prev.services.includes(service)
-                ? prev.services.filter((s) => s !== service)
-                : [...prev.services, service],
-        }))
-    }
-
     const handleSave = async () => {
         setIsSaving(true)
-        setTimeout(() => {
-            setVendorData(editedData)
-            setIsEditing(false)
-            setIsSaving(false)
-            setSaveMessage("Profile updated successfully!")
+
+        try {
+            let response
+            switch (activeTab) {
+                case "personal":
+                    let payloadPersonal = {
+                        firstName: editedData.firstName,
+                        lastName: editedData.lastName,
+                        phoneNo: editedData.phone,
+                    }
+                    const responseFromProfile = await updateVendorProfileData(payloadPersonal);
+                    console.log("responseFromProfile", responseFromProfile);
+                    if (responseFromProfile.data.isSuccess) {
+                        toast({
+                            title: responseFromProfile.data.message,
+                            variant: "success",
+                        })
+                        getVendorPersonalDetail();
+                    } else {
+                        toast({
+                            title: responseFromProfile.data.message,
+                            variant: "destructive",
+                        })
+                    }
+                    break
+                case "business":
+                    let payloadBusiness = {
+                        businessName: editedData.businessName,
+                        businessType: editedData.businessType,
+                        yearsOfExperience: editedData.experience,
+                        businessDescrption: editedData.description,
+                        licenseNumber: editedData.licenseNumber,
+                        insuranceNumber: editedData.insuranceNumber
+                    }
+                    const responseFrombusiness = await updateVendorBusiness(payloadBusiness);
+                    console.log("responseFrombusiness", responseFrombusiness);
+                    if (responseFrombusiness.data.isSuccess) {
+                        toast({
+                            title: responseFrombusiness.data.message,
+                            variant: "success",
+                        })
+                        getVendorBusinessDetail();
+                    } else {
+                        toast({
+                            title: responseFrombusiness.data.message,
+                            variant: "destructive",
+                        })
+                    }
+                    break
+                case "businessAddress":
+                    let payloadBusinessAddress = {
+                        streetAddress: editedData.address,
+                        city: editedData.city,
+                        state: editedData.state,
+                        zipCode: editedData.zipCode,
+                    }
+                    const responseFromBusinessAddress = await updateBusinessAddress(payloadBusinessAddress);
+                    if (responseFromBusinessAddress.data.isSuccess) {
+                        toast({
+                            title: responseFromBusinessAddress.data.message,
+                            variant: "success",
+                        })
+                        getVendorBusinessAddress();
+                    } else {
+                        toast({
+                            title: responseFromBusinessAddress.data.message,
+                            variant: "destructive",
+                        })
+                    }
+                    break
+                case "services":
+                    setIsEditing(false)
+                    break
+                default:
+                    break
+            }
+
+            if (response?.ok) {
+                setIsEditing(false)
+                setSaveMessage("Profile updated successfully!")
+                setTimeout(() => setSaveMessage(""), 3000)
+            } else {
+                setSaveMessage("Failed to update profile.")
+                setTimeout(() => setSaveMessage(""), 3000)
+            }
+        } catch (error) {
+            console.error(error)
+            setSaveMessage("An error occurred while saving.")
             setTimeout(() => setSaveMessage(""), 3000)
-        }, 1000)
+        } finally {
+            setIsSaving(false)
+        }
+    }
+
+    const handleServiceToggle = async (serviceId, isChecked) => {
+        console.log("Toggled service:", serviceId, "Checked:", isChecked);
+        let payload = { serviceId: serviceId, businessGuid: businessGuid }
+        console.log("payload", payload);
+        try {
+            if (isChecked) {
+                const checkTheService = await setBusinessServices(payload);
+                console.log("checkTheService", checkTheService);
+                if (checkTheService.data.isSuccess) {
+                    toast({
+                        title: checkTheService.data.message,
+                        description: `${serviceId} has been added to your services.`,
+                        variant: "success",
+                    });
+                } else {
+                    toast({
+                        title: checkTheService.data.message,
+                        description: `${serviceId} has been added to your services.`,
+                        variant: "destructive",
+                    });
+                }
+
+            } else {
+                const deleteTheService = await deleteBusinessServices(payload);
+                console.log(payload)
+                toast({
+                    title: deleteTheService.data.message,
+                    description: `${serviceId} has been removed from your services.`,
+                    variant: "destructive",
+                });
+            }
+            getVendorSelectedServices();
+
+        } catch (err) {
+            console.error("Error updating service:", err);
+        }
+    };
+
+    const getVendorPersonalDetail = async () => {
+        try {
+            const reponseVendorProfile = await getVendorProfileData();
+            if (reponseVendorProfile.data.result) {
+                setPersonalData({
+                    firstName: reponseVendorProfile?.data?.result?.firstName || "",
+                    lastName: reponseVendorProfile?.data?.result?.lastName || "",
+                    email: reponseVendorProfile?.data?.result?.emailAddress || "",
+                    phone: reponseVendorProfile?.data?.result?.phoneNo || "",
+                    status: reponseVendorProfile?.data?.result?.status || "",
+                })
+            } else {
+                console.error("No vendor personal data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching vendor personal details:", error);
+        }
+    }
+
+    const getVendorBusinessDetail = async () => {
+        try {
+            const responseVendorBusiness = await getVendorBusiness();
+            if (responseVendorBusiness.data.result) {
+                setBusinessData({
+                    businessName: responseVendorBusiness?.data?.result?.businessName || "",
+                    businessType: responseVendorBusiness?.data?.result?.businessType || "",
+                    experience: responseVendorBusiness?.data?.result?.yearsOfExperience || "",
+                    description: responseVendorBusiness?.data?.result?.businessDescrption || "",
+                    licenseNumber: responseVendorBusiness?.data?.result?.licenseNumber || "",
+                    insuranceNumber: responseVendorBusiness?.data?.result?.insuranceNumber || "",
+                })
+                setBusinessGuid(responseVendorBusiness?.data?.result?.businessGuid)
+            } else {
+                console.error("No vendor business data found.");
+            }
+
+        } catch (error) {
+            console.error("Error fetching vendor business details:", error);
+        }
+    }
+
+    const getVendorBusinessAddress = async () => {
+        try {
+            const responseVendorBusinessAddress = await getBusinessAddress();
+            if (responseVendorBusinessAddress.data.result) {
+                setAddressData({
+                    address: responseVendorBusinessAddress?.data?.result?.streetAddress || "",
+                    city: responseVendorBusinessAddress?.data?.result?.city || "",
+                    state: responseVendorBusinessAddress?.data?.result?.state || "",
+                    zipCode: responseVendorBusinessAddress?.data?.result?.zipCode || "",
+                })
+            } else {
+                console.error("No vendor business address data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching vendor business address details:", error);
+        }
+    }
+
+    const certifications = [
+        {
+            id: 1,
+            name: "ISO 9001",
+            fileUrl: "/uploads/iso9001.pdf"
+        },
+        {
+            id: 2,
+            name: "Cyber Security Compliance",
+            fileUrl: "/uploads/cyber-cert.pdf"
+        }
+    ]
+
+    const getVendorSelectedServices = async () => {
+        try {
+            const responseVendorSelectedServices = await getBusinessServices();
+            if (responseVendorSelectedServices.data.result) {
+                setVendorSelectedServices(responseVendorSelectedServices?.data?.result || [])
+            } else {
+                console.error("No vendor services data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching vendor services details:", error);
+        }
+    }
+
+    const getVendorServicesDetail = async () => {
+        try {
+            const getEachServiceType = await getServiceTypes();
+            console.log("getEachServiceType", getEachServiceType);
+            if (getEachServiceType.data.result) {
+                setServicesData(getEachServiceType.data.result);
+            } else {
+                console.error("No vendor services data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching vendor services details:", error);
+        }
     }
 
     const handleCancel = () => {
-        setEditedData(vendorData)
         setIsEditing(false)
+    }
+    const handleAddCertification = () => {
+        console.log("Add Certification clicked");
     }
 
     const renderPersonalInfo = () => (
         <div className="space-y-6">
             {/* Profile Picture */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center ">
                 <div className="relative">
-                    <Avatar className="w-24 h-24">
+                    {/* <Avatar className="w-24 h-24">
                         <AvatarImage
                             src={vendorData.profileImage || "/placeholder.svg"}
                             alt="Profile"
@@ -152,28 +323,28 @@ export default function VendorProfilePage() {
                             {vendorData.firstName[0]}
                             {vendorData.lastName[0]}
                         </AvatarFallback>
-                    </Avatar>
-                    {isEditing && (
+                    </Avatar> */}
+                    {/* {isEditing && (
                         <Button
                             size="sm"
                             className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0 bg-[#B80D2D] hover:bg-[#9A0B26]"
                         >
                             <Camera className="h-4 w-4" />
                         </Button>
-                    )}
+                    )} */}
                 </div>
-                <div>
+                <div className="">
                     <h3 className="text-xl font-bold text-gray-900">
-                        {vendorData.firstName} {vendorData.lastName}
+                        {personalData?.firstName} {personalData?.lastName}
                     </h3>
-                    <p className="text-gray-600">{vendorData.businessName}</p>
-                    <div className="flex items-center space-x-4 mt-2">
+                    <p className="text-gray-600">{personalData.businessName}</p>
+                    <div className="flex items-center mt-2">
                         <div className="flex items-center space-x-1">
-                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                            <span className="text-sm font-medium">{vendorData.rating}</span>
+                            {/* <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                            <span className="text-sm font-medium">{personalData.rating}</span> */}
                         </div>
-                        <Badge className="bg-green-50 text-green-700 border-green-200">
-                            {vendorData.accountStatus === "active" ? "Active" : "Inactive"}
+                        <Badge className={personalData.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"} >
+                            {personalData.status === "active" ? "Active" : "Blocked"}
                         </Badge>
                     </div>
                 </div>
@@ -185,7 +356,7 @@ export default function VendorProfilePage() {
                     <Label htmlFor="firstName">First Name *</Label>
                     <Input
                         id="firstName"
-                        value={isEditing ? editedData.firstName : vendorData.firstName}
+                        value={isEditing ? editedData.firstName : personalData?.firstName}
                         onChange={(e) => handleInputChange("firstName", e.target.value)}
                         disabled={!isEditing}
                         className={!isEditing ? "bg-gray-50" : ""}
@@ -195,7 +366,7 @@ export default function VendorProfilePage() {
                     <Label htmlFor="lastName">Last Name *</Label>
                     <Input
                         id="lastName"
-                        value={isEditing ? editedData.lastName : vendorData.lastName}
+                        value={isEditing ? editedData.lastName : personalData.lastName}
                         onChange={(e) => handleInputChange("lastName", e.target.value)}
                         disabled={!isEditing}
                         className={!isEditing ? "bg-gray-50" : ""}
@@ -211,7 +382,7 @@ export default function VendorProfilePage() {
                         <Input
                             id="email"
                             type="email"
-                            value={isEditing ? editedData.email : vendorData.email}
+                            value={isEditing ? editedData.email : personalData.email}
                             onChange={(e) => handleInputChange("email", e.target.value)}
                             disabled={!isEditing}
                             className={`pl-10 ${!isEditing ? "bg-gray-50" : ""}`}
@@ -225,7 +396,7 @@ export default function VendorProfilePage() {
                         <Input
                             id="phone"
                             type="tel"
-                            value={isEditing ? editedData.phone : vendorData.phone}
+                            value={isEditing ? editedData.phone : personalData.phone}
                             onChange={(e) => handleInputChange("phone", e.target.value)}
                             disabled={!isEditing}
                             className={`pl-10 ${!isEditing ? "bg-gray-50" : ""}`}
@@ -233,6 +404,26 @@ export default function VendorProfilePage() {
                     </div>
                 </div>
             </div>
+            {isEditing && (
+                <div className="  p-4 flex justify-end gap-2">
+                    {saveMessage && (
+                        <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-lg mr-auto">
+                            <CheckCircle className="h-4 w-4 text-green-300" />
+                            <span className="text-sm text-green-700">{saveMessage}</span>
+                        </div>
+                    )}
+                    <Button onClick={() => handleCancel()} variant="outline">
+                        <X className="h-4 w-4 mr-2" /> Cancel
+                    </Button>
+                    <Button
+                        onClick={() => handleSave(activeTab)}
+                        className="bg-[#B80D2D] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                    </Button>
+                </div>
+            )}
         </div>
     )
 
@@ -243,7 +434,7 @@ export default function VendorProfilePage() {
                     <Label htmlFor="businessName">Business Name *</Label>
                     <Input
                         id="businessName"
-                        value={isEditing ? editedData.businessName : vendorData.businessName}
+                        value={isEditing ? editedData.businessName : businessData?.businessName}
                         onChange={(e) => handleInputChange("businessName", e.target.value)}
                         disabled={!isEditing}
                         className={!isEditing ? "bg-gray-50" : ""}
@@ -252,7 +443,7 @@ export default function VendorProfilePage() {
                 <div className="space-y-2">
                     <Label htmlFor="businessType">Business Type *</Label>
                     <Select
-                        value={isEditing ? editedData.businessType : vendorData.businessType}
+                        value={isEditing ? editedData.businessType : businessData?.businessType}
                         onValueChange={(value) => handleInputChange("businessType", value)}
                         disabled={!isEditing}
                     >
@@ -277,7 +468,7 @@ export default function VendorProfilePage() {
                         <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
                             id="licenseNumber"
-                            value={isEditing ? editedData.licenseNumber : vendorData.licenseNumber}
+                            value={isEditing ? editedData.licenseNumber : businessData?.licenseNumber}
                             onChange={(e) => handleInputChange("licenseNumber", e.target.value)}
                             disabled={!isEditing}
                             className={`pl-10 ${!isEditing ? "bg-gray-50" : ""}`}
@@ -290,7 +481,7 @@ export default function VendorProfilePage() {
                         <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
                             id="insuranceNumber"
-                            value={isEditing ? editedData.insuranceNumber : vendorData.insuranceNumber}
+                            value={isEditing ? editedData.insuranceNumber : businessData.insuranceNumber}
                             onChange={(e) => handleInputChange("insuranceNumber", e.target.value)}
                             disabled={!isEditing}
                             className={`pl-10 ${!isEditing ? "bg-gray-50" : ""}`}
@@ -303,7 +494,7 @@ export default function VendorProfilePage() {
                 <div className="space-y-2">
                     <Label htmlFor="experience">Years of Experience *</Label>
                     <Select
-                        value={isEditing ? editedData.experience : vendorData.experience}
+                        value={isEditing ? editedData.experience : businessData?.experience}
                         onValueChange={(value) => handleInputChange("experience", value)}
                         disabled={!isEditing}
                     >
@@ -319,7 +510,7 @@ export default function VendorProfilePage() {
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                     <Label htmlFor="foundedYear">Founded Year</Label>
                     <Input
                         id="foundedYear"
@@ -328,30 +519,49 @@ export default function VendorProfilePage() {
                         disabled={!isEditing}
                         className={!isEditing ? "bg-gray-50" : ""}
                     />
+                </div> */}
+                <div className="space-y-2">
+                    <Label htmlFor="description">Business Description *</Label>
+                    <Textarea
+                        id="description"
+                        value={isEditing ? editedData.description : businessData?.description}
+                        onChange={(e) => handleInputChange("description", e.target.value)}
+                        disabled={!isEditing}
+                        rows={4}
+                        className={!isEditing ? "bg-gray-50" : ""}
+                    />
                 </div>
             </div>
-
-            <div className="space-y-2">
-                <Label htmlFor="description">Business Description *</Label>
-                <Textarea
-                    id="description"
-                    value={isEditing ? editedData.description : vendorData.description}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
-                    disabled={!isEditing}
-                    rows={4}
-                    className={!isEditing ? "bg-gray-50" : ""}
-                />
-            </div>
+            {isEditing && (
+                <div className="  p-4 flex justify-end gap-2">
+                    {saveMessage && (
+                        <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-lg mr-auto">
+                            <CheckCircle className="h-4 w-4 text-green-300" />
+                            <span className="text-sm text-green-700">{saveMessage}</span>
+                        </div>
+                    )}
+                    <Button onClick={() => handleCancel()} variant="outline">
+                        <X className="h-4 w-4 mr-2" /> Cancel
+                    </Button>
+                    <Button
+                        onClick={() => handleSave(activeTab)}
+                        className="bg-[#B80D2D] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                    </Button>
+                </div>
+            )}
         </div>
     )
 
-    const renderCertifications = () => (
+    const renderBusinessAddress = () => (
         <div className="space-y-6">
             <div className="space-y-4">
                 <Label>Business Address *</Label>
                 <div className="space-y-4">
                     <Input
-                        value={isEditing ? editedData.address : vendorData.address}
+                        value={isEditing ? editedData.address : addressData?.address}
                         onChange={(e) => handleInputChange("address", e.target.value)}
                         placeholder="Street address"
                         disabled={!isEditing}
@@ -359,21 +569,21 @@ export default function VendorProfilePage() {
                     />
                     <div className="grid md:grid-cols-3 gap-4">
                         <Input
-                            value={isEditing ? editedData.city : vendorData.city}
+                            value={isEditing ? editedData.city : addressData?.city}
                             onChange={(e) => handleInputChange("city", e.target.value)}
                             placeholder="City"
                             disabled={!isEditing}
                             className={!isEditing ? "bg-gray-50" : ""}
                         />
                         <Input
-                            value={isEditing ? editedData.state : vendorData.state}
+                            value={isEditing ? editedData.state : addressData?.state}
                             onChange={(e) => handleInputChange("state", e.target.value)}
                             placeholder="State"
                             disabled={!isEditing}
                             className={!isEditing ? "bg-gray-50" : ""}
                         />
                         <Input
-                            value={isEditing ? editedData.zipCode : vendorData.zipCode}
+                            value={isEditing ? editedData.zipCode : addressData?.zipCode}
                             onChange={(e) => handleInputChange("zipCode", e.target.value)}
                             placeholder="ZIP Code"
                             disabled={!isEditing}
@@ -382,6 +592,26 @@ export default function VendorProfilePage() {
                     </div>
                 </div>
             </div>
+            {isEditing && (
+                <div className="  p-4 flex justify-end gap-2">
+                    {saveMessage && (
+                        <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-lg mr-auto">
+                            <CheckCircle className="h-4 w-4 text-green-300" />
+                            <span className="text-sm text-green-700">{saveMessage}</span>
+                        </div>
+                    )}
+                    <Button onClick={() => handleCancel()} variant="outline">
+                        <X className="h-4 w-4 mr-2" /> Cancel
+                    </Button>
+                    <Button
+                        onClick={() => handleSave(activeTab)}
+                        className="bg-[#B80D2D] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                    </Button>
+                </div>
+            )}
         </div>
     )
 
@@ -396,50 +626,210 @@ export default function VendorProfilePage() {
                 <div className="mb-6">
                     <Label className="text-base font-medium">Current Services:</Label>
                     <div className="flex flex-wrap gap-2 mt-3">
-                        {vendorData.services.map((service) => (
-                            <Badge key={service} className="bg-[#B80D2D] text-white px-3 py-1">
-                                {service}
-                            </Badge>
-                        ))}
+                        {vendorSelectedServices.map((service) => {
+                            // Find the service details in master list by ID
+                            const matched = servicesData.find(
+                                (s) => s.id === service.serviceId
+                            )
+
+                            return (
+                                <Badge
+                                    key={service.serviceId}
+                                    className="bg-[#B80D2D] text-white px-3 py-1"
+                                >
+                                    {matched?.categoryName || `Service #${service.serviceId}`}
+                                </Badge>
+                            )
+                        })}
                     </div>
                 </div>
             )}
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {serviceOptions.map((service) => {
-                    const isSelected = isEditing ? editedData.services.includes(service) : vendorData.services.includes(service)
+                {servicesData.map((service) => {
+                    // check if this service is in vendorSelectedServices
+                    const isSelected = vendorSelectedServices.some(
+                        (s) => s.serviceId === service.id && s.status === "Active"
+                    )
                     return (
                         <div
-                            key={service}
-                            className={`flex items-center space-x-3 p-4 border rounded-lg transition-colors ${isSelected ? "bg-[#B80D2D]/5 border-[#B80D2D]" : "hover:bg-gray-50 border-gray-200"
+                            key={service.id}
+                            className={`flex items-center space-x-3 p-4 border rounded-lg transition-colors ${isSelected
+                                ? "bg-[#B80D2D]/5 border-[#B80D2D]"
+                                : "hover:bg-gray-50 border-gray-200"
                                 } ${!isEditing ? "opacity-60" : "hover:bg-gray-50"}`}
                         >
                             <Checkbox
-                                id={service}
+                                id={service.id.toString()}
                                 checked={isSelected}
-                                onCheckedChange={() => isEditing && handleServiceToggle(service)}
+                                onCheckedChange={(checked) =>
+                                    isEditing && handleServiceToggle(service.id, checked)
+                                }
                                 disabled={!isEditing}
                                 className="data-[state=checked]:bg-[#B80D2D] data-[state=checked]:border-[#B80D2D]"
                             />
-                            <Label htmlFor={service} className={`flex-1 ${isEditing ? "cursor-pointer" : "cursor-default"}`}>
-                                {service}
+
+                            <Label
+                                htmlFor={service.id.toString()}
+                                className={`flex-1 ${isEditing ? "cursor-pointer" : "cursor-default"}`}
+                            >
+                                {service.categoryName}
                             </Label>
                         </div>
                     )
                 })}
             </div>
 
-            {isEditing && (
+            {/* {isEditing && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <h4 className="font-medium text-blue-900 mb-2">Selected Services:</h4>
                     <div className="flex flex-wrap gap-2">
-                        {editedData.services.map((service) => (
-                            <Badge key={service} className="bg-blue-100 text-blue-800 px-3 py-1">
-                                {service}
-                            </Badge>
+                        {vendorSelectedServices.map((service) => {
+                            const matched = servicesData.find(
+                                (s) => s.id === service.serviceId
+                            )
+
+                            return (
+                                <Badge
+                                    key={service.serviceId}
+                                    className="bg-blue-100 text-blue-800 px-3 py-1"
+                                >
+                                    {matched?.categoryName || `Service #${service.serviceId}`}
+                                </Badge>
+                            )
+                        })}
+                    </div>
+                    {vendorSelectedServices.length === 0 && (
+                        <p className="text-blue-600 text-sm">No services selected</p>
+                    )}
+                </div>
+            )} */}
+
+            {isEditing && (
+                <div className="  p-4 flex justify-end gap-2">
+                    {/* {saveMessage && (
+                        <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-lg mr-auto">
+                            <CheckCircle className="h-4 w-4 text-green-300" />
+                            <span className="text-sm text-green-700">{saveMessage}</span>
+                        </div>
+                    )} */}
+                    <Button onClick={() => handleCancel()} variant="outline">
+                        <X className="h-4 w-4 mr-2" /> Cancel
+                    </Button>
+                    <Button
+                        onClick={() => handleSave(activeTab)}
+                        className="bg-[#B80D2D] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                    </Button>
+                </div>
+            )}
+        </div>
+    )
+
+    const renderCertifications = () => (
+        <div className="space-y-6">
+            <div className="text-center mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Certifications</h3>
+                <p className="text-gray-600">
+                    Attach all certifications your business holds
+                </p>
+            </div>
+
+            {/* Current certifications */}
+            {!isEditing && (
+                <div className="mb-6">
+                    <Label className="text-base font-medium">Current Certifications:</Label>
+                    <div className="space-y-3 mt-3">
+                        {(!certifications || certifications.length === 0) && (
+                            <p className="text-gray-500 text-sm">No certifications uploaded</p>
+                        )}
+                        {certifications?.map((cert) => (
+                            <div
+                                key={cert.id}
+                                className="flex items-center justify-between border rounded-lg p-3 bg-gray-50"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Paperclip className="w-4 h-4 text-gray-500" />
+                                    <span className="font-medium text-gray-800">{cert.name}</span>
+                                </div>
+                                {cert.fileUrl && (
+                                    <a
+                                        href={cert.fileUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-[#B80D2D] hover:underline"
+                                    >
+                                        View File
+                                    </a>
+                                )}
+                            </div>
                         ))}
                     </div>
-                    {editedData.services.length === 0 && <p className="text-blue-600 text-sm">No services selected</p>}
+                </div>
+            )}
+
+            {/* Editable certifications list (when editing) */}
+            {isEditing && (
+                <div className="space-y-3">
+                    {(!certifications || certifications.length === 0) && (
+                        <p className="text-blue-600 text-sm">No certifications added yet</p>
+                    )}
+
+                    {certifications?.map((cert) => (
+                        <div
+                            key={cert.id}
+                            className="flex items-center justify-between border rounded-lg p-3 bg-blue-50 hover:bg-blue-100 transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <Paperclip className="w-4 h-4 text-gray-500" />
+                                <span className="font-medium text-gray-800">{cert.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                {cert.fileUrl && (
+                                    <a
+                                        href={cert.fileUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-[#B80D2D] hover:underline"
+                                    >
+                                        View File
+                                    </a>
+                                )}
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleRemoveCertification(cert.id)}
+                                >
+                                    Remove
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+
+                    <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={handleAddCertification}
+                    >
+                        + Add Certification
+                    </Button>
+                </div>
+            )}
+
+            {isEditing && (
+                <div className="p-4 flex justify-end gap-2">
+                    <Button onClick={() => handleCancel()} variant="outline">
+                        <X className="h-4 w-4 mr-2" /> Cancel
+                    </Button>
+                    <Button
+                        onClick={() => handleSave("certifications")}
+                        className="bg-[#B80D2D] text-white"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Changes
+                    </Button>
                 </div>
             )}
         </div>
@@ -450,13 +840,59 @@ export default function VendorProfilePage() {
         { id: "business", label: "Business Info", icon: Info },
         { id: "businessAddress", label: "Business Address", icon: Building2 },
         { id: "services", label: "Services", icon: Settings },
+        { id: "certifications", label: "Certification", icon: Award },
     ]
+
+    const handleEditClick = () => {
+        setIsEditing(true);
+
+        // Initialize editedData based on active tab
+        switch (activeTab) {
+            case "personal":
+                setEditedData({
+                    firstName: personalData.firstName,
+                    lastName: personalData.lastName,
+                    email: personalData.email,
+                    phone: personalData.phone,
+                });
+                break;
+            case "business":
+                setEditedData({
+                    businessName: businessData.businessName,
+                    businessType: businessData.businessType,
+                    experience: businessData.experience,
+                    description: businessData.description,
+                    licenseNumber: businessData.licenseNumber,
+                    insuranceNumber: businessData.insuranceNumber,
+                });
+                break;
+            case "businessAddress":
+                setEditedData({
+                    address: addressData.address,
+                    city: addressData.city,
+                    state: addressData.state,
+                    zipCode: addressData.zipCode,
+                });
+                break;
+            default:
+                break;
+        }
+    };
+
+
+    useEffect(() => {
+        getVendorPersonalDetail();
+        getVendorBusinessDetail();
+        getVendorBusinessAddress();
+        getVendorServicesDetail();
+        getVendorSelectedServices();
+    }, [])
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-32">
             {/* Header */}
 
-            {/* Action Bar */}
+            {/* Action Bar
             {isEditing && (
                 <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg p-4 flex justify-end gap-2 z-50">
                     {saveMessage && (
@@ -472,9 +908,19 @@ export default function VendorProfilePage() {
                         {isSaving ? "Saving..." : <> <Save className="h-4 w-4 mr-2" /> Save Changes</>}
                     </Button>
                 </div>
-            )}
+            )} */}
 
             <div className="container mx-auto px-4 max-w-7xl py-8">
+                {/* Back Button */}
+                <div className="mb-4">
+                    <Button
+                        variant="outline"
+                        className="flex items-center gap-2 text-gray-700 hover:bg-gray-200"
+                        onClick={() => router.back()}
+                    >
+                        ← Back
+                    </Button>
+                </div>
                 <div className="grid lg:grid-cols-4 gap-8">
                     {/* Sidebar Navigation */}
                     <div className="lg:col-span-1">
@@ -486,11 +932,12 @@ export default function VendorProfilePage() {
                                         return (
                                             <button
                                                 key={tab.id}
+                                                disabled={isEditing}
                                                 onClick={() => setActiveTab(tab.id)}
                                                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
                                                     ? "bg-[#B80D2D] text-white"
                                                     : "text-gray-600 hover:bg-gray-100"
-                                                    }`}
+                                                    }   ${isEditing ? "opacity-50 cursor-not-allowed" : ""}`}
                                             >
                                                 <Icon className="h-5 w-5" />
                                                 <span className="font-medium">{tab.label}</span>
@@ -507,7 +954,7 @@ export default function VendorProfilePage() {
                         <Card className="border-0 shadow-lg bg-white">
                             <CardHeader className="flex flex-row items-center justify-between px-8 py-4 w-full">
                                 {/* Left: Title */}
-                                <CardTitle className="text-lg font-bold text-gray-900">
+                                <CardTitle className="lg:text-[30px] text-[24px] font-bold text-gray-900">
                                     Vendor Profile
                                 </CardTitle>
 
@@ -516,7 +963,7 @@ export default function VendorProfilePage() {
                                     <Button
                                         size="sm"
                                         className="bg-[#B80D2D] text-white hover:bg-[#9A0B26]"
-                                        onClick={() => setIsEditing(true)}
+                                        onClick={handleEditClick}
                                     >
                                         <Edit3 className="h-4 w-4 mr-2" />
                                         Edit
@@ -528,8 +975,9 @@ export default function VendorProfilePage() {
                             <CardContent className="p-8">
                                 {activeTab === "personal" && renderPersonalInfo()}
                                 {activeTab === "business" && renderBusinessInfo()}
-                                {activeTab === "businessAddress" && renderCertifications()}
+                                {activeTab === "businessAddress" && renderBusinessAddress()}
                                 {activeTab === "services" && renderServices()}
+                                {activeTab === "certifications" && renderCertifications()}
                             </CardContent>
                         </Card>
                     </div>
