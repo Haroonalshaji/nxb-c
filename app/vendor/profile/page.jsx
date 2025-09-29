@@ -29,7 +29,7 @@ import {
     Shield,
     Award,
 } from "lucide-react"
-import { deleteBusinessServices, getBusinessAddress, getBusinessServices, getServiceTypes, getVendorBusiness, getVendorProfileData, setBusinessServices, updateBusinessAddress, updateVendorBusiness, updateVendorProfileData } from "@/lib/api/commonApi"
+import { deleteBusinessServices, deleteVendorLicense, getBusinessAddress, getBusinessServices, getServiceTypes, getVendorBusiness, getVendorLicences, getVendorProfileData, setBusinessServices, updateBusinessAddress, updateVendorBusiness, updateVendorProfileData, uploadVendorLicense } from "@/lib/api/commonApi"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 
@@ -60,6 +60,7 @@ export default function VendorProfilePage() {
     const [servicesData, setServicesData] = useState({ services: [] });
     const [vendorSelectedServices, setVendorSelectedServices] = useState([]);
     const [businessGuid, setBusinessGuid] = useState("")
+    const [certifications, setCertifications] = useState([]);
 
     const handleInputChange = (field, value) => {
         setEditedData((prev) => ({
@@ -143,6 +144,12 @@ export default function VendorProfilePage() {
                 case "services":
                     setIsEditing(false)
                     break
+                case "certifications":
+                    setIsEditing(false);
+                    toast({
+                        title: "Certifications updated.",
+                        variant: "success",
+                    });
                 default:
                     break
             }
@@ -261,18 +268,18 @@ export default function VendorProfilePage() {
         }
     }
 
-    const certifications = [
-        {
-            id: 1,
-            name: "ISO 9001",
-            fileUrl: "/uploads/iso9001.pdf"
-        },
-        {
-            id: 2,
-            name: "Cyber Security Compliance",
-            fileUrl: "/uploads/cyber-cert.pdf"
-        }
-    ]
+    // const certifications = [
+    //     {
+    //         id: 1,
+    //         name: "ISO 9001",
+    //         fileUrl: "/uploads/iso9001.pdf"
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "Cyber Security Compliance",
+    //         fileUrl: "/uploads/cyber-cert.pdf"
+    //     }
+    // ]
 
     const getVendorSelectedServices = async () => {
         try {
@@ -290,7 +297,7 @@ export default function VendorProfilePage() {
     const getVendorServicesDetail = async () => {
         try {
             const getEachServiceType = await getServiceTypes();
-            console.log("getEachServiceType", getEachServiceType);
+            // console.log("getEachServiceType", getEachServiceType);
             if (getEachServiceType.data.result) {
                 setServicesData(getEachServiceType.data.result);
             } else {
@@ -303,9 +310,97 @@ export default function VendorProfilePage() {
 
     const handleCancel = () => {
         setIsEditing(false)
+        getAllVendorLicences();
+
     }
+
     const handleAddCertification = () => {
-        console.log("Add Certification clicked");
+        const newCert = {
+            id: Date.now(), // temp unique ID
+            name: `Certification ${certifications.length + 1}`,
+            fileUrl: "" // could open a file picker here
+        };
+
+        setCertifications((prev) => [...prev, newCert]);
+    };
+
+    const handleRemoveCertification = async (certId) => {
+        if (certId) {
+            try {
+                const responseDeleteVendorLicense = await deleteVendorLicense(certId);
+                console.log("responseDeleteVendorLicense", responseDeleteVendorLicense);
+                if (responseDeleteVendorLicense.data.isSuccess) {
+                    toast({
+                        title: responseDeleteVendorLicense.data.message,
+                        variant: "success",
+                    });
+                } else {
+                    toast({
+                        title: responseDeleteVendorLicense.data.message,
+                        variant: "destructive",
+                    });
+                }
+                setCertifications((prev) => prev.filter((cert) => cert.fileGuid !== certId));
+                getAllVendorLicences();
+            } catch (error) {
+                console.error("Error deleting vendor license:", error);
+            }
+        }
+        setCertifications((prev) => prev.filter((cert) => cert.fileGuid !== certId));
+
+    };
+
+    const handleCertificationChange = (id, field, value) => {
+        setCertifications((prev) =>
+            prev.map((cert) =>
+                cert.id === id ? { ...cert, [field]: value } : cert
+            )
+        );
+    };
+
+    const handleUploadCertification = async (cert) => {
+        if (!cert || !cert.fileName) {
+            toast({
+                title: "⚠️ Please provide both a name and a file",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("AttachmentName", cert.fileName);
+        formData.append("Attachment", cert.file);
+
+        try {
+            const response = await uploadVendorLicense(formData);
+            // console.log("Uploaded:", response.data);
+            toast({
+                title: `✅${response.data.message}`,
+                variant: "success",
+            });
+
+            // Optionally refresh list from API
+            getAllVendorLicences();
+        } catch (error) {
+            console.error("Upload failed:", error);
+            toast({
+                title: `❌ Upload failed: ${error.message || "Unknown error"}`,
+                variant: "destructive",
+            });
+        }
+    };
+
+    const getAllVendorLicences = async () => {
+        try {
+            const responseVendorLicence = await getVendorLicences();
+            if (responseVendorLicence.data.isSuccess) {
+                setCertifications(responseVendorLicence?.data?.result || []);
+            } else {
+                console.error("No vendor licence data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching vendor licence details:", error);
+        }
     }
 
     const renderPersonalInfo = () => (
@@ -343,8 +438,8 @@ export default function VendorProfilePage() {
                             {/* <Star className="h-4 w-4 text-yellow-500 fill-current" />
                             <span className="text-sm font-medium">{personalData.rating}</span> */}
                         </div>
-                        <Badge className={personalData.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"} >
-                            {personalData.status === "active" ? "Active" : "Blocked"}
+                        <Badge className={personalData.status === "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"} >
+                            {personalData.status === "Active" ? "Active" : "Blocked"}
                         </Badge>
                     </div>
                 </div>
@@ -732,12 +827,10 @@ export default function VendorProfilePage() {
         <div className="space-y-6">
             <div className="text-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Certifications</h3>
-                <p className="text-gray-600">
-                    Attach all certifications your business holds
-                </p>
+                <p className="text-gray-600">Attach all certifications your business holds</p>
             </div>
 
-            {/* Current certifications */}
+            {/* Current certifications (read-only) */}
             {!isEditing && (
                 <div className="mb-6">
                     <Label className="text-base font-medium">Current Certifications:</Label>
@@ -745,18 +838,18 @@ export default function VendorProfilePage() {
                         {(!certifications || certifications.length === 0) && (
                             <p className="text-gray-500 text-sm">No certifications uploaded</p>
                         )}
-                        {certifications?.map((cert) => (
+                        {certifications?.map((cert, index) => (
                             <div
-                                key={cert.id}
+                                key={index}
                                 className="flex items-center justify-between border rounded-lg p-3 bg-gray-50"
                             >
                                 <div className="flex items-center gap-3">
                                     <Paperclip className="w-4 h-4 text-gray-500" />
-                                    <span className="font-medium text-gray-800">{cert.name}</span>
+                                    <span className="font-medium text-gray-800">{cert.fileName}</span>
                                 </div>
-                                {cert.fileUrl && (
+                                {cert.filePath && (
                                     <a
-                                        href={cert.fileUrl}
+                                        href={cert.filePath}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-sm text-[#B80D2D] hover:underline"
@@ -770,41 +863,57 @@ export default function VendorProfilePage() {
                 </div>
             )}
 
-            {/* Editable certifications list (when editing) */}
+            {/* Editable list */}
             {isEditing && (
                 <div className="space-y-3">
                     {(!certifications || certifications.length === 0) && (
                         <p className="text-blue-600 text-sm">No certifications added yet</p>
                     )}
 
-                    {certifications?.map((cert) => (
+                    {certifications?.map((cert, index) => (
                         <div
-                            key={cert.id}
-                            className="flex items-center justify-between border rounded-lg p-3 bg-blue-50 hover:bg-blue-100 transition-colors"
+                            key={index}
+                            className="flex items-center gap-3 border rounded-lg p-3 bg-blue-50 hover:bg-blue-100 transition-colors"
                         >
-                            <div className="flex items-center gap-3">
-                                <Paperclip className="w-4 h-4 text-gray-500" />
-                                <span className="font-medium text-gray-800">{cert.name}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                {cert.fileUrl && (
-                                    <a
-                                        href={cert.fileUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-sm text-[#B80D2D] hover:underline"
-                                    >
-                                        View File
-                                    </a>
-                                )}
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => handleRemoveCertification(cert.id)}
-                                >
-                                    Remove
-                                </Button>
-                            </div>
+                            <Input
+                                type="text"
+                                placeholder="Certification Name"
+                                value={cert.fileName || ""}
+                                onChange={(e) =>
+                                    handleCertificationChange(cert.id, "fileName", e.target.value)
+                                }
+                                className="w-1/3"
+                            />
+
+                            <Input
+                                type="file"
+                                onChange={(e) =>
+                                    handleCertificationChange(
+                                        cert.id,
+                                        "file",
+                                        e.target.files?.[0] || null
+                                    )
+                                }
+                                className="w-1/3"
+                            />
+
+                            <Button
+                                size="sm"
+                                disabled={!!cert.filePath}
+                                className="bg-[#B80D2D] text-white w-1/4"
+                                onClick={() => handleUploadCertification(cert)}
+                            >
+                                Upload
+                            </Button>
+
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                className="w-1/4"
+                                onClick={() => handleRemoveCertification(cert.fileGuid)}
+                            >
+                                Remove
+                            </Button>
                         </div>
                     ))}
 
@@ -833,7 +942,8 @@ export default function VendorProfilePage() {
                 </div>
             )}
         </div>
-    )
+    );
+
 
     const tabs = [
         { id: "personal", label: "Personal Info", icon: User },
@@ -879,13 +989,13 @@ export default function VendorProfilePage() {
         }
     };
 
-
     useEffect(() => {
         getVendorPersonalDetail();
         getVendorBusinessDetail();
         getVendorBusinessAddress();
         getVendorServicesDetail();
         getVendorSelectedServices();
+        getAllVendorLicences();
     }, [])
 
     return (

@@ -11,9 +11,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
 import { getCookie } from "@/lib/utils/cookies"
+import { useEffect, useState } from "react"
 
 export default function DashboardHeader() {
   const router = useRouter()
+  const [userName, setVendorName] = useState("");
+  const [email, setVendorEmail] = useState("");
 
   function deleteCookie(name) {
     try {
@@ -31,8 +34,10 @@ export default function DashboardHeader() {
     router.push("/signin")
   }
 
-  const userName = sessionStorage.getItem("CusUserName")
-  const email = sessionStorage.getItem("CusUserEmail");
+  useEffect(() => {
+    setVendorName(sessionStorage.getItem("CusUserName") || "");
+    setVendorEmail(sessionStorage.getItem("CusUserEmail") || "");
+  }, []);
 
   return (
     // Header

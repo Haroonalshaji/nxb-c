@@ -557,7 +557,7 @@ export default function VendorDashboardPage() {
                       <div className="flex flex-col space-y-2">
                         <Link href={`/vendor/enquiry/${enquiry.id}`}>
                           <Button className="w-full bg-[#B80D2D] hover:bg-[#9A0B26] text-white">
-                            <Eye className="h-4 w-4 mr-2" />
+                            <Eye className="h-4 w-4" />
                             View Details & Quote
                           </Button>
                         </Link>
@@ -572,13 +572,15 @@ export default function VendorDashboardPage() {
                             Already Quoted
                           </Button>
                         ) : (
-                          <Button
-                            variant="outline"
-                            className="w-full border-[#B80D2D] text-[#B80D2D] hover:bg-[#B80D2D] hover:text-white bg-transparent"
-                          >
-                            <MessageSquare className="h-4 w-4 mr-2" />
-                            Quick Quote
-                          </Button>
+                          <Link href={`/vendor/enquiry/${enquiry.id}`}>
+                            <Button
+                              variant="outline"
+                              className="w-full border-[#B80D2D] text-[#B80D2D] hover:bg-[#B80D2D] hover:text-white bg-transparent"
+                            >
+                              <MessageSquare className="h-4 w-4 mr-2" />
+                              Quick Quote
+                            </Button>
+                          </Link>
                         )}
 
                       </div>

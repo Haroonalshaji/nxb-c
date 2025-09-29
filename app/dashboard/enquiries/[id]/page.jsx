@@ -242,11 +242,12 @@ export default function IndCustEnq() {
             {/* Quotes List */}
             {quotes.length >= 1 && (
               <div className="border-0 shadow-lg p-3 hover:shadow-xl transition-all duration-300 bg-white overflow-hidden">
-                <div>
+                <div className="flex items-center space-x-2">
+                  <Shield></Shield>
                   <h2 className="lg:text-[26px] text-[20px] text-black font-medium">Vendor's Quoted :</h2>
                 </div>
                 <div className="space-y-6 mt-6">
-                  {quotes.map((quote) => (
+                  {quotes.sort((a, b) => new Date(b.updatedOn || b.addedOn) - new Date(a.updatedOn || a.addedOn)).map((quote) => (
                     <Card
                       key={quote.quoteGuid}
                       className="border-0  border hover:shadow-xl transition-all duration-300 bg-white overflow-hidden"
@@ -271,6 +272,14 @@ export default function IndCustEnq() {
                                     Premium
                                   </Badge>
                                 )}
+                                {/* ✅ Updated badge if updatedOn ≠ addedOn */}
+                                {quote.updatedOn &&
+                                  new Date(quote.updatedOn).getTime() !==
+                                  new Date(quote.addedOn).getTime() && (
+                                    <Badge className="bg-blue-100 text-blue-700 border-blue-200 border">
+                                      Updated
+                                    </Badge>
+                                  )}
                               </div>
 
                               {/* Vendor Info */}
@@ -292,6 +301,7 @@ export default function IndCustEnq() {
                             </div>
                           </div>
 
+
                           {/* Quote Price / Timeline */}
                           <div className="flex items-center space-x-3 mt-4 lg:mt-0">
                             <div className="text-right">
@@ -310,7 +320,7 @@ export default function IndCustEnq() {
                       {/* Quote Content */}
                       <CardContent className="pt-0 grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Main Details */}
-                        <div className="col-span-1 lg:col-span-2 space-y-6">
+                        <div className="col-span-1 lg:col-span-2 space-y-3">
                           {/* Work Description */}
                           <div>
                             <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
@@ -348,6 +358,35 @@ export default function IndCustEnq() {
                               <p className="text-gray-700 leading-relaxed">{quote.notes}</p>
                             </div>
                           )}
+                          {/* ✅ Vendor Attachments */}
+                          {quote.attachment && quote.attachment.length > 0 && (
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                                <Paperclip className="h-4 w-4 mr-2 text-[#B93239]" />
+                                Vendor Attachments
+                              </h4>
+                              <ul className="space-y-2">
+
+                                <li
+                                  // key={idx}
+                                  className="flex items-center justify-between p-2 border rounded-lg bg-gray-50 hover:bg-gray-100"
+                                >
+                                  <span className="text-sm font-medium text-gray-800 truncate">
+                                    {quote.attachment}
+                                  </span>
+                                  <a
+                                    href={quote.attachment}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm text-[#B93239] hover:underline"
+                                  >
+                                    View
+                                  </a>
+                                </li>
+
+                              </ul>
+                            </div>
+                          )}
                         </div>
 
                         {/* Sidebar */}
@@ -357,8 +396,16 @@ export default function IndCustEnq() {
                             <h4 className="font-semibold text-gray-900 mb-3">Quote Details</h4>
                             <div className="space-y-2 text-sm">
                               <div className="flex justify-between">
-                                <span className="text-gray-600">Submitted:</span>
-                                <span className="font-medium">{getTimeAgo(quote.addedOn)}</span>
+                                <span className="text-gray-600">
+                                  {new Date(quote.updatedOn).getTime() !== new Date(quote.addedOn).getTime()
+                                    ? "Updated:"
+                                    : "Submitted:"}
+                                </span>
+                                <span className="font-medium">
+                                  {new Date(quote.updatedOn).getTime() !== new Date(quote.addedOn).getTime()
+                                    ? getTimeAgo(quote.updatedOn)
+                                    : getTimeAgo(quote.addedOn)}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-gray-600">Timeline:</span>
@@ -366,6 +413,7 @@ export default function IndCustEnq() {
                               </div>
                             </div>
                           </div>
+
 
                           {/* Contact Vendor */}
                           <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
@@ -381,6 +429,7 @@ export default function IndCustEnq() {
                               </div>
                             </div>
                           </div>
+
 
                           {/* Actions
                         <div className="space-y-3">

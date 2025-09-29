@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DollarSign, Clock, Send } from "lucide-react"
-import { getVendorQuote, submitVendorQuoteForm } from "@/lib/api/commonApi"
+import { getVendorQuote, submitVendorQuoteForm, updateVendorQuoteForm } from "@/lib/api/commonApi"
 import { useToast } from "@/hooks/use-toast"
 
 export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasResponded }) {
@@ -20,7 +20,10 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
         materials: "",
         warranty: "",
         additionalNotes: "",
+        attachment: "",
+        quoteGuid: ""
     })
+
     const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter()
     const { toast } = useToast();
@@ -53,6 +56,8 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                 materials: getRetData.matAndEqup,
                 warranty: getRetData.warrantyInfo,
                 additionalNotes: getRetData.notes,
+                quoteGuid: getRetData.quoteGuid,
+                attachment: getRetData.attachment 
             })
         } catch (error) {
             console.error(error)
@@ -62,8 +67,27 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
     const handleSubmitQuote = async (e) => {
         e.preventDefault()
         setIsSubmitting(true)
+        if (hasResponded) {
+            formUpdation();
+        } else {
+            formSubmission();
+        }
+    }
+
+    const formSubmission = async () => {
         try {
-            const submitQuoteForm = await submitVendorQuoteForm(payload);
+            const formData = new FormData()
+            formData.append("EnquiryGuid", enquiryGuid)
+            formData.append("QuotePrice", quoteData.price)
+            formData.append("TimeLine", quoteData.timeline)
+            formData.append("Description", quoteData.description)
+            formData.append("MatAndEqup", quoteData.materials || "")
+            formData.append("WarrantyInfo", quoteData.warranty || "")
+            formData.append("Notes", quoteData.additionalNotes || "")
+            if (quoteData.attachment) {
+                formData.append("Attachment", quoteData.attachment)
+            }
+            const submitQuoteForm = await submitVendorQuoteForm(formData);
             const reponseFromQuoteSubmission = submitQuoteForm.data;
             console.log(reponseFromQuoteSubmission)
             setIsSubmitting(false);
@@ -77,6 +101,41 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
             console.error(error);
             toast({
                 title: error.response.data.message || "Quote Submisstion Failed",
+                description: error.response.data.message ? "" : "Please try Again..!",
+                variant: "destructive"
+            })
+            setModalOpen(false)
+        }
+    }
+
+    const formUpdation = async () => {
+        try {
+            const formData = new FormData()
+            formData.append("EnquiryGuid", enquiryGuid)
+            formData.append("QuotePrice", quoteData.price)
+            formData.append("TimeLine", quoteData.timeline)
+            formData.append("QuoteGuid", quoteData.quoteGuid)
+            formData.append("Description", quoteData.description)
+            formData.append("MatAndEqup", quoteData.materials || "")
+            formData.append("WarrantyInfo", quoteData.warranty || "")
+            formData.append("Notes", quoteData.additionalNotes || "")
+            if (quoteData.attachment) {
+                formData.append("Attachment", quoteData.attachment)
+            }
+            const submitQuoteForm = await updateVendorQuoteForm(formData);
+            const reponseFromQuoteSubmission = submitQuoteForm.data;
+            console.log(reponseFromQuoteSubmission)
+            setIsSubmitting(false);
+            toast({
+                title: reponseFromQuoteSubmission.message,
+                variant: "success"
+            })
+            setModalOpen(false)
+        } catch (error) {
+            setIsSubmitting(false);
+            console.error(error);
+            toast({
+                title: error.response.data.message || "Quote Updation Failed",
                 description: error.response.data.message ? "" : "Please try Again..!",
                 variant: "destructive"
             })
@@ -114,7 +173,7 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                                         placeholder="2,500"
                                         className="pl-10"
                                         required
-                                        readOnly={hasResponded} 
+                                    // readOnly={hasResponded}
                                     />
                                 </div>
                             </div>
@@ -129,7 +188,7 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                                         placeholder="5-7 business days"
                                         className="pl-10"
                                         required
-                                        readOnly={hasResponded} 
+                                    // readOnly={hasResponded}
                                     />
                                 </div>
                             </div>
@@ -144,7 +203,7 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                                 placeholder="Describe the work you'll perform..."
                                 rows={4}
                                 required
-                                readOnly={hasResponded} 
+                            // readOnly={hasResponded}
                             />
                         </div>
 
@@ -156,7 +215,7 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                                 onChange={(e) => handleInputChange("materials", e.target.value)}
                                 placeholder="List materials and equipment..."
                                 rows={3}
-                                readOnly={hasResponded} 
+                            // readOnly={hasResponded}
                             />
                         </div>
 
@@ -167,7 +226,7 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                                 value={quoteData.warranty}
                                 onChange={(e) => handleInputChange("warranty", e.target.value)}
                                 placeholder="e.g., 5-year warranty on materials..."
-                                readOnly={hasResponded} 
+                            // readOnly={hasResponded}
                             />
                         </div>
 
@@ -179,13 +238,53 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                                 onChange={(e) => handleInputChange("additionalNotes", e.target.value)}
                                 placeholder="Any additional info..."
                                 rows={3}
-                                readOnly={hasResponded} 
+                            // readOnly={hasResponded}
                             />
                         </div>
 
+                        <div className="space-y-2">
+                            <Label htmlFor="attachment">Attachment</Label>
+
+                            {/* Show preview if file exists */}
+                            {quoteData.attachment && (
+                                <div className="flex items-center gap-3">
+                                    {quoteData.attachment instanceof File ? (
+                                        // If user just selected a file, preview it
+                                        <img
+                                            src={URL.createObjectURL(quoteData.attachment)}
+                                            alt="Attachment preview"
+                                            className="w-20 h-20 object-cover rounded border"
+                                        />
+                                    ) : (
+                                        // If prefilled from API, show server link
+                                        <a
+                                            href={quoteData.attachment}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm text-[#B80D2D] underline"
+                                        >
+                                            View current file
+                                        </a>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* File input to upload/replace */}
+                            <Input
+                                id="attachment"
+                                type="file"
+                                onChange={(e) =>
+                                    handleInputChange("attachment", e.target.files?.[0] || null)
+                                }
+                                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                            />
+                        </div>
+
+
+
                         <Button
                             type="submit"
-                            disabled={hasResponded ? true : isSubmitting}
+                            // disabled={hasResponded ? true : isSubmitting}
                             className="w-full bg-gradient-to-r from-[#B80D2D] to-[#9A0B26] hover:from-[#9A0B26] hover:to-[#7A0920] text-white"
                         >
                             {isSubmitting ? "Sending..." : "Send Quote"}

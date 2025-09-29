@@ -36,7 +36,7 @@ import {
 } from "lucide-react"
 
 import VendorOTPBox from "@/components/vendorOTPDialog"
-import { vendorRegister } from "@/lib/api/auth"
+import { submitVendorRegistration, vendorRegister } from "@/lib/api/auth"
 import { useToast } from "@/hooks/use-toast"
 import { getServiceTypes } from "@/lib/api/commonApi"
 import { title } from "process"
@@ -83,6 +83,8 @@ export default function VendorRegisterPage() {
     zipCode: "",
     // Services
     services: [],
+    licenseName: "",
+    licenseFile: null,
     // Payment
     cardNumber: "",
     expiryDate: "",
@@ -209,6 +211,21 @@ export default function VendorRegisterPage() {
     return Object.keys(newErrors).length === 0
   }
 
+  const validateStep3Files = () => {
+    const newErrors = {}
+
+    if (!formData.licenseName || formData.licenseName.trim() === "") {
+      newErrors.licenseName = "License name is required"
+    }
+
+    if (!formData.licenseFile) {
+      newErrors.licenseFile = "License file is required"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -269,12 +286,14 @@ export default function VendorRegisterPage() {
     // Validate all steps before final submission
     const step1Valid = validateStep1()
     const step2Valid = validateStep2()
-    const step3Valid = validateStep3()
+    const step3Valid = validateStep3Files()
+    const step4Valid = validateStep3()
     if (!step1Valid || !step2Valid || !step3Valid) {
       // Go to the first step with errors
       if (!step1Valid) setCurrentStep(1)
       else if (!step2Valid) setCurrentStep(2)
       else if (!step3Valid) setCurrentStep(3)
+      else if (!step4Valid) setCurrentStep(4)
       return
     }
     setIsLoading(true)
@@ -297,9 +316,13 @@ export default function VendorRegisterPage() {
       country: formData.country,
       zipCode: formData.zipCode,
       providingServices: formData.services,
+      licenseName: formData.licenseName,
+      licenseFile: formData.licenseFile,
     };
+
+    console.log("Payload to be sent:", payload);
     try {
-      const response = await vendorRegister(payload);
+      const response = await submitVendorRegistration(payload);
       // console.log(payload)
       // console.log(RetData.data)
       const RetData = response.data;
@@ -317,7 +340,7 @@ export default function VendorRegisterPage() {
               title: `✅  ${RetData.message}`,
               variant: "success",
             });
-            setCurrentStep(4);
+            setCurrentStep(5);
             setVendGuid(RetData.result.ven_id)
             clearTheForm();
           } else {
@@ -358,7 +381,7 @@ export default function VendorRegisterPage() {
   }
 
   const nextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 5) {
       let isValid = false
 
       // Validate current step before proceeding
@@ -366,6 +389,8 @@ export default function VendorRegisterPage() {
         isValid = validateStep1()
       } else if (currentStep === 2) {
         isValid = validateStep2()
+      } else if (currentStep === 3) {
+        isValid = validateStep3Files();
       }
 
       if (!isValid) {
@@ -373,12 +398,26 @@ export default function VendorRegisterPage() {
       }
 
       // Show confirmation dialog for step 2 (business info)
-      if (currentStep === 2) {
+      if (currentStep === 3) {
         setShowConfirmationDialog(true)
       } else {
         setCurrentStep(currentStep + 1)
       }
     }
+  }
+
+  const handleFileChange = (index, key, value) => {
+    const newFiles = [...formData.files]
+    newFiles[index] = { ...newFiles[index], [key]: value }
+    setFormData((prev) => ({ ...prev, files: newFiles }))
+  }
+
+  // const addFileField = () => {
+  //   setFormData((prev) => ({ ...prev, files: [...prev.files, { fileName: "", fileAttachment: null }] }))
+  // }
+
+  const removeFileField = (index) => {
+    setFormData((prev) => ({ ...prev, files: prev.files.filter((_, i) => i !== index) }))
   }
 
   const confirmNextStep = () => {
@@ -398,7 +437,7 @@ export default function VendorRegisterPage() {
 
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center mb-8">
-      {[1, 2, 3, 4].map((step) => (
+      {[1, 2, 3, 4, 5].map((step) => (
         <div key={step} className="flex items-center">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${step <= currentStep ? "bg-[#B80D2D] text-white" : "bg-gray-200 text-gray-500"
@@ -406,7 +445,7 @@ export default function VendorRegisterPage() {
           >
             {step < currentStep ? <CheckCircle className="h-5 w-5" /> : step}
           </div>
-          {step < 4 && <div className={`w-16 h-1 mx-2 ${step < currentStep ? "bg-[#B80D2D]" : "bg-gray-200"}`} />}
+          {step < 5 && <div className={`w-16 h-1 mx-2 ${step < currentStep ? "bg-[#B80D2D]" : "bg-gray-200"}`} />}
         </div>
       ))}
     </div>
@@ -718,6 +757,60 @@ export default function VendorRegisterPage() {
     </div>
   )
 
+  const renderStep3Files = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold">Upload License</h2>
+        <p className="text-gray-600">
+          Please upload your business license file with a name
+        </p>
+      </div>
+
+      {/* License Name */}
+      <div className="space-y-2">
+        <Label htmlFor="licenseName">License Name *</Label>
+        <Input
+          id="licenseName"
+          placeholder="Enter license name"
+          value={formData.licenseName || ""}
+          onChange={(e) => handleInputChange("licenseName", e.target.value)}
+        />
+      </div>
+
+      {/* License File */}
+      <div className="space-y-2">
+        <Label htmlFor="licenseFile">License File *</Label>
+        <Input
+          id="licenseFile"
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png"
+          onChange={(e) =>
+            handleInputChange("licenseFile", e.target.files?.[0] || null)
+          }
+        />
+      </div>
+
+      {errors.license && (
+        <p className="text-sm text-red-500">{errors.license}</p>
+      )}
+
+      {/* Note */}
+      <p className="text-sm text-gray-500 mt-4">
+        ℹ️ You can upload additional documents later in your profile section.
+      </p>
+    </div>
+  );
+
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 16; // how many services per page
+
+  const totalPages = Math.ceil(filteredServices.length / pageSize);
+  const paginatedServices = filteredServices.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
   const renderStep3 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
@@ -735,9 +828,9 @@ export default function VendorRegisterPage() {
         />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4 max-h-[400px] overflow-y-scroll">
-        {filteredServices.length > 0 ? (
-          filteredServices.map((service) => (
+      <div className="grid md:grid-cols-2 gap-4">
+        {paginatedServices.length > 0 ? (
+          paginatedServices.map((service) => (
             <div
               key={service.id}
               className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50"
@@ -757,6 +850,7 @@ export default function VendorRegisterPage() {
             No services found.
           </div>
         )}
+
       </div>
 
 
@@ -779,6 +873,27 @@ export default function VendorRegisterPage() {
           </div>
         </div>
       )}
+      <div className="flex justify-center items-center space-x-2 mt-4 ">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((p) => p - 1)}
+        >
+          Previous
+        </Button>
+        <span className="text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((p) => p + 1)}
+        >
+          Next
+        </Button>
+      </div>
 
       {/* Terms and Conditions */}
       <div className="space-y-4 pt-4 border-t">
@@ -817,6 +932,8 @@ export default function VendorRegisterPage() {
           <p className="text-sm text-red-500 ml-6">{errors.agreeToPrivacy}</p>
         )}
       </div>
+
+
     </div>
   )
 
@@ -885,11 +1002,12 @@ export default function VendorRegisterPage() {
             <form onSubmit={handleSubmit}>
               {currentStep === 1 && renderStep1()}
               {currentStep === 2 && renderStep2()}
-              {currentStep === 3 && renderStep3()}
-              {currentStep === 4 && renderStep4()}
+              {currentStep === 3 && renderStep3Files()}
+              {currentStep === 4 && renderStep3()}
+              {currentStep === 5 && renderStep4()}
 
               {/* Only show buttons for steps 1-3, hide for step 4 (OTP verification) */}
-              {currentStep < 4 && (
+              {currentStep < 5 && (
                 <div className="flex justify-between mt-8 pt-6 border-t">
                   <Button
                     type="button"
@@ -902,7 +1020,7 @@ export default function VendorRegisterPage() {
                     Previous
                   </Button>
 
-                  {currentStep < 3 ? (
+                  {currentStep < 4 ? (
                     <Button
                       type="button"
                       onClick={nextStep}
@@ -937,7 +1055,7 @@ export default function VendorRegisterPage() {
               Confirm Changes
             </AlertDialogTitle>
             <AlertDialogDescription className="text-base">
-              {currentStep === 2
+              {currentStep === 3
                 ? "You are about to proceed to the services selection step. Once you continue, you won't be able to modify your business information without starting over. Are you sure you want to continue?"
                 : "You are about to proceed to the final step. Once you continue, you won't be able to modify your selected services without starting over. Are you sure you want to continue?"
               }
