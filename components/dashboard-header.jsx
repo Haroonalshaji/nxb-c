@@ -41,7 +41,7 @@ export default function DashboardHeader() {
     setTimeout(() => {
       const cookies = parseCookies();
       let name = cookies["CusUserName"];
-      let email = cookies["vendorEmail"]
+      let email = cookies["CusUserEmail"]
       setVendorName(name || "");
       setVendorEmail(email || "");
     }, 1000);

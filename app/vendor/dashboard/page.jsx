@@ -171,13 +171,13 @@ export default function VendorDashboardPage() {
   const getVendorProfileNameAndData = async () => {
     try {
       const getNameAndMail = await getVendorProfileData();
-      console.log(getNameAndMail)
+      // console.log(getNameAndMail)
       const firstName = getNameAndMail?.data?.result?.firstName;
       const lastName = getNameAndMail?.data?.result?.lastName;
       const email = getNameAndMail?.data?.result?.emailAddress;
 
-      sessionStorage.setItem("vendorName", firstName + " " + lastName);
-      sessionStorage.setItem("vendorEmail", email)
+      // sessionStorage.setItem("vendorName", firstName + " " + lastName);
+      // sessionStorage.setItem("vendorEmail", email)
       setCookie("vendorName", `${firstName} ${lastName}`, 1);
       setCookie("vendorEmail", email, 1);
 
@@ -328,21 +328,21 @@ export default function VendorDashboardPage() {
         <div className="container mx-auto px-4 max-w-7xl py-8">
           {/* Welcome Section */}
           <div className="mb-8">
-            <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl p-8 shadow-lg border border-gray-200">
-              <div className="flex justify-between items-start">
+            <div className="bg-gradient-to-r from-white to-gray-50 rounded-2xl lg:p-8 p-4 shadow-lg border border-gray-200">
+              <div className="flex justify-between items-start flex-wrap gap-6">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">Customer Enquiries</h1>
+                  <h1 className="lg:text-[32px] text-[24px] font-bold text-gray-900 mb-2">Customer Enquiries</h1>
                   <p className="text-lg text-gray-600 mb-4">
                     Browse and respond to customer service requests in your area
                   </p>
                   <div className="flex items-center space-x-6 text-sm text-gray-500">
                     <div className="flex items-center space-x-2">
                       <MessageSquare className="h-4 w-4 text-[#B80D2D]" />
-                      <span>Contact customers directly with your quotes</span>
+                      <span className="lg:text-[18px] text-[12px]">Contact customers directly with your quotes</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Star className="h-4 w-4 text-[#B80D2D]" />
-                      <span>Build your reputation with quality work</span>
+                      <span className="lg:text-[18px] text-[12px]">Build your reputation with quality work</span>
                     </div>
                   </div>
                 </div>
@@ -476,7 +476,7 @@ export default function VendorDashboardPage() {
           </div>
 
           {/* Enquiries List */}
-          <div className="gap-4  grid grid-cols-2">
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
             {filteredEnquiries.map((enquiry) => (
               <Card
                 key={enquiry.id}
@@ -489,13 +489,13 @@ export default function VendorDashboardPage() {
                 <CardHeader className="pb-4">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-3">
+                      <div className="flex items-center lg:space-x-3  mb-3 flex-wrap">
                         <h3 className="text-xl font-bold text-gray-900">{enquiry.serviceRequired}</h3>
                         <Badge className={`${priorityConfig[enquiry.priorityLevel]?.color} border px-2 py-1 text-xs`}>
                           {priorityConfig[enquiry.priorityLevel]?.label}
                         </Badge>
                         {enquiry.hasVendorQuote && (
-                          <Badge className="bg-green-50 text-green-700 border-green-200 border px-2 py-1 text-xs">
+                          <Badge className="bg-green-50 ms-3 text-green-700 border-green-200 border px-2 py-1 text-xs">
                             Quote Sent
                           </Badge>
                         )}
@@ -516,7 +516,7 @@ export default function VendorDashboardPage() {
                 </CardHeader>
 
                 <CardContent className="pt-0">
-                  <div className="grid lg:grid-cols-3 gap-6">
+                  <div className="grid lg:grid-cols-3 grid-cols-1 gap-6">
                     {/* Description and Details */}
                     <div className="lg:col-span-2 space-y-4">
                       <div>

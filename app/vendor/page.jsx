@@ -13,6 +13,7 @@ import { vendorSignin } from "@/lib/api/auth"
 import { useToast } from "@/hooks/use-toast"
 import { Eye, EyeOff } from "lucide-react"
 import { setCookie, getCookie, listAllCookies } from '@/lib/utils/cookies'
+import { getVendorProfileData } from "@/lib/api/commonApi"
 
 export default function VendorLoginPage() {
   const { toast } = useToast();
@@ -72,6 +73,11 @@ export default function VendorLoginPage() {
         const accessTokenFromCookie = getCookie('accessToken');
         const refreshTokenFromCookie = getCookie('refreshToken');
 
+        const vendorProfileInfo = await getVendorProfileData();
+        console.log(vendorProfileInfo,'vendor')
+        setCookie("newVendName", vendorProfileInfo.data.result.firstName)
+        setCookie("newVendEmail", vendorProfileInfo.data.result.emailAddress)
+
         // console.log('Access Token from cookie:', accessTokenFromCookie);
         // console.log('Refresh Token from cookie:', refreshTokenFromCookie);
         // console.log('All cookies:', document.cookie);
@@ -94,7 +100,7 @@ export default function VendorLoginPage() {
             // Navigate after a short delay to ensure cookies are set
             setTimeout(() => {
               router.push("/vendor/dashboard")
-            }, 100)
+            }, 10)
           } else {
             toast({
               title: "⚠️ Login successful but session not saved properly. Please try again.",

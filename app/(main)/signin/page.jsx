@@ -65,6 +65,9 @@ export default function SignInPage() {
             setCookie(null, 'userName', userRoles.userName, { path: '/', maxAge: 60 * 60 * 24 })
             setCookie(null, 'userStatus', userRoles.userStatus, { path: '/', maxAge: 60 * 60 * 24 })
             setCookie(null, 'role', userRoles.role, { path: '/', maxAge: 60 * 60 * 24 })
+
+            // const profileInfo = await basicProfileDetails();
+
           } catch {}
 
           // Redirect to dashboard after successful login
@@ -81,7 +84,7 @@ export default function SignInPage() {
               variant: "destructive",
             })
           }
-        }, 1000)
+        }, 10)
       }
     } catch (error) {
       setIsLoading(false)

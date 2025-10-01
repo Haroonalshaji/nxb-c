@@ -61,9 +61,6 @@ export default function HeaderVendor() {
     }
   }
 
-
-
-
   useEffect(() => {
     console.log("dddd");
 
@@ -94,14 +91,14 @@ export default function HeaderVendor() {
                 <Building2 className="h-6 w-6" />
               </div>
               <div>
-                <span className="text-xl font-bold">Nexus Built Vendor</span>
-                <p className="text-sm text-white/80">Manage Your Business</p>
+                <span className="lg:text-[22px] font-bold text-[12px]">Nexus Built Vendor</span>
+                <p className="lg:text-[16px] text-[8px] text-white/80">Manage Your Business</p>
               </div>
             </div>
             <div className="flex items-center">
               <div className="flex flex-col text-right mr-2">
-                <span className="font-semibold">{vendorName}</span>
-                <span className="text-xs text-white/80">{vendorEmail}</span>
+                <span className="font-semibold lg:text-[16px] text-[10px]">{vendorName}</span>
+                <span className="lg:text-[14px] text-[8px] text-white/80">{vendorEmail}</span>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
