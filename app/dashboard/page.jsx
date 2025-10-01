@@ -176,11 +176,11 @@ export default function DashboardPage() {
       const lastName = RetData?.data?.result?.lastName || "";
       const email = RetData?.data?.result?.emailAddress || "";
 
-      // setCookie("CusUserName", `${firstName} ${lastName}`, 1);
-      // setCookie("CusUserEmail", email, 1);
+      setCookie("CusUserName", `${firstName} ${lastName}`, 1);
+      setCookie("CusUserEmail", email, 1);
 
-      sessionStorage.setItem("CusUserName", firstName + " " + lastName)
-      sessionStorage.setItem("CusUserEmail", email)
+      // sessionStorage.setItem("CusUserName", firstName + " " + lastName)
+      // sessionStorage.setItem("CusUserEmail", email)
 
       console.log(RetData)
     } catch (error) {

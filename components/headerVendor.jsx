@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Building2, User, Bell, Settings, LogOut } from 'lucide-react'
+import { getVendorProfileData } from '@/lib/api/commonApi'
 
 import {
   DropdownMenu,
@@ -13,12 +14,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useToast } from "@/hooks/use-toast";
+import { getCookie } from "@/lib/utils/cookies";
+import { parseCookies } from 'nookies'
 
 export default function HeaderVendor() {
   const pathname = usePathname();
   const [vendorName, setVendorName] = useState("");
   const [vendorEmail, setVendorEmail] = useState("");
   const isDashboard = pathname.startsWith('/vendor/dashboard');
+  const token = getCookie("accessToken")
   const isRegister = pathname === '/vendor/register';
   const isSignIn = pathname === '/vendor';
   const isApproval = pathname === '/vendor/pending-approval'
@@ -30,7 +34,7 @@ export default function HeaderVendor() {
     sessionStorage.clear()
     try {
       const { destroyCookie } = require('nookies');
-      ['accessToken', 'refreshToken', 'userName', 'role', 'userStatus'].forEach((name) => {
+      ['accessToken', 'refreshToken', 'userName', 'role', 'userStatus', 'vendorEmail', 'vendorName'].forEach((name) => {
         destroyCookie(null, name, { path: '/' });
       });
     } catch { }
@@ -41,11 +45,43 @@ export default function HeaderVendor() {
     router.push('/vendor');
   };
 
-  useEffect(() => {
-    setVendorName(sessionStorage.getItem("vendorName") || "");
-    setVendorEmail(sessionStorage.getItem("vendorEmail") || "");
-  }, []);
+  const getVendorProfileNameAndData = async () => {
+    try {
+      const getNameAndMail = await getVendorProfileData();
+      console.log(getNameAndMail)
+      const vendorName = getNameAndMail?.data?.result?.firstName;
+      const lastName = getNameAndMail?.data?.result?.lastName;
+      const email = getNameAndMail?.data?.result?.emailAddress;
 
+      sessionStorage.setItem("vendorName", firstName + " " + lastName);
+      sessionStorage.setItem("vendorEmail", email)
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+
+
+  useEffect(() => {
+    console.log("dddd");
+
+    setTimeout(() => {
+      const cookies = parseCookies();
+      let name = cookies["vendorName"];
+      let email = cookies["vendorEmail"]
+      setVendorName(name || "");
+      setVendorEmail(email || "");
+    }, 1000);
+    // setVendorName(sessionStorage.getItem("vendorName") || "");
+    // setVendorEmail(sessionStorage.getItem("vendorEmail") || "");
+    // getVendorProfileNameAndData();
+
+
+  }, [token]);
+
+  // console.log("vender", vendorName, name, email);
 
   if (!isSignIn && !isRegister && !isApproval) {
     // Dashboard (logged-in) header

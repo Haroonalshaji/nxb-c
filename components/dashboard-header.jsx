@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
 import { getCookie } from "@/lib/utils/cookies"
+import { parseCookies } from 'nookies'
 import { useEffect, useState } from "react"
 
 export default function DashboardHeader() {
@@ -35,8 +36,15 @@ export default function DashboardHeader() {
   }
 
   useEffect(() => {
-    setVendorName(sessionStorage.getItem("CusUserName") || "");
-    setVendorEmail(sessionStorage.getItem("CusUserEmail") || "");
+    // setVendorName(sessionStorage.getItem("CusUserName") || "");
+    // setVendorEmail(sessionStorage.getItem("CusUserEmail") || "");
+    setTimeout(() => {
+      const cookies = parseCookies();
+      let name = cookies["CusUserName"];
+      let email = cookies["vendorEmail"]
+      setVendorName(name || "");
+      setVendorEmail(email || "");
+    }, 1000);
   }, []);
 
   return (

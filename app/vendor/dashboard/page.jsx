@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast"
 import { businessStatus, getVendorProfileData } from "@/lib/api/commonApi"
 import VendorStatusScreens from "@/components/vendor-status-screens"
 import { getAndSearchEnquiryFilters } from "@/lib/api/commonApi" // adjust to your file path
+import { setCookie } from "@/lib/utils/cookies"
 
 
 // Mock data for customer enquiries
@@ -177,6 +178,8 @@ export default function VendorDashboardPage() {
 
       sessionStorage.setItem("vendorName", firstName + " " + lastName);
       sessionStorage.setItem("vendorEmail", email)
+      setCookie("vendorName", `${firstName} ${lastName}`, 1);
+      setCookie("vendorEmail", email, 1);
 
     } catch (error) {
       console.error(error)
