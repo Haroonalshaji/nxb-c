@@ -27,9 +27,9 @@ import {
     Settings,
     Info,
     Shield,
-    Award,
+    Award, CreditCard
 } from "lucide-react"
-import { deleteBusinessServices, deleteVendorLicense, getBusinessAddress, getBusinessServices, getServiceTypes, getVendorBusiness, getVendorLicences, getVendorProfileData, setBusinessServices, updateBusinessAddress, updateVendorBusiness, updateVendorProfileData, uploadVendorLicense } from "@/lib/api/commonApi"
+import { deleteBusinessServices, deleteVendorLicense, getBusinessAddress, getBusinessServices, getServiceTypes, getVendorBusiness, getVendorLicences, getVendorProfileData, setBusinessServices, updateBusinessAddress, updateVendorBusiness, updateVendorProfileData, uploadVendorLicense, vendorSubscriptionStatus } from "@/lib/api/commonApi"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 
@@ -52,6 +52,7 @@ export default function VendorProfilePage() {
     const [saveMessage, setSaveMessage] = useState("")
     const { toast } = useToast();
     const router = useRouter()
+    const [subscriptionData, setSubscriptionData] = useState({})
 
     // rendering profile sections
     const [personalData, setPersonalData] = useState({ firstName: "", lastName: "", email: "", phone: "", status: "" })
@@ -357,6 +358,18 @@ export default function VendorProfilePage() {
             )
         );
     };
+
+    const showVendorSubscriptionStatus = async () => {
+        try {
+            const resVenSubStatus = await vendorSubscriptionStatus();
+            if (resVenSubStatus.data.isSuccess) {
+                setSubscriptionData(resVenSubStatus.data.result);
+            }
+
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const handleUploadCertification = async (cert) => {
         if (!cert || !cert.fileName) {
@@ -944,6 +957,73 @@ export default function VendorProfilePage() {
         </div>
     );
 
+    const renderSubscriptionPlan = () => (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between border-b pb-3">
+                <h3 className="text-lg font-bold text-gray-900">Subscription Plan</h3>
+                <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${subscriptionData?.status == "Active"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                        }`}
+                >
+                    {subscriptionData?.status}
+                </span>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                    <p className="text-sm text-gray-500">Subscription Type</p>
+                    <p className="text-base font-medium text-gray-800">
+                        {subscriptionData?.subscriptionType}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-500">Price at Purchase</p>
+                    <p className="text-base font-medium text-gray-800">
+                        ${subscriptionData?.priceAtPurchase}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-500">Start Date</p>
+                    <p className="text-base font-medium text-gray-800">
+                        {new Date(subscriptionData?.startDate).toLocaleDateString()}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-500">End Date</p>
+                    <p className="text-base font-medium text-gray-800">
+                        {new Date(subscriptionData?.endDate).toLocaleDateString()}
+                    </p>
+                </div>
+                <div className="hidden">
+                    <p className="text-sm text-gray-500">Order ID</p>
+                    <p className="text-base font-mono text-gray-700 break-all">
+                        {subscriptionData?.orderGuid}
+                    </p>
+                </div>
+                <div className="hidden">
+                    <p className="text-sm text-gray-500">Vendor Subscription ID</p>
+                    <p className="text-base font-mono text-gray-700 break-all">
+                        {subscriptionData?.vendorSubscriptionGuid}
+                    </p>
+                </div>
+                <div className="hidden">
+                    <p className="text-sm text-gray-500">Subscription GUID</p>
+                    <p className="text-base font-mono text-gray-700 break-all">
+                        {subscriptionData?.subscriptionGuid}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-500">Last Updated</p>
+                    <p className="text-base font-medium text-gray-800">
+                        {new Date(subscriptionData?.updatedOn).toLocaleString()}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+
 
     const tabs = [
         { id: "personal", label: "Personal Info", icon: User },
@@ -951,6 +1031,7 @@ export default function VendorProfilePage() {
         { id: "businessAddress", label: "Business Address", icon: Building2 },
         { id: "services", label: "Services", icon: Settings },
         { id: "certifications", label: "Certification", icon: Award },
+        { id: "subscriptions", label: "Subscription", icon: CreditCard },
     ]
 
     const handleEditClick = () => {
@@ -996,6 +1077,7 @@ export default function VendorProfilePage() {
         getVendorServicesDetail();
         getVendorSelectedServices();
         getAllVendorLicences();
+        showVendorSubscriptionStatus();
     }, [])
 
     return (
@@ -1067,9 +1149,8 @@ export default function VendorProfilePage() {
                                 <CardTitle className="lg:text-[30px] text-[24px] font-bold text-gray-900">
                                     Vendor Profile
                                 </CardTitle>
-
                                 {/* Right: Edit Button */}
-                                {!isEditing && (
+                                {!isEditing && activeTab !== "subscriptions" && (
                                     <Button
                                         size="sm"
                                         className="bg-[#B80D2D] text-white hover:bg-[#9A0B26]"
@@ -1081,13 +1162,13 @@ export default function VendorProfilePage() {
                                 )}
                             </CardHeader>
 
-
                             <CardContent className="p-8">
                                 {activeTab === "personal" && renderPersonalInfo()}
                                 {activeTab === "business" && renderBusinessInfo()}
                                 {activeTab === "businessAddress" && renderBusinessAddress()}
                                 {activeTab === "services" && renderServices()}
                                 {activeTab === "certifications" && renderCertifications()}
+                                {activeTab === "subscriptions" && renderSubscriptionPlan()}
                             </CardContent>
                         </Card>
                     </div>
