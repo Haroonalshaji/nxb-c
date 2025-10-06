@@ -27,6 +27,7 @@ import {
     Settings,
     Info,
     Shield,
+    Search,
     Award, CreditCard
 } from "lucide-react"
 import { deleteBusinessServices, deleteVendorLicense, getBusinessAddress, getBusinessServices, getServiceTypes, getVendorBusiness, getVendorLicences, getVendorProfileData, setBusinessServices, updateBusinessAddress, updateVendorBusiness, updateVendorProfileData, uploadVendorLicense, vendorSubscriptionStatus } from "@/lib/api/commonApi"
@@ -52,6 +53,7 @@ export default function VendorProfilePage() {
     const [saveMessage, setSaveMessage] = useState("")
     const { toast } = useToast();
     const router = useRouter()
+    const [searchQuery, setSearchQuery] = useState('')
     const [subscriptionData, setSubscriptionData] = useState({})
 
     // rendering profile sections
@@ -144,6 +146,7 @@ export default function VendorProfilePage() {
                     break
                 case "services":
                     setIsEditing(false)
+                    setSearchQuery('');
                     break
                 case "certifications":
                     setIsEditing(false);
@@ -723,118 +726,112 @@ export default function VendorProfilePage() {
         </div>
     )
 
-    const renderServices = () => (
-        <div className="space-y-6">
-            <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Services You Offer</h3>
-                <p className="text-gray-600">Select all services that your business provides to customers</p>
-            </div>
+    const renderServices = () => {
 
-            {!isEditing && (
-                <div className="mb-6">
-                    <Label className="text-base font-medium">Current Services:</Label>
-                    <div className="flex flex-wrap gap-2 mt-3">
-                        {vendorSelectedServices.map((service) => {
-                            // Find the service details in master list by ID
-                            const matched = servicesData.find(
-                                (s) => s.id === service.serviceId
-                            )
+        // Filter services based on search query
+        const filteredSearchServices = servicesData.filter((service) =>
+            service.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
+        )
 
-                            return (
-                                <Badge
-                                    key={service.serviceId}
-                                    className="bg-[#B80D2D] text-white px-3 py-1"
-                                >
-                                    {matched?.categoryName || `Service #${service.serviceId}`}
-                                </Badge>
-                            )
-                        })}
-                    </div>
+        return (
+            <div className="space-y-6">
+                <div className="text-center mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Services You Offer</h3>
+                    <p className="text-gray-600">Select all services that your business provides to customers</p>
                 </div>
-            )}
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {servicesData.map((service) => {
-                    // check if this service is in vendorSelectedServices
-                    const isSelected = vendorSelectedServices.some(
-                        (s) => s.serviceId === service.id && s.status === "Active"
-                    )
-                    return (
-                        <div
-                            key={service.id}
-                            className={`flex items-center space-x-3 p-4 border rounded-lg transition-colors ${isSelected
-                                ? "bg-[#B80D2D]/5 border-[#B80D2D]"
-                                : "hover:bg-gray-50 border-gray-200"
-                                } ${!isEditing ? "opacity-60" : "hover:bg-gray-50"}`}
-                        >
-                            <Checkbox
-                                id={service.id.toString()}
-                                checked={isSelected}
-                                onCheckedChange={(checked) =>
-                                    isEditing && handleServiceToggle(service.id, checked)
-                                }
-                                disabled={!isEditing}
-                                className="data-[state=checked]:bg-[#B80D2D] data-[state=checked]:border-[#B80D2D]"
-                            />
+                {!isEditing && (
+                    <div className="mb-6">
+                        <Label className="text-base font-medium">Current Services:</Label>
+                        <div className="flex flex-wrap gap-2 mt-3">
+                            {vendorSelectedServices.map((service) => {
+                                const matched = servicesData.find(
+                                    (s) => s.id === service.serviceId
+                                )
 
-                            <Label
-                                htmlFor={service.id.toString()}
-                                className={`flex-1 ${isEditing ? "cursor-pointer" : "cursor-default"}`}
-                            >
-                                {service.categoryName}
-                            </Label>
+                                return (
+                                    <Badge
+                                        key={service.serviceId}
+                                        className="bg-[#B80D2D] text-white px-3 py-1"
+                                    >
+                                        {matched?.categoryName || `Service #${service.serviceId}`}
+                                    </Badge>
+                                )
+                            })}
                         </div>
-                    )
-                })}
-            </div>
-
-            {/* {isEditing && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h4 className="font-medium text-blue-900 mb-2">Selected Services:</h4>
-                    <div className="flex flex-wrap gap-2">
-                        {vendorSelectedServices.map((service) => {
-                            const matched = servicesData.find(
-                                (s) => s.id === service.serviceId
-                            )
-
-                            return (
-                                <Badge
-                                    key={service.serviceId}
-                                    className="bg-blue-100 text-blue-800 px-3 py-1"
-                                >
-                                    {matched?.categoryName || `Service #${service.serviceId}`}
-                                </Badge>
-                            )
-                        })}
                     </div>
-                    {vendorSelectedServices.length === 0 && (
-                        <p className="text-blue-600 text-sm">No services selected</p>
+                )}
+
+                {/* Search Input */}
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder="Search services..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#B80D2D] focus:border-transparent outline-none"
+                    />
+                </div>
+
+                {/* Services Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredSearchServices.length > 0 ? (
+                        filteredSearchServices.map((service) => {
+                            const isSelected = vendorSelectedServices.some(
+                                (s) => s.serviceId === service.id && s.status === "Active"
+                            )
+                            return (
+                                <div
+                                    key={service.id}
+                                    className={`flex items-center space-x-3 p-4 border rounded-lg transition-colors ${isSelected
+                                        ? "bg-[#B80D2D]/5 border-[#B80D2D]"
+                                        : "hover:bg-gray-50 border-gray-200"
+                                        } ${!isEditing ? "opacity-60" : "hover:bg-gray-50"}`}
+                                >
+                                    <Checkbox
+                                        id={service.id.toString()}
+                                        checked={isSelected}
+                                        onCheckedChange={(checked) =>
+                                            isEditing && handleServiceToggle(service.id, checked)
+                                        }
+                                        disabled={!isEditing}
+                                        className="data-[state=checked]:bg-[#B80D2D] data-[state=checked]:border-[#B80D2D]"
+                                    />
+
+                                    <Label
+                                        htmlFor={service.id.toString()}
+                                        className={`flex-1 ${isEditing ? "cursor-pointer" : "cursor-default"}`}
+                                    >
+                                        {service.categoryName}
+                                    </Label>
+                                </div>
+                            )
+                        })
+                    ) : (
+                        <div className="col-span-full text-center py-8 text-gray-500">
+                            No services found matching "{searchQuery}"
+                        </div>
                     )}
                 </div>
-            )} */}
 
-            {isEditing && (
-                <div className="  p-4 flex justify-end gap-2">
-                    {/* {saveMessage && (
-                        <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-lg mr-auto">
-                            <CheckCircle className="h-4 w-4 text-green-300" />
-                            <span className="text-sm text-green-700">{saveMessage}</span>
-                        </div>
-                    )} */}
-                    <Button onClick={() => handleCancel()} variant="outline">
-                        <X className="h-4 w-4 mr-2" /> Cancel
-                    </Button>
-                    <Button
-                        onClick={() => handleSave(activeTab)}
-                        className="bg-[#B80D2D] text-white"
-                    >
-                        <Save className="h-4 w-4 mr-2" />
-                        Save Changes
-                    </Button>
-                </div>
-            )}
-        </div>
-    )
+                {isEditing && (
+                    <div className="p-4 flex justify-end gap-2">
+                        <Button onClick={() => handleCancel()} variant="outline">
+                            <X className="h-4 w-4 mr-2" /> Cancel
+                        </Button>
+                        <Button
+                            onClick={() => handleSave(activeTab)}
+                            className="bg-[#B80D2D] text-white"
+                        >
+                            <Save className="h-4 w-4 mr-2" />
+                            Save Changes
+                        </Button>
+                    </div>
+                )}
+            </div>
+        )
+    }
 
     const renderCertifications = () => (
         <div className="space-y-6">
@@ -1036,7 +1033,6 @@ export default function VendorProfilePage() {
 
     const handleEditClick = () => {
         setIsEditing(true);
-
         // Initialize editedData based on active tab
         switch (activeTab) {
             case "personal":

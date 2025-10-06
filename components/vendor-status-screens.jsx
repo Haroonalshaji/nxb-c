@@ -41,7 +41,7 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
     const [orderData, setOrderData] = useState(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [responseFromPayment, setResponseFromPayment] = useState({});
-    const {toast} = useToast();
+    const { toast } = useToast();
 
     const getStatusConfig = (status) => {
         switch (status) {
@@ -162,8 +162,8 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
             console.error('Error creating order:', error);
             toast({
                 title: `${error?.response?.data?.message}`,
-                description:"Please Refresh the page",
-                variant:"destructive"
+                description: "Please Refresh the page",
+                variant: "destructive"
             })
         }
     };
@@ -203,6 +203,9 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
                     setShowPaymentModal(false);
                     onRetry();
                     // console.log(responseFromPayment)
+                    setTimeout(() => {
+                        onRetry();
+                    }, 1500); // 2000ms = 2 seconds
                 }}
             />
         );

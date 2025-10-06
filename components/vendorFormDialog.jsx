@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { CircleDollarSign } from "lucide-react";
 import { DollarSign, Clock, Send } from "lucide-react"
 import { getVendorQuote, submitVendorQuoteForm, updateVendorQuoteForm } from "@/lib/api/commonApi"
 import { useToast } from "@/hooks/use-toast"
@@ -57,7 +58,7 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                 warranty: getRetData.warrantyInfo,
                 additionalNotes: getRetData.notes,
                 quoteGuid: getRetData.quoteGuid,
-                attachment: getRetData.attachment 
+                attachment: getRetData.attachment
             })
         } catch (error) {
             console.error(error)
@@ -165,7 +166,11 @@ export default function QuoteModal({ modalOpen, setModalOpen, enquiryGuid, hasRe
                             <div className="space-y-2">
                                 <Label htmlFor="price">Quote Price *</Label>
                                 <div className="relative">
-                                    <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+
+                                    {/* <CircleDollarSign /> */}
+                                    <small className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 " >AED</small>
+
+                                    {/* <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" /> */}
                                     <Input
                                         id="price"
                                         value={quoteData.price}

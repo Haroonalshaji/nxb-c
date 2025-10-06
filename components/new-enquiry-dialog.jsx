@@ -176,11 +176,11 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
             setFormData((prev) => ({
                 ...prev,
                 name: `${firstName} ${lastName}`.trim(),
-                email:`${email}`
+                email: `${email}`
             }));
 
-            setCookie("CususerName",firstName+lastName);
-            setCookie("CususerEmail",email);
+            setCookie("CususerName", firstName + lastName);
+            setCookie("CususerEmail", email);
 
             console.log(RetData)
         } catch (error) {
@@ -380,7 +380,7 @@ export function NewEnquiryDialog({ isOpen, onClose, onSubmit }) {
                                 <SelectValue placeholder="Select a service" />
                             </SelectTrigger>
                             <SelectContent>
-                                {(listOfServiceData || []).map((service) => (
+                                {(listOfServiceData || []).sort((a, b) => a.categoryName.localeCompare(b.categoryName)).map((service) => (
                                     <SelectItem key={service.id} value={String(service.categoryName)}>
                                         {service.categoryName}
                                     </SelectItem>
