@@ -136,9 +136,9 @@ export default function AllCategories() {
             <p className="text-gray-300 mb-6 leading-relaxed">
               Can't find what you're looking for? Browse our complete directory of verified vendors.
             </p>
-            <Link href="/service-list">
+            <Link href="/signup">
               <Button className="bg-[#B93239] hover:bg-[#A02A31] text-white shadow-lg hover:shadow-xl transition-all px-8 h-12 text-lg">
-                View Full Category List
+                View All Categories SignUp
               </Button>
             </Link>
           </div>

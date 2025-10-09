@@ -38,13 +38,13 @@ export default function WhatMakesUsDifferent() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:gap-8 gap-4 max-w-4xl mx-auto">
           {differentiators.map((item, index) => (
             <div
               key={index}
               data-aos="fade-up"
               data-aos-delay={index * 150}
-              className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50"
+              className="group bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl lg:p-8 p-4 hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50"
             >
               <div className="flex items-start space-x-6">
                 <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-[#B93239] to-[#A02A31] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">

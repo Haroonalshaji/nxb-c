@@ -46,13 +46,13 @@ export default function WhoWeAre() {
 
             {/* Right side - Features */}
             <div data-aos="fade-left" data-aos-delay="200">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-3">
                 {features.map((feature, index) => (
                   <div
                     key={index}
                     data-aos="fade-up"
                     data-aos-delay={300 + index * 100}
-                    className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:border-[#B93239]/20 hover:-translate-y-1"
+                    className="group bg-white border border-gray-100 rounded-2xl lg:p-6 p-3 shadow-sm hover:shadow-xl transition-all duration-300 hover:border-[#B93239]/20 hover:-translate-y-1"
                   >
                     <div className="w-12 h-12 bg-gradient-to-br from-[#B93239] to-[#A02A31] rounded-xl flex items-center justify-center mb-4 transform group-hover:rotate-3 transition-transform duration-300">
                       <feature.icon className="h-6 w-6 text-white" />

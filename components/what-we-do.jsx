@@ -51,7 +51,7 @@ export default function WhatWeDo() {
               data-aos-delay={index * 150}
               className="group transform hover:scale-105 transition-all duration-300"
             >
-              <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 h-full hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50 hover:shadow-2xl hover:shadow-[#B93239]/25">
+              <div className="relative bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl lg:p-8 p-4 h-full hover:bg-white/15 transition-all duration-300 hover:border-[#B93239]/50 hover:shadow-2xl hover:shadow-[#B93239]/25">
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#B93239]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div className="relative z-10">

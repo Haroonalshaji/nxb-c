@@ -31,10 +31,10 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Company</h3>
                         <ul className="space-y-2 text-gray-400">
-                            <li><a href="/about"></a>About Us</li>
-                            <li><a href="/services"></a>Our Services</li>
-                            {/* <li><a href="/"></a>Careers</li> */}
-                            <li><a href="/contactUs"></a>Contact</li>
+                            <li><a href="/about">About Us</a></li>
+                            <li><a href="/services">Our Services</a></li>
+                            {/* <li><a href="/">Careers</a></li> */}
+                            <li><a href="/contactUs">Contact</a></li>
                         </ul>
                     </div>
 

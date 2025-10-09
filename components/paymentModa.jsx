@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { CreditCard, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export default function PaymentModal({ orderData, onClose, onSuccess }) {
+export default function PaymentModal({ orderData, onClose, onSuccess, stripeCheckoutUrl }) {
+    console.log(stripeCheckoutUrl)
     const { orderGuid, orderNo, name, lastName, email, contact, priceAtPurchase, paymentId } = orderData;
     // console.log(orderData)
     const { toast } = useToast();
+    const router = useRouter();
 
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
@@ -34,78 +37,80 @@ export default function PaymentModal({ orderData, onClose, onSuccess }) {
     };
 
     const handlePayment = async () => {
-        if (!priceAtPurchase || priceAtPurchase <= 0) {
-            alert('Invalid amount for payment');
-            return;
-        }
+        // if (!priceAtPurchase || priceAtPurchase <= 0) {
+        //     alert('Invalid amount for payment');
+        //     return;
+        // }
 
-        if (!name || !email) {
-            alert('Missing required customer information');
-            return;
-        }
+        // if (!name || !email) {
+        //     alert('Missing required customer information');
+        //     return;
+        // }
 
-        const res = await loadRazorpayScript();
-        if (!res) {
-            alert('Razorpay SDK failed to load');
-            return;
-        }
+        router.push(stripeCheckoutUrl)
 
-        const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
-        if (!razorpayKey || razorpayKey === 'rzp_test_1234567890') {
-            alert('Please configure your Razorpay Key ID in environment variables');
-            return;
-        }
+        // const res = await loadRazorpayScript();
+        // if (!res) {
+        //     alert('Razorpay SDK failed to load');
+        //     return;
+        // }
 
-        console.log("orderData", orderData)
+        // const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+        // if (!razorpayKey || razorpayKey === 'rzp_test_1234567890') {
+        //     alert('Please configure your Razorpay Key ID in environment variables');
+        //     return;
+        // }
 
-        const options = {
-            key: razorpayKey,
-            amount: Math.round(parseFloat(priceAtPurchase) * 100), // Convert to paise and round
-            currency: 'AED',
-            name: name,
-            description: `Subscription Order ${orderNo || 'Test'}`,
-            order_id: paymentId,
-            prefill: {
-                name: `${name} ${lastName}`.trim(),
-                email: email,
-                contact: contact || '',
-            },
-            handler: function (response) {
-                console.log('Payment successful:', response);
-                toast({
-                    title: `Payment Successfull !`,
-                    variant: "success"
-                })
-                onSuccess(response);
-            },
-            theme: {
-                color: '#B93239'
-            },
-            modal: {
-                ondismiss: function () {
-                    console.log('Payment modal dismissed');
-                }
-            },
-            // // Add these for better card handling
-            // notes: {
-            //     order_id: orderGuid,
-            //     order_number: orderNo
-            // },
-        };
+        // console.log("orderData", orderData)
+
+        // const options = {
+        //     key: razorpayKey,
+        //     amount: Math.round(parseFloat(priceAtPurchase) * 100), // Convert to paise and round
+        //     currency: 'AED',
+        //     name: name,
+        //     description: `Subscription Order ${orderNo || 'Test'}`,
+        //     order_id: paymentId,
+        //     prefill: {
+        //         name: `${name} ${lastName}`.trim(),
+        //         email: email,
+        //         contact: contact || '',
+        //     },
+        //     handler: function (response) {
+        //         console.log('Payment successful:', response);
+        //         toast({
+        //             title: `Payment Successfull !`,
+        //             variant: "success"
+        //         })
+        //         onSuccess(response);
+        //     },
+        //     theme: {
+        //         color: '#B93239'
+        //     },
+        //     modal: {
+        //         ondismiss: function () {
+        //             console.log('Payment modal dismissed');
+        //         }
+        //     },
+        //     // // Add these for better card handling
+        //     // notes: {
+        //     //     order_id: orderGuid,
+        //     //     order_number: orderNo
+        //     // },
+        // };
 
         // console.log('Razorpay options:', options);
 
-        try {
-            const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (response) {
-                console.error('Payment failed:', response.error);
-                alert('Payment failed: ' + response.error.description);
-            });
-            rzp.open();
-        } catch (error) {
-            console.error('Error opening Razorpay:', error);
-            alert('Error opening payment gateway: ' + error.message);
-        }
+        // try {
+        //     const rzp = new window.Razorpay(options);
+        //     rzp.on('payment.failed', function (response) {
+        //         console.error('Payment failed:', response.error);
+        //         alert('Payment failed: ' + response.error.description);
+        //     });
+        //     rzp.open();
+        // } catch (error) {
+        //     console.error('Error opening Razorpay:', error);
+        //     alert('Error opening payment gateway: ' + error.message);
+        // }
     };
 
     if (!orderData) return null;

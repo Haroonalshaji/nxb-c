@@ -203,7 +203,7 @@ export default function HomePageNew() {
                                         className="pl-12 border-0 focus:ring-0 text-gray-900 bg-transparent h-12 text-lg"
                                     />
                                 </div>
-                                <Link href='/service-list'>
+                                <Link href='/contactUs'>
                                     <Button className="bg-[#B93239] hover:bg-[#A02A31] px-8 h-12 text-lg shadow-lg hover:shadow-xl transition-all">
                                         Search
                                     </Button>
@@ -281,7 +281,7 @@ export default function HomePageNew() {
                 </div>
             </section>
 
-            <VendorRequirementsSection/>
+            <VendorRequirementsSection />
 
             {/* Featured Vendors - Premium */}
             <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative">
@@ -357,9 +357,11 @@ export default function HomePageNew() {
                                             <span>{vendor.location}</span>
                                         </div>
 
-                                        <Button className="w-full bg-gradient-to-r from-[#B93239] to-[#A02A31] hover:from-[#A02A31] hover:to-[#8B1E25] text-white shadow-lg hover:shadow-xl transition-all text-lg h-12">
-                                            View Profile
-                                        </Button>
+                                        <Link href={'/vendor'}>
+                                            <Button className="w-full bg-gradient-to-r from-[#B93239] to-[#A02A31] hover:from-[#A02A31] hover:to-[#8B1E25] text-white shadow-lg hover:shadow-xl transition-all text-lg h-12">
+                                                View Profile
+                                            </Button>
+                                        </Link>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -426,7 +428,7 @@ export default function HomePageNew() {
                         on Nexus Built.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                        <Link href="/vendor">
+                        <Link href="/vendor/register">
                             <Button
                                 size="lg"
                                 className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-14 text-lg shadow-xl hover:shadow-2xl transition-all"

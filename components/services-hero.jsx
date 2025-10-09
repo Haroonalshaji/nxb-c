@@ -33,7 +33,7 @@ export default function ServicesHero() {
 
             <div className="container mx-auto px-4 text-center relative z-10" data-aos="fade-up">
                 <div className="max-w-5xl mx-auto">
-                    <h1 className="text-6xl mb-8 text-white font-semibold leading-tight">
+                    <h1 className="lg:text-6xl text-[38px] mb-8 text-white font-semibold leading-tight">
                         Find Services by
                         <span className="block bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                             Trade Category
@@ -51,16 +51,16 @@ export default function ServicesHero() {
                     {/* Enhanced search bar */}
                     <div className="max-w-3xl mx-auto mb-16">
                         <div className="relative">
-                            <div className="flex gap-4 bg-white/95 backdrop-blur-sm rounded-3xl p-4 shadow-2xl border border-white/20">
+                            <div className="flex gap-4 bg-white/95 backdrop-blur-sm rounded-3xl lg:p-4 p-2 shadow-2xl border border-white/20">
                                 <div className="flex-1 relative">
-                                    <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6" />
+                                    <Search className="absolute lg:left-6 left-1 top-1/2 transform -translate-y-1/2 text-gray-400 h-6 w-6" />
                                     <Input
                                         placeholder="e.g., HVAC, Joinery, Interior Painting..."
-                                        className="pl-16 border-0 focus:ring-0 text-gray-900 bg-transparent h-14 text-lg rounded-2xl"
+                                        className="lg:pl-16 pl-8 border-0 focus:ring-0 text-gray-900 bg-transparent h-14 text-lg rounded-2xl"
                                     />
                                 </div>
-                                <Link href="/service-list">
-                                    <Button className="bg-[#B93239] hover:bg-[#A02A31] px-10 h-14 text-lg shadow-lg hover:shadow-xl transition-all rounded-2xl">
+                                <Link href="/contactUs">
+                                    <Button className="bg-[#B93239] hover:bg-[#A02A31] lg:px-10 px-4 h-14 text-lg shadow-lg hover:shadow-xl transition-all rounded-2xl">
                                         Search Services
                                     </Button>
                                 </Link>

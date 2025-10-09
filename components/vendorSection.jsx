@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Search, MessageSquare, Settings, CreditCard, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 export default function VendorsSection() {
     const vendorBenefits = [
@@ -72,13 +73,15 @@ export default function VendorsSection() {
                                 </div>
                             </div> */}
 
-                            <Button
-                                size="lg"
-                                className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
-                            >
-                                Become a Verified Vendor
-                                <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                            </Button>
+                            <Link href={'/vendor/register'}>
+                                <Button
+                                    size="lg"
+                                    className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
+                                >
+                                    Become a Verified Vendor
+                                    <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
                         </div>
 
                         {/* Right side - Benefits */}

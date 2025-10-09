@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Users, Award } from "lucide-react"
+import Link from "next/link"
 
 export default function JoinNetworkCTA() {
     return (
@@ -38,20 +39,24 @@ export default function JoinNetworkCTA() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                        <Button
-                            size="lg"
-                            className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
-                        >
-                            Create Your Account
-                            <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-2 border-white text-white hover:bg-white hover:text-[#B93239] px-10 h-16 text-xl backdrop-blur-sm bg-transparent"
-                        >
-                            Become a Verified Vendor
-                        </Button>
+                        <Link href={'/signup'}>
+                            <Button
+                                size="lg"
+                                className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
+                            >
+                                Create Your Account
+                                <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                        <Link href={'/vendor/register'}>
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="border-2 border-white text-white hover:bg-white hover:text-[#B93239] px-10 h-16 text-xl backdrop-blur-sm bg-transparent"
+                            >
+                                Become a Verified Vendor
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

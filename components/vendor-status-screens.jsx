@@ -151,7 +151,8 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
                     email: orderDetails.email,
                     contact: orderDetails.contact,
                     priceAtPurchase: orderDetails.priceAtPurchase,
-                    paymentId: orderDetails.paymentId
+                    paymentId: orderDetails.paymentId,
+                    stripeCheckoutUrl: orderDetails.stripeCheckoutUrl
                 });
                 setShowPaymentModal(true);
                 onRetry?.();
@@ -196,10 +197,11 @@ export default function VendorStatusScreens({ status, onRetry, businessData }) {
             <PaymentModal
                 orderData={orderData}
                 onClose={() => setShowPaymentModal(false)}
+                stripeCheckoutUrl={orderData.stripeCheckoutUrl}
                 onSuccess={(response) => {
                     console.log('Payment completed:', response);
                     // setResponseFromPayment(response)
-                    updateSubscriptionOrderinDB(response)
+                    // updateSubscriptionOrderinDB(response)
                     setShowPaymentModal(false);
                     onRetry();
                     // console.log(responseFromPayment)

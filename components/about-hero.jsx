@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Users, Target, Award } from "lucide-react"
+import Link from "next/link"
 
 export default function AboutHero() {
     return (
@@ -23,7 +24,7 @@ export default function AboutHero() {
 
             <div className="container mx-auto px-4 text-center relative z-10" data-aos="fade-up">
                 <div className="max-w-4xl mx-auto">
-                    <h1 className="text-6xl mb-8 text-white font-semibold leading-tight">
+                    <h1 className="lg:text-6xl text-[38px] mb-8 text-white font-semibold leading-tight">
                         About Us
                         <span className="block bg-gradient-to-r md:text-[36px] from-white to-gray-200 bg-clip-text text-transparent">
                             Where Trade Meets Opportunity
@@ -52,20 +53,24 @@ export default function AboutHero() {
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                        <Button
-                            size="lg"
-                            className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-14 text-lg shadow-xl hover:shadow-2xl transition-all group"
-                        >
-                            Create Your Account
-                            <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-2 border-white text-white hover:bg-white hover:text-[#B93239] px-10 h-14 text-lg backdrop-blur-sm bg-transparent"
-                        >
-                            Become a Verified Vendor
-                        </Button>
+                        <Link href={'/signup'}>
+                            <Button
+                                size="lg"
+                                className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-14 text-lg shadow-xl hover:shadow-2xl transition-all group"
+                            >
+                                Create Your Account
+                                <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                        <Link href={'/vendor/register'}>
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="border-2 border-white text-white hover:bg-white hover:text-[#B93239] px-10 h-14 text-lg backdrop-blur-sm bg-transparent"
+                            >
+                                Become a Verified Vendor
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

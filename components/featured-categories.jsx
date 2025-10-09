@@ -121,12 +121,12 @@ export default function FeaturedCategories() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {featuredCategories.map((category, index) => (
-            <Link href="/service-list">
+            <Link href="/contactUs">
               <div
                 key={index}
                 data-aos="fade-up"
                 data-aos-delay={index * 100}
-                className="group cursor-pointer transform hover:scale-105 transition-all duration-300"
+                className="group cursor-pointer h-full transform hover:scale-105 transition-all duration-300"
               >
                 <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-white relative h-full">
                   {category.popular && (

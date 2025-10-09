@@ -20,7 +20,7 @@ export default function ServicesCTA() {
 
       <div className="container mx-auto px-4 text-center relative z-10">
         <div className="max-w-5xl mx-auto" data-aos="fade-up">
-          <h2 className="text-5xl mb-8 font-semibold leading-tight">
+          <h2 className="lg:text-5xl text-[34px] mb-8 font-semibold leading-tight">
             Ready to find your
             <span className="block bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
               next vendor?
@@ -64,7 +64,7 @@ export default function ServicesCTA() {
             <Link href='/signin'>
               <Button
                 size="lg"
-                className="bg-white text-[#B93239] hover:bg-gray-100 px-12 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
+                className="bg-white text-[#B93239] hover:bg-gray-100 lg:px-12 px-4 lg:h-16 h-12 lg:text-xl text-[16px] shadow-2xl hover:shadow-3xl transition-all group"
               >
                 Sign Up and Start Searching
                 <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
