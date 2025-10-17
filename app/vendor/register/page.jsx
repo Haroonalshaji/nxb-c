@@ -905,7 +905,7 @@ export default function VendorRegisterPage() {
           />
           <Label htmlFor="agreeToTerms" className="text-sm leading-relaxed">
             I agree to the{" "}
-            <Link href="/terms" className="text-[#B80D2D] hover:underline">
+            <Link href="/terms-and-conditions" className="text-[#B80D2D] hover:underline">
               Terms of Service
             </Link>{" "}
             and understand that my subscription will auto-renew monthly at $49/month.
@@ -922,7 +922,7 @@ export default function VendorRegisterPage() {
           />
           <Label htmlFor="agreeToPrivacy" className="text-sm leading-relaxed">
             I agree to the{" "}
-            <Link href="/privacy" className="text-[#B80D2D] hover:underline">
+            <Link href="/privacy-policy" className="text-[#B80D2D] hover:underline">
               Privacy Policy
             </Link>{" "}
             and consent to the processing of my personal data.
