@@ -41,25 +41,44 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Contact Info</h3>
                         <div className="space-y-2 text-gray-400">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center hidden space-x-2">
                                 <Phone className="h-4 w-4" />
-                                <span>(555) 123-4567</span>
+                                <a href="tel:+15551234567" className="hover:underline">
+                                    (555) 123-4567
+                                </a>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Mail className="h-4 w-4" />
-                                <span>info@nexusbuilt.com</span>
+                                <a href="mailto:info@nxbuilt.com" className="hover:underline">
+                                    info@nxbuilt.com
+                                </a>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <MapPin className="h-4 w-4" />
-                                <span>123 Construction Ave</span>
+                                <a
+                                    href="https://www.google.com/maps?q=Duabai,+United+Arab+Emirates"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:underline"
+                                >
+                                    Duabai, United Arab Emirates
+                                </a>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
-                <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                    <p>&copy; 2025 NexusBuilt. All rights reserved.</p>
+                <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 flex lg:flex-row flex-col items-center justify-center space-x-2">
+                    <p>&copy; 2025 NexusBuilt. All rights reserved. crafted by</p>
+                    <Image
+                        src="/assets/Flashyminds-TM-White.png"
+                        alt="Your Company Logo"
+                        width={100}
+                        height={40}
+                    />
                 </div>
+
             </div>
         </footer>
     )

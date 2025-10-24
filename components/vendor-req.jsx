@@ -30,14 +30,14 @@ export default function VendorRequirementsSection() {
       description: "Your business has completed 5 projects in the last 12 months to an exceptional standard",
       icon: Award,
       color: "from-orange-500 to-orange-600",
-    },
-    {
-      number: 5,
-      title: "Non Refundable Fee",
-      description: "AED 3,000 non-refundable fee to cover the cost of carrying out the Due Diligence checks",
-      icon: Shield,
-      color: "from-red-500 to-red-600",
-    },
+    }
+    // {
+    //   number: 5,
+    //   title: "Non Refundable Fee",
+    //   description: "AED 3,000 non-refundable fee to cover the cost of carrying out the Due Diligence checks",
+    //   icon: Shield,
+    //   color: "from-red-500 to-red-600",
+    // },
   ]
 
   return (
@@ -62,7 +62,7 @@ export default function VendorRequirementsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {requirements.map((requirement, index) => (
             <div
               key={index}
