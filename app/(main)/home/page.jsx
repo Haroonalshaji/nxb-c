@@ -39,7 +39,7 @@ export default function HomePageNew() {
         { name: "Stone Supply & Installation", icon: "/assets/clientHome/Stone.png" },
         { name: "Internal Glass Partitions", icon: "/assets/clientHome/GlassPartition.png" },
         { name: "Swimming Pool Works", icon: "/assets/clientHome/SwimmingPool.png" },
-        { name: "Custom Furniture Supply", icon: "/assets/clientHome/CustomFurn.png" },
+        { name: "Custom Furniture Supply", icon: "/assets/clientHome/customFurn.png" },
         { name: "Home Automation", icon: "/assets/clientHome/HomeAutomation.png" },
     ];
 
