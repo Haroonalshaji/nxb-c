@@ -31,7 +31,7 @@ import Image from "next/image";
 
 export default function HomePageNew() {
     const categories = [
-        { name: "Electrical", icon: "/assets/clientHome/electrical.png" },
+        { name: "Electrical", icon: "/assets/clientHome/Electrical.png" },
         { name: "HVAC", icon: "/assets/clientHome/HVAC.png" },
         { name: "Plumbing", icon: "/assets/clientHome/Plumbing.png" },
         { name: "Gypsum", icon: "/assets/clientHome/Gypsum.png" },
