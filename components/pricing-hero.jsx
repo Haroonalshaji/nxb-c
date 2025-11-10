@@ -31,7 +31,7 @@ export default function PricingHero() {
 
             <div className="container mx-auto px-4 text-center relative z-10" data-aos="fade-up">
                 <div className="max-w-4xl mx-auto">
-                    <h1 className="text-6xl mb-8 text-white font-semibold leading-tight">
+                    <h1 className="lg:text-6xl text-4xl mb-8 text-white font-semibold leading-tight">
                         Vendor Plans
                         <span className="block bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                             Get Verified. Get Discovered.

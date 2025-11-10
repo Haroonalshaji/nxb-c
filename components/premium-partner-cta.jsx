@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Crown, Star, TrendingUp, Award } from 'lucide-react'
+import Link from "next/link"
 
 export default function PremiumPartnerCTA() {
     const premiumBenefits = [
@@ -73,7 +74,9 @@ export default function PremiumPartnerCTA() {
                                 size="lg"
                                 className="bg-white text-[#B93239] hover:bg-gray-100 px-10 h-16 text-xl shadow-2xl hover:shadow-3xl transition-all group"
                             >
+                                <Link href="/premium-partner">
                                 Become a Premium Partner
+                                </Link>
                                 <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </div>

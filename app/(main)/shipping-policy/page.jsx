@@ -61,7 +61,7 @@ export default function ShippingPolicyPage() {
                             </p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Our support team will reach out within 24–48 business hours</li>
-                                <li>You may contact <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a> if you have not received access or confirmation within the expected timeframe</li>
+                                <li>You may contact <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a> if you have not received access or confirmation within the expected timeframe</li>
                             </ul>
                         </section>
 
@@ -80,7 +80,7 @@ export default function ShippingPolicyPage() {
                                 <p className="text-gray-700 leading-relaxed mb-0">
                                     For any access or service-related concerns, you can contact us via:
                                     <br />
-                                    📧 <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline font-medium">support@nexusbuilt.com</a>
+                                    📧 <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline font-medium">support@nxbuilt.com</a>
                                 </p>
                             </div>
                         </section>

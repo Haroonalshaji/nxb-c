@@ -19,7 +19,6 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Support</h3>
                         <ul className="space-y-2 text-gray-400">
-                            <li><a href="/pricing-plans">Pricing Plans</a></li>
                             <li><a href="/terms-and-conditions">Terms and Conditions</a></li>
                             <li><a href="/privacy-policy">Privacy Policy</a></li>
                             <li><a href="/refund-policy-page">Refund Policy</a></li>
@@ -31,6 +30,8 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Company</h3>
                         <ul className="space-y-2 text-gray-400">
+                            <li><a href="/premium-partner">Premium Partner</a></li>
+                            <li><a href="/pricing-plans">Pricing Plans</a></li>
                             <li><a href="/about">About Us</a></li>
                             <li><a href="/services">Our Services</a></li>
                             {/* <li><a href="/">Careers</a></li> */}
@@ -41,10 +42,10 @@ export default function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Contact Info</h3>
                         <div className="space-y-2 text-gray-400">
-                            <div className="flex items-center hidden space-x-2">
+                            <div className="flex items-center space-x-2">
                                 <Phone className="h-4 w-4" />
-                                <a href="tel:+15551234567" className="hover:underline">
-                                    (555) 123-4567
+                                <a href="tel:+971 50 105 2626" className="hover:underline">
+                                   +971 50 105 2626
                                 </a>
                             </div>
                             <div className="flex items-center space-x-2">
@@ -61,7 +62,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     className="hover:underline"
                                 >
-                                    Duabai, United Arab Emirates
+                                    Dubai, United Arab Emirates
                                 </a>
                             </div>
                         </div>

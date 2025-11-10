@@ -186,7 +186,7 @@ export default function PaymentModal({ orderData, onClose, onSuccess, stripeChec
                     {/* Security Note */}
                     <div className="text-center">
                         <p className="text-sm text-gray-500">
-                            🔒 Secure payment powered by Razorpay
+                            🔒 Secure payment powered by Stripe
                         </p>
                     </div>
                 </div>

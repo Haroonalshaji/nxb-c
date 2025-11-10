@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, ArrowRight, Crown, Zap, Target } from 'lucide-react'
+import Link from "next/link"
 
 export default function PricingPlans() {
     const plans = [
         {
             name: "Monthly Plan",
             description: "Perfect for short-term visibility",
-            price: "299",
+            price: "49",
             period: "month",
             originalPrice: null,
             savings: null,
@@ -21,12 +22,12 @@ export default function PricingPlans() {
                 "Customer profile exposure",
             ],
             buttonText: "Start Monthly",
-            buttonVariant: "outline" ,
+            buttonVariant: "outline",
         },
         {
             name: "Quarterly Plan",
             description: "Ideal for steady growth",
-            price: "749",
+            price: "147",
             period: "3 months",
             originalPrice: "897",
             savings: "Save 15%",
@@ -39,12 +40,12 @@ export default function PricingPlans() {
                 "Optional Premium badge upgrade",
             ],
             buttonText: "Start Quarterly",
-            buttonVariant: "default" ,
+            buttonVariant: "default",
         },
         {
             name: "Yearly Plan",
             description: "Best value for serious vendors",
-            price: "2,499",
+            price: "588",
             period: "year",
             originalPrice: "3,588",
             savings: "Save 30%",
@@ -57,7 +58,7 @@ export default function PricingPlans() {
                 "Premium Partner badge included",
             ],
             buttonText: "Start Yearly",
-            buttonVariant: "outline" ,
+            buttonVariant: "outline",
         },
     ]
 
@@ -85,91 +86,93 @@ export default function PricingPlans() {
 
                 <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {plans.map((plan, index) => (
-                        <div
-                            key={index}
-                            data-aos="fade-up"
-                            data-aos-delay={index * 150}
-                            className={`group transform hover:scale-105 transition-all duration-300 ${plan.popular ? "relative" : ""
-                                }`}
-                        >
-                            {plan.popular && (
-                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                                    <Badge className="bg-gradient-to-r from-[#B93239] to-[#A02A31] text-white border-0 shadow-lg px-4 py-1 text-sm">
-                                        Most Popular
-                                    </Badge>
-                                </div>
-                            )}
-
-                            <Card
-                                className={`overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-white relative h-full ${plan.popular ? "ring-2 ring-[#B93239] ring-opacity-50" : ""
+                        <Link href="/vendor/register" >
+                            <div
+                                key={index}
+                                data-aos="fade-up"
+                                data-aos-delay={index * 150}
+                                className={`group transform hover:scale-105 transition-all duration-300 ${plan.popular ? "relative" : ""
                                     }`}
                             >
-                                <CardHeader className="text-center pb-8 pt-8">
-                                    {/* Icon with gradient background */}
-                                    <div className="relative mb-6 mx-auto">
-                                        <div
-                                            className={`w-16 h-16 bg-gradient-to-br ${plan.color} rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}
-                                        >
-                                            <plan.icon className="h-8 w-8 text-white" />
-                                        </div>
-                                        {/* Glow effect */}
-                                        <div
-                                            className={`absolute inset-0 w-16 h-16 bg-gradient-to-br ${plan.color} rounded-2xl opacity-20 blur-lg group-hover:opacity-40 transition-opacity duration-300`}
-                                        ></div>
+                                {plan.popular && (
+                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
+                                        <Badge className="bg-gradient-to-r from-[#B93239] to-[#A02A31] text-white border-0 shadow-lg px-4 py-1 text-sm">
+                                            Recommended
+                                        </Badge>
                                     </div>
+                                )}
 
-                                    <CardTitle className="text-2xl mb-2 text-gray-900 group-hover:text-[#B93239] transition-colors duration-300">
-                                        {plan.name}
-                                    </CardTitle>
-                                    <p className="text-gray-600 mb-6">{plan.description}</p>
-
-                                    {/* Pricing */}
-                                    <div className="mb-6">
-                                        <div className="flex items-center justify-center mb-2">
-                                            <span className="text-sm text-gray-500 mr-2">AED</span>
-                                            <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
-                                            <span className="text-gray-500 ml-2">/ {plan.period}</span>
-                                        </div>
-                                        {plan.savings && (
-                                            <div className="flex items-center justify-center space-x-2">
-                                                <span className="text-sm text-gray-400 line-through">AED {plan.originalPrice}</span>
-                                                <Badge className="bg-green-100 text-green-700 border-0 text-xs">
-                                                    {plan.savings}
-                                                </Badge>
+                                <Card
+                                    className={`overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-white relative h-full ${plan.popular ? "ring-2 ring-[#B93239] ring-opacity-50" : ""
+                                        }`}
+                                >
+                                    <CardHeader className="text-center pb-8 pt-8">
+                                        {/* Icon with gradient background */}
+                                        <div className="relative mb-6 mx-auto">
+                                            <div
+                                                className={`w-16 h-16 bg-gradient-to-br ${plan.color} rounded-2xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-lg group-hover:shadow-xl`}
+                                            >
+                                                <plan.icon className="h-8 w-8 text-white" />
                                             </div>
-                                        )}
-                                    </div>
-                                </CardHeader>
+                                            {/* Glow effect */}
+                                            <div
+                                                className={`absolute inset-0 w-16 h-16 bg-gradient-to-br ${plan.color} rounded-2xl opacity-20 blur-lg group-hover:opacity-40 transition-opacity duration-300`}
+                                            ></div>
+                                        </div>
 
-                                <CardContent className="px-8 pb-8">
-                                    {/* Features */}
-                                    <div className="space-y-4 mb-8">
-                                        {plan.features.map((feature, featureIndex) => (
-                                            <div key={featureIndex} className="flex items-center space-x-3">
-                                                <div className="flex-shrink-0 w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
-                                                    <Check className="h-3 w-3 text-green-600" />
+                                        <CardTitle className="text-2xl mb-2 text-gray-900 group-hover:text-[#B93239] transition-colors duration-300">
+                                            {plan.name}
+                                        </CardTitle>
+                                        <p className="text-gray-600 mb-6">{plan.description}</p>
+
+                                        {/* Pricing */}
+                                        <div className="mb-6">
+                                            <div className="flex items-center justify-center mb-2">
+                                                <span className="text-sm text-gray-500 mr-2">AED</span>
+                                                <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
+                                                <span className="text-gray-500 ml-2">/ {plan.period}</span>
+                                            </div>
+                                            {plan.savings && (
+                                                <div className="flex items-center justify-center space-x-2">
+                                                    <span className="text-sm text-gray-400 line-through">AED {plan.originalPrice}</span>
+                                                    <Badge className="bg-green-100 text-green-700 border-0 text-xs">
+                                                        {plan.savings}
+                                                    </Badge>
                                                 </div>
-                                                <span className="text-gray-700">{feature}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            )}
+                                        </div>
+                                    </CardHeader>
 
-                                    {/* CTA Button */}
-                                    <Button
-                                        className={`w-full h-12 text-lg shadow-lg hover:shadow-xl transition-all group/btn ${plan.buttonVariant === "default"
-                                            ? "bg-gradient-to-r from-[#B93239] to-[#A02A31] hover:from-[#A02A31] hover:to-[#8B1E25] text-white"
-                                            : "border-2 border-[#B93239] text-[#B93239] hover:bg-[#B93239] hover:text-white bg-transparent"
-                                            }`}
-                                    >
-                                        {plan.buttonText}
-                                        <ArrowRight className="ml-2 h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
-                                    </Button>
-                                </CardContent>
+                                    <CardContent className="px-8 pb-8">
+                                        {/* Features */}
+                                        <div className="space-y-4 mb-8">
+                                            {plan.features.map((feature, featureIndex) => (
+                                                <div key={featureIndex} className="flex items-center space-x-3">
+                                                    <div className="flex-shrink-0 w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
+                                                        <Check className="h-3 w-3 text-green-600" />
+                                                    </div>
+                                                    <span className="text-gray-700">{feature}</span>
+                                                </div>
+                                            ))}
+                                        </div>
 
-                                {/* Hover overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#B93239]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                            </Card>
-                        </div>
+                                        {/* CTA Button */}
+                                        <Button
+                                            className={`w-full h-12 text-lg shadow-lg hover:shadow-xl transition-all group/btn ${plan.buttonVariant === "default"
+                                                ? "bg-gradient-to-r from-[#B93239] to-[#A02A31] hover:from-[#A02A31] hover:to-[#8B1E25] text-white"
+                                                : "border-2 border-[#B93239] text-[#B93239] hover:bg-[#B93239] hover:text-white bg-transparent"
+                                                }`}
+                                        >
+                                            {plan.buttonText}
+                                            <ArrowRight className="ml-2 h-5 w-5 group-hover/btn:translate-x-1 transition-transform" />
+                                        </Button>
+                                    </CardContent>
+
+                                    {/* Hover overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[#B93239]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                                </Card>
+                            </div>
+                        </Link>
                     ))}
                 </div>
             </div>

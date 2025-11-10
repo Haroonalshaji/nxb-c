@@ -776,6 +776,9 @@ export default function VendorRegisterPage() {
           onChange={(e) => handleInputChange("licenseName", e.target.value)}
         />
       </div>
+      {errors.licenseName && (
+        <p className="text-sm text-red-500">{errors.licenseName}</p>
+      )}
 
       {/* License File */}
       <div className="space-y-2">
@@ -789,10 +792,10 @@ export default function VendorRegisterPage() {
           }
         />
       </div>
-
-      {errors.license && (
-        <p className="text-sm text-red-500">{errors.license}</p>
+      {errors.licenseFile && (
+        <p className="text-sm text-red-500">{errors.licenseFile}</p>
       )}
+
 
       {/* Note */}
       <p className="text-sm text-gray-500 mt-4">
@@ -905,7 +908,7 @@ export default function VendorRegisterPage() {
           />
           <Label htmlFor="agreeToTerms" className="text-sm leading-relaxed">
             I agree to the{" "}
-            <Link href="/terms-and-conditions" className="text-[#B80D2D] hover:underline">
+            <Link href="/terms-and-conditions" target="_blank" className="text-[#B80D2D] hover:underline">
               Terms of Service
             </Link>{" "}
             and understand that my subscription will auto-renew monthly at $49/month.
@@ -922,7 +925,7 @@ export default function VendorRegisterPage() {
           />
           <Label htmlFor="agreeToPrivacy" className="text-sm leading-relaxed">
             I agree to the{" "}
-            <Link href="/privacy-policy" className="text-[#B80D2D] hover:underline">
+            <Link href="/privacy-policy" target="_blank" className="text-[#B80D2D] hover:underline">
               Privacy Policy
             </Link>{" "}
             and consent to the processing of my personal data.

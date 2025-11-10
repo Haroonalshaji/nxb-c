@@ -268,8 +268,8 @@ export default function SubscriptionPaymentPage() {
                                 <h3 className="font-semibold text-gray-900 mb-2">Need more help?</h3>
                                 <p className="text-gray-600 text-sm">
                                     Contact our support team at{" "}
-                                    <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">
-                                        support@nexusbuilt.com
+                                    <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">
+                                        support@nxbuilt.com
                                     </a>{" "}
                                     for assistance with your subscription.
                                 </p>

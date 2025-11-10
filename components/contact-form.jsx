@@ -110,7 +110,7 @@ export default function ContactForm() {
                                         Contact Form
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent className="p-8">
+                                <CardContent className="lg:p-8 px-3 py-6">
                                     {isSubmitted ? (
                                         <div className="text-center py-12">
                                             <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">

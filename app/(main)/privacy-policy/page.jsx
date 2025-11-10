@@ -68,7 +68,7 @@ export default function PrivacyPolicyPage() {
                                 We do not sell or rent your personal data. We may share information with:
                             </p>
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
-                                <li><strong>Payment processors:</strong> Such as Razorpay or Stripe, to process transactions securely</li>
+                                <li><strong>Payment processors:</strong> Such as Stripe, to process transactions securely</li>
                                 <li><strong>Third-party service providers:</strong> Who support our technical operations under strict confidentiality agreements</li>
                                 <li><strong>Government authorities:</strong> If required to comply with legal obligations or investigations</li>
                             </ul>
@@ -97,7 +97,7 @@ export default function PrivacyPolicyPage() {
                                 <li>Opt out of marketing communications</li>
                             </ul>
                             <p className="text-gray-700 leading-relaxed mt-4">
-                                To exercise these rights, please email us at <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a>
+                                To exercise these rights, please email us at <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a>
                             </p>
                         </section>
 
@@ -169,7 +169,7 @@ export default function PrivacyPolicyPage() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700 mb-0">
-                                    <strong>Email:</strong> <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a>
+                                    <strong>Email:</strong> <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a>
                                 </p>
                             </div>
                             <p className="text-gray-700 leading-relaxed mt-4">

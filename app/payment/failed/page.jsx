@@ -131,7 +131,7 @@ export default function PaymentFailedPage() {
                     <RefreshCw className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <a href="mailto:support@nexusbuilt.com">
+                <a href="mailto:support@nxbuilt.com">
                   <Button
                     variant="outline"
                     className="w-full h-12 text-base border-red-600 text-red-700 hover:bg-red-600 hover:text-white bg-transparent"

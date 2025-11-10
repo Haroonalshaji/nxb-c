@@ -36,7 +36,7 @@ export default function TermsConditionsPage() {
                             <ul className="list-disc pl-6 space-y-2 text-gray-700">
                                 <li>Vendors are required to pay a subscription fee to access listing features and the dashboard.</li>
                                 <li>Pricing plans (Monthly, Quarterly, Yearly) are displayed on the Pricing page.</li>
-                                <li>Payments are processed securely through third-party gateways like Razorpay.</li>
+                                <li>Payments are processed securely through third-party gateways like Stripe.</li>
                                 <li>All fees are non-refundable unless otherwise stated in our Refund Policy.</li>
                                 <li>Subscription auto-renewal may apply depending on plan type.</li>
                             </ul>
@@ -142,7 +142,7 @@ export default function TermsConditionsPage() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700 mb-0">
-                                    <strong>Email:</strong> <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a>
+                                    <strong>Email:</strong> <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a>
                                 </p>
                             </div>
                             <p className="text-gray-700 leading-relaxed mt-4">

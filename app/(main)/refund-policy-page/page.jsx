@@ -48,7 +48,7 @@ export default function RefundPolicyPage() {
                                     <li>Refund requests must be made within 7 days of payment</li>
                                     <li>The vendor must not have already used core features (e.g., profile published, enquiries received)</li>
                                     <li>Refunds, if approved, will be processed within 7–10 business days to the original payment method</li>
-                                    <li>To request a refund, email <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a> with your transaction ID, business name, and reason.</li>
+                                    <li>To request a refund, email <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a> with your transaction ID, business name, and reason.</li>
                                 </ul>
                             </div>
                         </section>
@@ -56,7 +56,7 @@ export default function RefundPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b-2 border-[#B93239] pb-2">4. Cancellation Policy</h2>
                             <p className="text-gray-700 leading-relaxed mb-4">
-                                You may cancel your subscription at any time through your vendor dashboard or by emailing us at <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a>.
+                                You may cancel your subscription at any time through your vendor dashboard or by emailing us at <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a>.
                             </p>
 
                             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
@@ -93,7 +93,7 @@ export default function RefundPolicyPage() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700 mb-2">
-                                    <strong>Email:</strong> <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a>
+                                    <strong>Email:</strong> <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a>
                                 </p>
                                 <p className="text-gray-700 mb-0">
                                     <strong>Response Time:</strong> Within 2 business days

@@ -284,7 +284,7 @@ export default function PaymentSuccessPage() {
                     Go Home
                   </Button>
                 </Link>
-                <a href="mailto:support@nexusbuilt.com">
+                <a href="mailto:support@nxbuilt.com">
                   <Button variant="ghost" className="w-full justify-center text-gray-700 hover:text-gray-900">
                     <LifeBuoy className="mr-2 h-5 w-5" />
                     Contact Support

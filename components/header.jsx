@@ -130,10 +130,10 @@ export default function Header() {
                 className="md:hidden bg-white/80 backdrop-blur-md shadow-md px-4"
             >
                 <div className="py-4 flex flex-col space-y-3">
-                    <a href="#" className="hover:text-[#B93239] transition-colors">Home</a>
-                    <a href="#" className="hover:text-[#B93239] transition-colors">About Us</a>
-                    <a href="#" className="hover:text-[#B93239] transition-colors">Services</a>
-                    <a href="#" className="hover:text-[#B93239] transition-colors">Contact Us</a>
+                    <a href="/" className="hover:text-[#B93239] transition-colors">Home</a>
+                    <a href="/about" className="hover:text-[#B93239] transition-colors">About Us</a>
+                    <a href="/services" className="hover:text-[#B93239] transition-colors">Services</a>
+                    <a href="/contactUs" className="hover:text-[#B93239] transition-colors">Contact Us</a>
 
                     <div className="pt-2 flex flex-col space-y-2">
                         <Button variant="ghost" className="w-full" onClick={() => (window.location.href = "/signin")}>Sign In</Button>

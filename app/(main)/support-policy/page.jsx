@@ -41,7 +41,7 @@ export default function SupportPolicyPage() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-700 mb-2">
-                      <strong>Email:</strong> <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline">support@nexusbuilt.com</a>
+                      <strong>Email:</strong> <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a>
                     </p>
                     <p className="text-gray-700 mb-2">
                       <strong>Business Hours:</strong> Sunday to Thursday, 10:00 AM – 6:00 PM (UAE Time)
@@ -149,7 +149,7 @@ export default function SupportPolicyPage() {
                 <p className="text-gray-700 leading-relaxed mb-0">
                   We're here to help you grow your business smoothly. For assistance, write to us anytime at: 
                   <br />
-                  📧 <a href="mailto:support@nexusbuilt.com" className="text-[#B93239] hover:underline font-medium">support@nexusbuilt.com</a>
+                  📧 <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline font-medium">support@nxbuilt.com</a>
                 </p>
               </div>
             </section>
