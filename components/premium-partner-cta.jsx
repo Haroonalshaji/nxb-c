@@ -48,7 +48,7 @@ export default function PremiumPartnerCTA() {
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         {/* Left side - Content */}
                         <div className="text-left">
-                            <h2 className="text-5xl mb-6 font-semibold leading-tight">
+                            <h2 className="lg:text-5xl text-3xl mb-6 font-semibold leading-tight">
                                 Looking to Stand Out
                                 <span className="block bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                                     Even More?

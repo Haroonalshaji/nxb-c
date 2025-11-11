@@ -133,7 +133,7 @@ export default function HeaderVendor() {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-16">
           <Link href='/' className="flex items-center space-x-2">
-            <Image src="/assets/header images/nexus_white_no_bg.png" width={100} height={100} alt="Nexus Built Logo" />
+            <Image src="/assets/header images/nexus_white_no_bg.png" width={80} height={80} alt="Nexus Built Logo" />
           </Link>
           {isRegister ? (
             <div className="flex items-center space-x-4">

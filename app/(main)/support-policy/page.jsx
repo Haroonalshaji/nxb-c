@@ -72,7 +72,7 @@ export default function SupportPolicyPage() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-3">Grievance Officer Contact:</h3>
                 <ul className="space-y-2 text-gray-700">
                   <li><strong>Name:</strong> Compliance Desk – Nexus Built</li>
-                  <li><strong>Email:</strong> <a href="mailto:grievance@nexusbuilt.com" className="text-[#B93239] hover:underline">grievance@nexusbuilt.com</a></li>
+                  <li><strong>Email:</strong> <a href="mailto:support@nxbuilt.com" className="text-[#B93239] hover:underline">support@nxbuilt.com</a></li>
                   <li><strong>Subject Line:</strong> GRIEVANCE – [Nature of Complaint]</li>
                   <li><strong>Response Time:</strong> Within 5 business days</li>
                 </ul>

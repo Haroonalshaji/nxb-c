@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Users, MessageSquare, Headphones } from "lucide-react"
+import Link from "next/link"
 
 export default function ContactCTA() {
     return (
@@ -48,7 +49,9 @@ export default function ContactCTA() {
                                 size="lg"
                                 className="bg-[#B93239] hover:bg-[#A02A31] text-white px-10 h-14 text-lg shadow-lg hover:shadow-xl transition-all group"
                             >
-                                Create Your Account
+                                <Link href="/signin">
+                                    Create Your Account
+                                </Link>
                                 <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </Button>
                             <Button
@@ -56,7 +59,9 @@ export default function ContactCTA() {
                                 variant="outline"
                                 className="border-2 border-[#B93239] text-[#B93239] hover:bg-[#B93239] hover:text-white px-10 h-14 text-lg bg-transparent"
                             >
-                                Browse Vendors
+                                <Link href="/vendor">
+                                    Browse Vendors
+                                </Link>
                             </Button>
                         </div>
                     </div>
