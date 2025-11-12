@@ -1,15 +1,33 @@
+"use client";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Check, ArrowRight, Crown, Zap, Target } from 'lucide-react'
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { getSubscriptionPlans } from "@/lib/api/commonApi";
 
 export default function PricingPlans() {
+
+    const [prices, setPrices] = useState({});
+
+
+
+    const subPlain = async () => {
+        const result = await getSubscriptionPlans();
+        console.log("subscription plans", result.data.result);
+        setPrices(result.data.result);
+    }
+
+    useEffect(() => {
+        subPlain();
+    }, []);
+
     const plans = [
         {
             name: "Monthly Plan",
             description: "Perfect for short-term visibility",
-            price: "49",
+            price: prices.monthlyPrice || "0",
             period: "month",
             originalPrice: null,
             savings: null,
@@ -27,7 +45,7 @@ export default function PricingPlans() {
         {
             name: "Quarterly Plan",
             description: "Ideal for steady growth",
-            price: "147",
+            price: prices.quarterlyPrice || "0",
             period: "3 months",
             originalPrice: "897",
             savings: "Save 15%",
@@ -45,7 +63,7 @@ export default function PricingPlans() {
         {
             name: "Yearly Plan",
             description: "Best value for serious vendors",
-            price: "588",
+            price: prices.annualPrice || "0",
             period: "year",
             originalPrice: "3,588",
             savings: "Save 30%",
@@ -86,9 +104,9 @@ export default function PricingPlans() {
 
                 <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {plans.map((plan, index) => (
-                        <Link href="/vendor/register" >
+                        <Link href="/vendor/register" key={index} >
                             <div
-                                key={index}
+
                                 data-aos="fade-up"
                                 data-aos-delay={index * 150}
                                 className={`group transform hover:scale-105 transition-all duration-300 ${plan.popular ? "relative" : ""
