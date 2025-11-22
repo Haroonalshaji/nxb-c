@@ -75,8 +75,8 @@ export default function TrustedVendorSection() {
             <div className="absolute bottom-20 left-10 w-32 h-32 bg-gradient-to-br from-[#B93239]/5 to-transparent rounded-full blur-xl"></div>
 
             <div className="container mx-auto px-4 relative z-10">
-                <div className="text-center mb-8" data-aos="fade-up">
-                    <h2 className="text-4xl mb-6 text-gray-900">
+                <div className="text-center mb-2" data-aos="fade-up">
+                    <h2 className="text-4xl mb-4 text-gray-900">
                         Trusted Vendors, Ready to Work
                     </h2>
                     <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
@@ -85,13 +85,12 @@ export default function TrustedVendorSection() {
                     </p>
                 </div>
 
-                <div className="w-full py-10">
+                <div className="w-full pb-10 pt-5">
                     <Swiper
                         modules={[Autoplay, Pagination]}
                         autoplay={{ delay: 2500, disableOnInteraction: false }}
                         pagination={{ clickable: true }}
                         spaceBetween={30}
-                        centeredSlides
                         breakpoints={{
                             320: { slidesPerView: 1 },
                             640: { slidesPerView: 2 },
@@ -103,7 +102,7 @@ export default function TrustedVendorSection() {
                             <EmptyPremiumCTA />
                         ) : (
                             premiumVendors.map((vendor, i) => (
-                                <SwiperSlide key={i}>
+                                <SwiperSlide key={i} className="!h-auto my-14">
                                     <Card className="relative p-3 border mb-6 rounded-2xl bg-white shadow hover:shadow-lg transition-all duration-300 h-full flex flex-col justify-between">
 
                                         {/* Premium Tag */}
