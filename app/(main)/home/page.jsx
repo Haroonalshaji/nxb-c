@@ -26,6 +26,7 @@ import nexusLogo from "../../../public/assets/header images/nexus_white_no_bg.pn
 import WhyChooseSection from '../../../components/whyChooseSection'
 import VendorSection from '../../../components/vendorSection'
 import VendorRequirementsSection from '../../../components/vendor-req'
+import TrustedVendorSection from '../../../components/trustedVendorSection'
 import Link from "next/link"
 import Image from "next/image";
 
@@ -283,92 +284,10 @@ export default function HomePageNew() {
 
             <VendorRequirementsSection />
 
+            <TrustedVendorSection />
+
             {/* Featured Vendors - Premium */}
-            <section className="py-20 bg-gradient-to-br from-gray-50 to-white relative">
-                {/* Decorative elements */}
-                <div className="absolute top-10 right-10 w-20 h-20 bg-gradient-to-br from-[#B93239]/10 to-transparent rounded-full"></div>
-                <div className="absolute bottom-20 left-10 w-32 h-32 bg-gradient-to-br from-[#B93239]/5 to-transparent rounded-full blur-xl"></div>
-
-                <div className="container mx-auto px-4 relative z-10">
-                    <div className="text-center mb-16" data-aos="fade-up">
-                        <h2 className="text-4xl mb-6 text-gray-900">
-                            Trusted Vendors, Ready to Work
-                        </h2>
-                        <p className="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">
-                            These businesses are approved and ready to take on your next project.
-
-                        </p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {featuredVendors.map((vendor, index) => (
-                            <div
-                                key={index}
-                                data-aos="fade-up"
-                                data-aos-delay={index * 150}
-                                data-aos-duration="800"
-                                className="group transform hover:-translate-y-2 transition-all duration-300"
-                            >
-                                <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 border-0 bg-white relative">
-                                    {vendor.premium && (
-                                        <div className="absolute top-4 left-4 z-20">
-                                            <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black border-0 shadow-lg">
-                                                <Award className="w-3 h-3 mr-1" />
-                                                Premium
-                                            </Badge>
-                                        </div>
-                                    )}
-
-                                    <div className="h-56 bg-gray-200 relative overflow-hidden">
-                                        <img
-                                            src={vendor.image}
-                                            alt={vendor.name}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-                                        <Badge className="absolute bottom-4 right-4 bg-[#B93239]/90 backdrop-blur-sm border-0">
-                                            {vendor.category}
-                                        </Badge>
-                                    </div>
-
-                                    <CardContent className="p-8">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <h3 className="text-xl text-gray-900">
-                                                {vendor.name}
-                                            </h3>
-                                            {vendor.verified && (
-                                                <CheckCircle className="w-5 h-5 text-green-500 mt-1" />
-                                            )}
-                                        </div>
-
-                                        <p className="text-gray-600 mb-4 text-lg">
-                                            {vendor.specialty}
-                                        </p>
-
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center space-x-2">
-
-
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center text-gray-600 mb-6">
-                                            <MapPin className="h-4 w-4 mr-2" />
-                                            <span>{vendor.location}</span>
-                                        </div>
-
-                                        <Link href={'/vendor'}>
-                                            <Button className="w-full bg-gradient-to-r from-[#B93239] to-[#A02A31] hover:from-[#A02A31] hover:to-[#8B1E25] text-white shadow-lg hover:shadow-xl transition-all text-lg h-12">
-                                                View Profile
-                                            </Button>
-                                        </Link>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            
 
             {/* How It Works */}
             <section className="py-20 bg-gradient-to-br from-gray-50 to-gray-100 relative">
