@@ -150,14 +150,14 @@ export default function PricingPlans() {
                                                 <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
                                                 <span className="text-gray-500 ml-2">/ {plan.period}</span>
                                             </div>
-                                            {plan.savings && (
+                                            {/* {plan.savings && (
                                                 <div className="flex items-center justify-center space-x-2">
                                                     <span className="text-sm text-gray-400 line-through">AED {plan.originalPrice}</span>
                                                     <Badge className="bg-green-100 text-green-700 border-0 text-xs">
                                                         {plan.savings}
                                                     </Badge>
                                                 </div>
-                                            )}
+                                            )} */}
                                         </div>
                                     </CardHeader>
 

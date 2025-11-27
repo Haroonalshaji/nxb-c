@@ -171,6 +171,12 @@ export default function VendorRegisterPage() {
     if (!formData.businessType) {
       newErrors.businessType = "Business type is required"
     }
+    if (!formData.insuranceNumber) {
+      newErrors.insuranceNumber = "Confirm License Number is required"
+    }
+    if (!formData.licenseNumber) {
+      newErrors.licenseNumber = "License Number is required"
+    }
     if (!formData.experience) {
       newErrors.experience = "Years of experience is required"
     }
@@ -633,16 +639,24 @@ export default function VendorRegisterPage() {
             value={formData.licenseNumber}
             onChange={(e) => handleInputChange("licenseNumber", e.target.value)}
             placeholder="Enter your license number"
+            className={errors.licenseNumber ? "border-red-500 focus:border-red-500" : ""}
           />
+          {errors.licenseNumber && (
+            <p className="text-sm text-red-500">{errors.licenseNumber}</p>
+          )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="insuranceNumber">Insurance Number</Label>
+          <Label htmlFor="insuranceNumber">Confirm License Number</Label>
           <Input
             id="insuranceNumber"
+            className={errors.insuranceNumber ? "border-red-500 focus:border-red-500" : ""}
             value={formData.insuranceNumber}
             onChange={(e) => handleInputChange("insuranceNumber", e.target.value)}
-            placeholder="Enter your insurance number"
+            placeholder="Confirm Your License number"
           />
+          {errors.insuranceNumber && (
+            <p className="text-sm text-red-500">{errors.insuranceNumber}</p>
+          )}
         </div>
       </div>
 

@@ -346,7 +346,7 @@ export default function VendorDashboardPage() {
                     </div>
                   </div>
                 </div>
-                <Link href="/vendor/quotes">
+                <Link href="/vendor/dashboard">
                   <Button className="bg-gradient-to-r from-[#B80D2D] to-[#9A0B26] hover:from-[#9A0B26] hover:to-[#7A0920] text-white shadow-lg px-6 py-3 text-lg">
                     <DollarSign className="h-5 w-5 mr-2" />
                     My Quotes

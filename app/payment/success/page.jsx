@@ -67,28 +67,40 @@ export default function PaymentSuccessPage() {
 
     const checkPaymentAndFetch = async () => {
       try {
-        // 1️⃣ Validate payment status
         const paymentRes = await stripePaymentCheck(orderGuid);
-        if (paymentRes.data.paymentStatus !== "Success") {
-          router.push(`/payment/failed?orderGuid=${orderGuid}`);
-          return;
+
+        // Validate response
+        const status = paymentRes?.data?.paymentStatus?.toLowerCase();
+        if (status !== "success") {
+          throw new Error("Payment not successful");
         }
+
         setIsValid(true);
 
-        // 2️⃣ Fetch subscription details after successful payment
-        const subscriptionRes = await vendorSubscriptionStatus(orderGuid);
-        if (subscriptionRes.data.isSuccess === true) {
-          setSubscription(subscriptionRes.data.result); // ✅ only set the result part
-        } else {
-          router.push("/vendor/dashboard");
-        }
+        setTimeout(async () => {
+          try {
+            const subscriptionRes = await vendorSubscriptionStatus();
+
+            if (subscriptionRes?.data?.isSuccess) {
+              setSubscription(subscriptionRes.data.result);
+            } else {
+              router.push("/vendor/dashboard");
+            }
+          } catch (err) {
+            console.error("Subscription check failed:", err);
+            router.push("/vendor/dashboard");
+          }
+        }, 2500);
+
       } catch (error) {
+        console.error("Payment or validation error:", error);
         router.push(`/payment/failed?orderGuid=${orderGuid}`);
       }
     };
 
     checkPaymentAndFetch();
   }, [orderGuid, router]);
+
 
   if (isValid === null) {
     return <p className="p-10 text-center">Checking payment status...</p>;
