@@ -449,9 +449,9 @@ export default function VendorRegisterPage() {
             className={`w-10 h-10 rounded-full flex items-center justify-center font-medium ${step <= currentStep ? "bg-[#B80D2D] text-white" : "bg-gray-200 text-gray-500"
               }`}
           >
-            {step < currentStep ? <CheckCircle className="h-5 w-5" /> : step}
+            {step < currentStep ? <CheckCircle className="lg:h-5 lg:w-5 h-3 w-3" /> : step}
           </div>
-          {step < 5 && <div className={`w-16 h-1 mx-2 ${step < currentStep ? "bg-[#B80D2D]" : "bg-gray-200"}`} />}
+          {step < 5 && <div className={`lg:w-16 w-3 h-1 mx-2 ${step < currentStep ? "bg-[#B80D2D]" : "bg-gray-200"}`} />}
         </div>
       ))}
     </div>
